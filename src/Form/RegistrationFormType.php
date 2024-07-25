@@ -20,11 +20,16 @@ class RegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email', EmailType::class) // utilisation de la classe EmailType pour filtrer l'adresse mail saisie par l'utilisateur (XSS)
-            ->add('userName', TextType::class) // utilisation de la classe TextType pour filtrer le pseudo saisi par l'utilisateur (XSS)
+            ->add('email', EmailType::class, [    // utilisation de la classe EmailType pour filtrer l'adresse mail saisie par l'utilisateur (XSS)
+                'label' => 'Adresse email'   // nom affiché de la case du formulaire
+            ]) 
+            ->add('userName', TextType::class, [    // utilisation de la classe TextType pour filtrer le pseudo saisi par l'utilisateur (XSS)
+                'label' => 'Nom d\'utilisateur'
+            ]) 
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
-                'constraints' => [
+                'label' => 'Accepter les conditions d\'utilisation',
+                'constraints' => [ // l'utilisateur est obligé d'accepter les conditions pour s'inscrire sinon apparation du message ci-dessous
                     new IsTrue([
                         'message' => 'Veuillez accepter les conditions d\'utilisation du site pour vous inscrire.',
                     ]),
@@ -34,7 +39,7 @@ class RegistrationFormType extends AbstractType
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
                 'mapped' => false,
-                'type' => PasswordType::class,
+                'type' => PasswordType::class, // utilisation de la classe PasswordType pour utiliser les filtres de sécurité implémentés par symfony 
                 'attr' => ['autocomplete' => 'new-password'],
                 'options' => ['attr' => ['class' => 'password-field']],
                 'required' => true,
@@ -44,9 +49,9 @@ class RegistrationFormType extends AbstractType
                     new NotBlank([ // contrainte du validateur de symfony, il faut saisir une valeur
                         'message' => 'Veuillez saisir un mot de passe',
                     ]),
-                    new Length([ // contrainte du minimum de longueur du mot de passe
-                        'min' => 8,
-                        'minMessage' => 'Votre mot de passe doit avoir un minimum de 8 characters',
+                    new Length([ 
+                        'min' => 8, // utilisation de la classe EmailType pour filtrer l'adresse mail saisie par l'utilisateur (XSS)
+                        'minMessage' => 'Votre mot de passe doit avoir un minimum de 8 characters', // message affiché si l'utilisateur tente de s'inscrire sans remplir la condition
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),
