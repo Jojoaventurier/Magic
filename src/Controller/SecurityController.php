@@ -19,7 +19,11 @@ class SecurityController extends AbstractController
 
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
-    {
+    {   // si il ya déjà un utilisateur en session, il est redirigé vers la page d'accueil
+        if ($this->getUser()) {
+            return $this->redirectToRoute(route:'app_home');
+        }
+
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
@@ -33,31 +37,13 @@ class SecurityController extends AbstractController
     }
     
 
-
-
-    #[Route(path: "/googlelogin", name: 'oauth_login_google', methods: ['GET'])]
-    public function oauthlogin(AuthenticationUtils $authenticationUtils): Response {
-
-        if ($this->getUser()) {
-            return $this->redirectToRoute(route:'app_home');
-        }
-        $error = $authenticationUtils->getLastAuthenticationError();
-        $lastUsername = $authenticationUtils->getLastUsername();
-
-        return $this->render("security/login.html.twig", [
-            'error' => $error,
-            'last_username' => $lastUsername,
-        ]);
-
-    }
-
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
-    #[Route("/oauth/connect/{service}", name: 'auth_oauth_connect', methods: ['GET'])]
+    #[Route("/oauth/connect/{service}", name: 'google_oauth_connect', methods: ['GET'])]
     public function connect(string $service, ClientRegistry $clientRegistry): RedirectResponse
     {
        if (! in_array($service, array_keys(array: self::SCOPES), strict: true)) {
