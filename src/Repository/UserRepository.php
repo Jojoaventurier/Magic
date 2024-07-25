@@ -33,6 +33,16 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    // ajout d'un utilisateur à la BDD
+    public function add(User $user, bool $flush = false): void 
+    {
+        $this->getEntityManager()->persist($user);// préparation de la requête
+
+        if($flush) {
+            $this->getEntityManager()->flush(); // exécution de la requête
+        }
+    }
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */
