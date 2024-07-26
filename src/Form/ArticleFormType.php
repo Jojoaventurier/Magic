@@ -10,6 +10,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class ArticleFormType extends AbstractType
@@ -17,19 +18,17 @@ class ArticleFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('articleTitle', TextType::class)
-            ->add('articleText', TextareaType::class, [
+            ->add('articleTitle', TextType::class) // utilisation de la classe TextType pour filtrer les données saisies par l'utilsiateur
+            ->add('articleText', TextareaType::class, [ // utilisation de TextareaType pour filtrer les données saisires
             'attr' => [
-                'type' => 'textarea'
+                'style' => 'height: 500px; width: 850px; font-size: 0.8rem' // personnalisation de l'affichage de la case de texte à remplir par l'utilisateur
             ]])
-            ->add('creationDate', DateType::class, [
-                'widget' => 'single_text',
-            ])
             ->add('category', EntityType::class, [
                 'class' => Category::class,
-                'choice_label' => 'id',
-            ])
-        ;
+                'choice_label' => 'categoryName',
+            ]);
+            // ->add('Valider', SubmitType::class);
+        
     }
 
     public function configureOptions(OptionsResolver $resolver): void

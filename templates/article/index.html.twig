@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ArticleController!{% endblock %}
+{% block title %}Publier un article{% endblock %}
 
 {% block body %}
 <style>
@@ -9,5 +9,22 @@
 </style>
 
 <div class="example-wrapper">
-    {{ form(form)}}
+
+
+    {{ form_start(form, {'attr': {'id': 'article-form'}}) }}
+        {{ form_row(form.articleTitle) }}
+        {{ form_row(form.articleText) }}
+        {# <button type="submit" class="btn">Publier l'article</button> #}
+    {{ form_end(form) }}
+
+
+    <div class="open-preview">Preview</div>
+
+    <div class="modal">
+        <div class="close-preview">Close Preview</div>
+        <div class="title"></div>
+        <div class="text"></div>
+        <input type="submit" form="article-form" value="Submit"/><!-- "form" attribute has to contain the actual form id from above -->
+      </div>
+
 {% endblock %}

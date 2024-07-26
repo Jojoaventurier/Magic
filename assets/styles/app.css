@@ -3,5 +3,46 @@
 @tailwind utilities;
 
 body {
-    background-color: skyblue;
+  background-color: skyblue;
 }
+
+#article_form_articleText {
+    width: 500px;
+    height: 500px;
+}
+
+.open-preview {
+    display: inline-block;
+    cursor: pointer;
+    background: rgb(56, 190, 90);
+  }
+
+  .close-preview {
+    display: inline-block;
+    cursor: pointer;
+    background: rgb(56, 190, 90);
+  }
+  
+  .modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, .5);
+    place-content: center;
+  }
+  
+  .modal--open {
+    display: grid;
+  }
+  
+  .title {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: white;
+  }
+
+  .text {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: white;
+  }
