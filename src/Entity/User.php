@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -47,6 +49,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $googleId = null;
+
+    /**
+     * @var Collection<int, ForumTopic>
+     */
+    #[ORM\OneToMany(targetEntity: ForumTopic::class, mappedBy: 'user')]
+    private Collection $forumTopics;
+
+    /**
+     * @var Collection<int, ForumPost>
+     */
+    #[ORM\OneToMany(targetEntity: ForumPost::class, mappedBy: 'user')]
+    private Collection $forumPosts;
+
+    public function __construct()
+    {
+        $this->forumTopics = new ArrayCollection();
+        $this->forumPosts = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -167,6 +187,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setGoogleId(?string $googleId): static
     {
         $this->googleId = $googleId;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ForumTopic>
+     */
+    public function getForumTopics(): Collection
+    {
+        return $this->forumTopics;
+    }
+
+    public function addForumTopic(ForumTopic $forumTopic): static
+    {
+        if (!$this->forumTopics->contains($forumTopic)) {
+            $this->forumTopics->add($forumTopic);
+            $forumTopic->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeForumTopic(ForumTopic $forumTopic): static
+    {
+        if ($this->forumTopics->removeElement($forumTopic)) {
+            // set the owning side to null (unless already changed)
+            if ($forumTopic->getUser() === $this) {
+                $forumTopic->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ForumPost>
+     */
+    public function getForumPosts(): Collection
+    {
+        return $this->forumPosts;
+    }
+
+    public function addForumPost(ForumPost $forumPost): static
+    {
+        if (!$this->forumPosts->contains($forumPost)) {
+            $this->forumPosts->add($forumPost);
+            $forumPost->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeForumPost(ForumPost $forumPost): static
+    {
+        if ($this->forumPosts->removeElement($forumPost)) {
+            // set the owning side to null (unless already changed)
+            if ($forumPost->getUser() === $this) {
+                $forumPost->setUser(null);
+            }
+        }
 
         return $this;
     }
