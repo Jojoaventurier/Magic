@@ -24,7 +24,15 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Adresse email'   // nom affiché de la case du formulaire
             ]) 
             ->add('userName', TextType::class, [    // utilisation de la classe TextType pour filtrer le pseudo saisi par l'utilisateur (XSS)
-                'label' => 'Nom d\'utilisateur'
+                'label' => 'Nom d\'utilisateur',
+                'constraints' => [
+                    new Length([ 
+                        'min' => 4, 
+                        'minMessage' => 'Votre nom d\' utilisateur doit avoir un minimum de 4 caractères et un maximum de 10', // message affiché si l'utilisateur tente de s'inscrire sans remplir la condition
+                     
+                        'max' => 10,
+                    ])
+                ]
             ]) 
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
@@ -40,11 +48,12 @@ class RegistrationFormType extends AbstractType
                 // this is read and encoded in the controller
                 'mapped' => false,
                 'type' => PasswordType::class, // utilisation de la classe PasswordType pour utiliser les filtres de sécurité implémentés par symfony 
+                'invalid_message' => 'Les mots de passes doivent être identiques', // message si le repeated password n'est pas confirmé
                 'attr' => ['autocomplete' => 'new-password'],
                 'options' => ['attr' => ['class' => 'password-field']],
                 'required' => true,
-                'first_options' => ['label' => 'Mot de passe'], // label de la case du formulaire
-                'second_options' => ['label' => 'Confirmez le mot de passe'], // label de la case du formulaire
+                'first_options' => ['label' => 'Mot de passe'], // label affiché de la case du formulaire
+                'second_options' => ['label' => 'Confirmez le mot de passe'], // label affiché de la case du formulaire
                 'constraints' => [
                     new NotBlank([ // contrainte du validateur de symfony, il faut saisir une valeur
                         'message' => 'Veuillez saisir un mot de passe',
