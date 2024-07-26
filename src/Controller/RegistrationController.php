@@ -76,6 +76,7 @@ class RegistrationController extends AbstractController
         }
 
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
+        //TODO pop up de bienvenue lors de la premiere connection
         $this->addFlash('success', 'Merci d\'avoir rejoint la communauté Magic-Hub et bienvenue :)');
 
         return $this->redirectToRoute('app_login');

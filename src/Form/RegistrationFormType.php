@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -28,9 +29,9 @@ class RegistrationFormType extends AbstractType
                 'constraints' => [
                     new Length([ 
                         'min' => 4, 
-                        'minMessage' => 'Votre nom d\' utilisateur doit avoir un minimum de 4 caractères et un maximum de 10', // message affiché si l'utilisateur tente de s'inscrire sans remplir la condition
+                        'minMessage' => 'Votre nom d\' utilisateur doit avoir un minimum de 4 caractères et un maximum de 12', // message affiché si l'utilisateur tente de s'inscrire sans remplir la condition
                      
-                        'max' => 10,
+                        'max' => 12,
                     ])
                 ]
             ]) 
@@ -64,6 +65,10 @@ class RegistrationFormType extends AbstractType
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),
+                    new Regex([
+                        'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/', // pattern imposé pour la création du mot de passe
+                        'message' => 'Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule, un chiffre et avoir au moins 8 caractères.',
+                        ])
                 ],
             ])
         ;
