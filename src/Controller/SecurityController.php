@@ -20,9 +20,9 @@ class SecurityController extends AbstractController
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {   // si il ya déjà un utilisateur en session, il est redirigé vers la page d'accueil
-        if ($this->getUser()) {
-            return $this->redirectToRoute(route:'app_home');
-        }
+        // if ($this->getUser()) {
+        //     return $this->redirectToRoute(route:'app_home');
+        // }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -39,11 +39,11 @@ class SecurityController extends AbstractController
 
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
-    {
+    {   unset($_SESSION);
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
-    #[Route("/oauth/connect/{service}", name: 'google_oauth_connect', methods: ['GET'])]
+    #[Route("/magichub/connect/{service}", name: 'auth_magichub_connect', methods: ['GET'])]
     public function connect(string $service, ClientRegistry $clientRegistry): RedirectResponse
     {
        if (! in_array($service, array_keys(array: self::SCOPES), strict: true)) {
@@ -55,7 +55,7 @@ class SecurityController extends AbstractController
            ->redirect(self::SCOPES[$service]);
     }
 
-    #[Route('/oauth/check/{service}', name: 'auth_oauth_check', methods: ['GET', 'POST'])]
+    #[Route('/magichub/check/{service}', name: 'auth_magichub_check', methods: ['GET', 'POST'])]
     public function check(): Response
     {
        return new Response(status: 200);

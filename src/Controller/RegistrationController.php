@@ -25,8 +25,8 @@ class RegistrationController extends AbstractController
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
-        $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $user = new User(); // création d'un objet User
+        $form = $this->createForm(RegistrationFormType::class, $user); // création du formulaire User
         $form->handleRequest($request);
         $currentDateTime = new \DateTime('now'); // récupère la date et l'heure actuelle gràce à l'objet natif de php DateTime
 
@@ -47,7 +47,7 @@ class RegistrationController extends AbstractController
                 (new TemplatedEmail())
                     ->from(new Address('admin@magic-hub.com', 'Admin from MagicHub'))
                     ->to($user->getEmail())
-                    ->subject('Please Confirm your Email')
+                    ->subject('Veuillez confirmer votre adresse email pour finaliser votre inscription')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 

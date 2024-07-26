@@ -13,7 +13,7 @@
         {% endblock %}
 
           {% if app.user %}
-            <a href="{{ path('app_login') }}">Se déconnecter</a>
+            <a href="{{ path('app_logout') }}">Se déconnecter</a>
             <a href="{{ path('app_profile') }}">Mon profil</a>
 
           {% else %}
@@ -24,14 +24,6 @@
           {% if is_granted('ROLE_ADMIN') %}
             <a href="">Panneau d'administration</a>
           {% endif %}
-
-
-
-        
-        
-        
-        
-        
         {% block body %}{% endblock %}
     </body>
 </html>

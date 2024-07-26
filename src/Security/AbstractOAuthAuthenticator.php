@@ -43,7 +43,7 @@ abstract class AbstractOAuthAuthenticator extends OAuth2Authenticator
 
     public function supports(Request $request): ?bool
     {
-        return 'auth_oauth_check' === $request->attributes->get(key:'_route') && 
+        return 'auth_magichub_check' === $request->attributes->get(key:'_route') && 
             $request->get(key:'service') === $this->serviceName;
     }
 

@@ -39,7 +39,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private bool $isVerified = false;
 
-    #[ORM\Column(length: 14)]
+    #[ORM\Column(length: 180)]
     private ?string $userName = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -102,7 +102,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): string
+    public function getPassword(): string|null 
     {
         return $this->password;
     }
