@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\ForumCategory;
 use App\Entity\ForumSubCategory;
+use App\Repository\ForumPostRepository;
+use App\Repository\ForumTopicRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ForumCategoryRepository;
 use App\Repository\ForumSubCategoryRepository;
@@ -24,6 +26,26 @@ class ForumController extends AbstractController
         return $this->render('forum/index.html.twig', [
             'categories' => $categories,
             'subCategories' => $subCategories
+        ]);
+    }
+
+    #[Route('/forum/topic/{id}', name: 'app_forum_topic')]
+    public function topicsBySubCategory(ForumSubCategory $subCategory, ForumTopicRepository $topicRepository): Response
+    {
+        $topics = $topicRepository->findBySubCategory($subCategory) ;
+
+        return $this->render('forum/listTopicsBySubCategory.html.twig', [
+            'topics' => $topics,
+        ]);
+    }
+
+    #[Route('/forum/posts/{id}', name: 'app_forum_posts')]
+    public function postsByTopic(ForumTopic $topic, ForumPostRepository $postRepository): Response
+    {
+        $posts = $postRepository->findByTopic($topic) ;
+
+        return $this->render('forum/listPostsByTopic.html.twig', [
+            'posts' => $posts,
         ]);
     }
 }

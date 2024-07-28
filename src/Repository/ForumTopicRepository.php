@@ -16,6 +16,17 @@ class ForumTopicRepository extends ServiceEntityRepository
         parent::__construct($registry, ForumTopic::class);
     }
 
+
+    public function findBySubCategory($subCategory): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.forumSubCategory = :val')
+            ->setParameter('val', $subCategory)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return ForumTopic[] Returns an array of ForumTopic objects
     //     */

@@ -16,6 +16,16 @@ class ForumPostRepository extends ServiceEntityRepository
         parent::__construct($registry, ForumPost::class);
     }
 
+    public function findByTopic($topic): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.forumTopic = :val')
+            ->setParameter('val', $topic)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 //    /**
 //     * @return ForumPost[] Returns an array of ForumPost objects
 //     */

@@ -5,7 +5,7 @@
 {% block body %}
 <h1>Bienvenue sur la page d'accueil</h1>
 
-{% if IsGranted("ROLE_USER") %}
+{% if is_granted("ROLE_USER") %}
     <a href="{{ path('app_articleForm')}}">Rédiger un article</a>
 {% endif %}
 
