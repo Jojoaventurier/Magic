@@ -48,4 +48,10 @@ class ForumController extends AbstractController
             'posts' => $posts,
         ]);
     }
+
+//TODO new/edit Topic
+//TODO new/edit Posts
+//TODO verrouillage / ban
+//TODO anonymisation des posts du forum si suppression de compte
+
 }
