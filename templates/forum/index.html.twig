@@ -11,8 +11,16 @@
 <div class="example-wrapper">
     <h1>Bienvenue sur le forum de Magic-Hub</h1>
 
-    {% for subCategory in subCategories %}
-        {{subCategory.SubCategoryName }}
+    {% for category in categories %}
+    
+       <h3>{{ category.forumCategoryName }}</h3> 
+
+        {% for subCategory in category.subCategories %}
+
+        <a href="">{{ subCategory.subCategoryName }}</a>
+
+        {% endfor %} <br>
+      
     {% endfor %}
         
 

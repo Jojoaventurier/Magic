@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ForumController extends AbstractController
 {   
-    #[IsGranted('ROLE_USER')]
+    
     #[Route('/forum', name: 'app_forum')]
     public function index(ForumCategoryRepository $categoryRepository, ForumSubCategoryRepository $subCategoryRepository): Response
     {
