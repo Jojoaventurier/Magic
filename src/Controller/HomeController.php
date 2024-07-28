@@ -9,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class HomeController extends AbstractController
 {
-    #[IsGranted("ROLE_USER")]
+    
     #[Route('/home', name: 'app_home')]
     public function index(): Response
     {
