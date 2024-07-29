@@ -1,10 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ForumTopicController!{% endblock %}
+{% block title %}Posts by topics{% endblock %}
 
 {% block body %}
 
 
-<h1>Posts by topics</h1>
+<h1>Posts by topic</h1>
+
+{% for post in posts %}
+    {{ post.user.userName }}
+    {{ post.creationDate|date('d.m.Y H:i') }}
+    {{ post.editDate|date('d.m.Y H:i') }}
+    {{ post.textContent }}
+{% endfor %}
+
 
 {% endblock %}

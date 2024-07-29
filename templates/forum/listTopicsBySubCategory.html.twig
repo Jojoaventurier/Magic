@@ -7,13 +7,12 @@
     <h1>Topics By SubCategory</h1>
 
     {% for topic in topics %}
-        {{ topic.topicTitle }}
+        <a href="{{ path('app_forum_posts', {'id': topic.id}) }}">{{ topic.topicTitle }}</a>
     {% endfor %}
 
     {% if app.user %}
     {{ form_start(topicForm) }}
         {{form_row(topicForm.topicTitle)}}
-
     {{ form_end(topicForm) }}
 
     {% endif %}
