@@ -9,14 +9,20 @@
     <a href="{{ path('edit_topic', {id: topic.id}) }}">Modifier</a>
     <a>Supprimer</a>
 {% endif %}
+{% if topic.creationDate is same as topic.editDate %}
+    <p>posté par {{ topic.user.userName }} le {{ topic.creationDate|date('d.m.Y H:i') }} </p>
+    {% else %}
+    <p>posté par {{ topic.user.userName }} le {{ topic.creationDate|date('d.m.Y H:i') }} et modifié le {{ topic.editDate|date('d.m.Y H:i') }} </p>
+{% endif %}
+
 
 {% for post in posts %}
     <p>
-        Message posté par {{ post.user.userName }} le 
+        Par {{ post.user.userName }} <br>
         {% if post.creationDate is same as post.editDate %}
-            {{ post.creationDate|date('d.m.Y H:i') }}
+            posté le {{ post.creationDate|date('d.m.Y H:i') }} ,
             {% else %}
-            {{ post.editDate|date('d.m.Y H:i') }}
+            modifié le {{ post.editDate|date('d.m.Y H:i') }}
         {% endif %}
     </p>
     <p>
@@ -24,11 +30,11 @@
     </p>
 
     {% if app.user is same as post.user %}
-        <a>Modifier</a>
+        <a href="{{ path('edit_post', {'topic': topic.id, 'post': post.id}) }}">Modifier</a>
         <a>Supprimer</a>
     {% endif %}
 {% endfor %}
 
-<a href="{{ path('new_post') }}">Répondre</a>
+<a href="{{ path('new_post', {id: topic.id}) }}">Répondre</a>
 
 {% endblock %}

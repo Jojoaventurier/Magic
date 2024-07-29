@@ -1,1 +1,15 @@
 {% extends 'base.html.twig' %}
+
+
+{% block title %}Répondre au sujet{% endblock %}
+
+{% block body %}
+
+{{ form_start(postForm) }}
+
+
+    <button type="submit" id="submit">Envoyer</button>
+{{ form_end(postForm) }}
+
+
+{% endblock %}

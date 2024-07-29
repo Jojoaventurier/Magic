@@ -95,26 +95,26 @@ class ForumController extends AbstractController
     #[Route('/forum/topic/{id}/edit', name: 'edit_topic')]
     public function editTopic(ForumTopic $topic, ForumTopicRepository $topicRepository, Request $request, EntityManagerInterface $entityManager) {
         $currentDate = new \DateTime(); 
-        $topic = $topicRepository->findBy(['id' => $topic->getId()]);
+        $topic = $topicRepository->findOneBy(['id' => $topic->getId()]);
         // dd($topic);
-        $topicForm = $this->createForm(ForumTopicType::class, $topic[0]);
+        $topicForm = $this->createForm(ForumTopicType::class, $topic);
         $topicForm->handleRequest($request);
 
         if($topicForm->isSubmitted() && $topicForm->isValid()) {
 
             $topicTitle = $topicForm->get('topicTitle')->getData();
-            $topic[0]->setEditDate($currentDate);
-            $topic[0]->setTopicTitle($topicTitle);
+            $topic->setEditDate($currentDate);
+            $topic->setTopicTitle($topicTitle);
 
-            $entityManager->persist($topic[0]);
+            $entityManager->persist($topic);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_forum_topic', ['id' => $topic[0]->getForumSubCategory()->getId()] );
+            return $this->redirectToRoute('app_forum_topic', ['id' => $topic->getForumSubCategory()->getId()] );
         }
 
         return $this->render('forum/editTopic.html.twig', [
             'topicForm' => $topicForm,
-            'edit' => $topic['0']->getId(),
+            'edit' => $topic->getId(),
         ]);
     }
 
@@ -135,32 +135,51 @@ class ForumController extends AbstractController
     }
 
 
-    #[Route('/forum/post/new', name: 'new_post')]
-    #[Route('/forum/post/{id}/edit', name: 'edit_post')]
-    public function new_edit(ForumPost $post, ForumPostRepository $postRepository, EntityManagerinterface $entityManager): Response
+    #[Route('/forum/post/{id}/new', name: 'new_post')] // id category
+    #[Route('/forum/post/{topic}/edit/{post}', name: 'edit_post')] // id post
+    public function new_edit(ForumPost $post = null, ForumTopic $topic, ForumPostRepository $postRepository, ForumTopicRepository $topicRepository , EntityManagerinterface $entityManager, Request $request): Response
     {
         if (!$post) {
             $post = new ForumPost(); 
         }
 
+        $topic = $topicRepository->findOneBy(['id' => $topic->getId()]);
+        $user = $this->getUser();
+        $currentDate = new \DateTime(); 
+
+        $postForm = $this->createForm(ForumPostType::class, $post);
+        $postForm->handleRequest($request);
+
         if ($postForm->isSubmitted() && $postForm->isValid()) {
+            
+            $post = $postForm->getData();
+
+            if($post->getCreationDate() === null ) {
+
+                $post->setCreationDate($currentDate);
+                $post->setForumTopic($topic);
+                $post->setUser($user);
+            } //TODO problème ici ? message affiche toujours : modifié le 
+            
+            $post->setEditDate($currentDate);
             
             $entityManager->persist($post);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_forum_topic');
+            return $this->redirectToRoute('app_forum_posts', ['id' => $topic->getId()]);
         }
 
         return $this->render('forum/new_editPost.html.twig', [
 
-            'edit' => $post->getId()
+            'edit' => $post->getId(),
+            'postForm' => $postForm
         ]);
     }
 
 
 
-//TODO new/edit Topic (enlever la partie post du formulaire editTopic)
-//TODO new/edit Posts
+//TODO (enlever la partie post du formulaire editTopic)
+//TODO Delete
 //TODO verrouillage / ban
 //TODO anonymisation des posts du forum si suppression de compte
 

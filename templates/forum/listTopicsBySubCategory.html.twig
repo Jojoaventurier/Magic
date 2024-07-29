@@ -7,7 +7,13 @@
     <h1>{{ subCategory.subCategoryName }}</h1>
 
     {% for topic in topics %}
-        <a href="{{ path('app_forum_posts', {'id': topic.id}) }}">{{ topic.topicTitle }}</a>
+        <a href="{{ path('app_forum_posts', {'id': topic.id}) }}">{{ topic.topicTitle }}</a><br>
+        Par {{ topic.user.userName }}
+        {% if topic.creationDate is same as topic.editDate %}
+        posté le {{ topic.creationDate|date('d.m.Y H:i') }}<br>
+            {% else %}
+        modifié le {{ topic.editDate|date('d.m.Y H:i') }}<br>
+        {% endif %}
     {% endfor %}
 
     {% if app.user %} <!--Si un utilisateur est connecté, il peut ajouter un sujet à la sous-catégorie du forum-->
