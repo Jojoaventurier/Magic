@@ -30,15 +30,13 @@ class ForumTopicRepository extends ServiceEntityRepository
     //    /**
     //     * @return ForumTopic[] Returns an array of ForumTopic objects
     //     */
-    //    public function findByExampleField($value): array
+    //    public function findById($value): array
     //    {
     //        return $this->createQueryBuilder('f')
-    //            ->andWhere('f.exampleField = :val')
+    //            ->andWhere('f.id = :val')
     //            ->setParameter('val', $value)
-    //            ->orderBy('f.id', 'ASC')
-    //            ->setMaxResults(10)
     //            ->getQuery()
-    //            ->getResult()
+    //            ->getOneOrNullResult()
     //        ;
     //    }
 

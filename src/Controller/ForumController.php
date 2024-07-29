@@ -47,7 +47,7 @@ class ForumController extends AbstractController
     }
 
     #[Route('/forum/topic/{id}/new', name: 'new_topic')]
-    public function new_edit_topic(ForumTopic $topic = null, ForumPost $newPost = null, ForumSubCategory $subCategory, ForumTopicRepository $topicRepository, ForumPostRepository $postRepository, Request $request, EntityManagerInterface $entityManager) {
+    public function newTopic(ForumTopic $topic = null, ForumPost $newPost = null, ForumSubCategory $subCategory, ForumTopicRepository $topicRepository, ForumPostRepository $postRepository, Request $request, EntityManagerInterface $entityManager) {
 
         $currentDate = new \DateTime();// récupère la date actuelle
 
@@ -87,15 +87,29 @@ class ForumController extends AbstractController
             return $this->redirectToRoute('app_forum_topic', ['id' => $subCategory->getId()]);
         }
 
-        return $this->render('forum/editTopic.html.twig', [
+        return $this->render('forum/newTopic.html.twig', [
             'topicForm' => $topicForm,
             'subCategory' => $subCategory->getId(),
         ]);
     }
 
     #[Route('/forum/topic/{id}/edit', name: 'edit_topic')]
-    public function editTopic() {
-        
+    public function editTopic(ForumTopic $topic, ForumTopicRepository $topicRepository, Request $request) {
+
+        $topic = $topicRepository->findBy(['id' => $topic->getId()]);
+        // dd($topic);
+        $topicForm = $this->createForm(ForumTopicType::class);
+        $topicForm->handleRequest($request);
+        // $subCategory = $topic->getForumSubCategory();
+
+        if($topicForm->isSubmitted() && $topicForm->isValid()) {
+
+        }
+
+        return $this->render('forum/editTopic.html.twig', [
+            'topicForm' => $topicForm,
+            'edit' => $topic['0']->getId(),
+        ]);
     }
 
     #[Route('/forum/posts/{id}', name: 'app_forum_posts')]
