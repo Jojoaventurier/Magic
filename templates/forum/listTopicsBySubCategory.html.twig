@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ForumPostController!{% endblock %}
+{% block title %}Liste des sujets{% endblock %}
 
 {% block body %}
 
@@ -10,8 +10,12 @@
         {{ topic.topicTitle }}
     {% endfor %}
 
-    {{ form_start(form) }}
-        {{form_row(form.topicTitle)}}
-    {{ form_end(form) }}
+    {% if app.user %}
+    {{ form_start(topicForm) }}
+        {{form_row(topicForm.topicTitle)}}
+    {{ form_end(topicForm) }}
+
+    {% endif %}
+
     
 {% endblock %}
