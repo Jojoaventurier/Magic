@@ -56,7 +56,6 @@ class ForumController extends AbstractController
             $newTopic->setForumSubcategory($subCategory); // établit le lien entre le topic et la sous catégorie actuelle
             $newTopic->setUser($user); // définit l'auteur du nouveau topic
             
-
             // $newPost = new ForumPost(); // on récupère les données du formulaire pour le contenu du message qu'on stocke dans la variable $newPost
             // $newPost->setCreationDate($currentDate);
             // $newPost->setEditDate($currentDate);

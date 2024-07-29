@@ -17,6 +17,7 @@ class ForumPostType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+
         ->add('textContent', TextareaType::class, [ // utilisation de TextareaType pour filtrer les données saisies
             'attr' => [
                 'style' => 'height: 50px; width: 700px; font-size: 0.8rem' // personnalisation de l'affichage de la case de texte à remplir par l'utilisateur

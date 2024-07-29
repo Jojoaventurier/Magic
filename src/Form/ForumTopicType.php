@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\User;
+use App\Entity\ForumPost;
 use App\Entity\ForumTopic;
 use App\Form\ForumPostType;
 use App\Entity\ForumSubCategory;
@@ -15,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class ForumTopicType extends AbstractType
 {
@@ -29,6 +31,13 @@ class ForumTopicType extends AbstractType
             ->add('forumPost', ForumPostType::class, 
             [
                 'mapped' => false
+            ])
+
+            ->add('forumPosts', CollectionType::class, [
+                'entry_type' => ForumPostType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
             ])
             ->add('Valider', SubmitType::class);
     }
