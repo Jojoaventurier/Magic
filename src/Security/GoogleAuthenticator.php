@@ -37,8 +37,4 @@ class GoogleAuthenticator extends AbstractOAuthAuthenticator
         ]);
     }
 
-
-
-
-
 }

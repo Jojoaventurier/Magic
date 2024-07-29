@@ -6,5 +6,12 @@
 
     <h1>Topics By SubCategory</h1>
 
+    {% for topic in topics %}
+        {{ topic.topicTitle }}
+    {% endfor %}
 
+    {{ form_start(form) }}
+        {{form_row(form.topicTitle)}}
+    {{ form_end(form) }}
+    
 {% endblock %}

@@ -2,36 +2,28 @@
 
 namespace App\Form;
 
-use App\Entity\ForumSubCategory;
-use App\Entity\ForumTopic;
 use App\Entity\User;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\ForumTopic;
+use App\Entity\ForumSubCategory;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class ForumTopicType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('topicTitle')
-            ->add('creationDate', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('editDate', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('closed')
-            ->add('forumSubCategory', EntityType::class, [
-                'class' => ForumSubCategory::class,
-                'choice_label' => 'id',
-            ])
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-            ])
-        ;
+            ->add('topicTitle', TextareaType::class, [ // utilisation de TextareaType pour filtrer les données saisies
+                'attr' => [
+                    'style' => 'height: 50px; width: 700px; font-size: 0.8rem' // personnalisation de l'affichage de la case de texte à remplir par l'utilisateur
+                ]])
+            ->add('Valider', SubmitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
