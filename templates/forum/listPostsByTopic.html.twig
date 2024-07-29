@@ -11,7 +11,6 @@
 {% endif %}
 
 {% for post in posts %}
-
     <p>
         Message posté par {{ post.user.userName }} le 
         {% if post.creationDate is same as post.editDate %}
@@ -28,8 +27,8 @@
         <a>Modifier</a>
         <a>Supprimer</a>
     {% endif %}
-
 {% endfor %}
 
+<a href="{{ path('new_post') }}">Répondre</a>
 
 {% endblock %}

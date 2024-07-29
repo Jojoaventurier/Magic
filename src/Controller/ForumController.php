@@ -50,8 +50,8 @@ class ForumController extends AbstractController
     public function newTopic(ForumTopic $topic = null, ForumPost $newPost = null, ForumSubCategory $subCategory, ForumTopicRepository $topicRepository, ForumPostRepository $postRepository, Request $request, EntityManagerInterface $entityManager) {
 
         $currentDate = new \DateTime();// récupère la date actuelle
-
         $user = $this->getUser(); // récupère le user en session
+
         if(!$topic) {
             $topic = new ForumTopic; // création d'une nouvelle entité Topic
         }
@@ -68,9 +68,8 @@ class ForumController extends AbstractController
             $topic->setForumSubcategory($subCategory); // établit le lien entre le topic et la sous catégorie actuelle
             $topic->setUser($user); // définit l'auteur du nouveau topic
        
-
-            $newPost = new ForumPost(); // on récupère les données du formulaire pour le contenu du message qu'on stocke dans la variable $newPost
-            $text = $topicForm->get('forumPost')->get('textContent')->getData();
+            $newPost = new ForumPost(); 
+            $text = $topicForm->get('forumPost')->get('textContent')->getData(); // on récupère les données du formulaire pour le contenu du message qu'on stocke dans la variable $text
             $newPost->setTextContent($text);
             $newPost->setCreationDate($currentDate);
             $newPost->setEditDate($currentDate);
@@ -94,16 +93,23 @@ class ForumController extends AbstractController
     }
 
     #[Route('/forum/topic/{id}/edit', name: 'edit_topic')]
-    public function editTopic(ForumTopic $topic, ForumTopicRepository $topicRepository, Request $request) {
-
+    public function editTopic(ForumTopic $topic, ForumTopicRepository $topicRepository, Request $request, EntityManagerInterface $entityManager) {
+        $currentDate = new \DateTime(); 
         $topic = $topicRepository->findBy(['id' => $topic->getId()]);
         // dd($topic);
-        $topicForm = $this->createForm(ForumTopicType::class);
+        $topicForm = $this->createForm(ForumTopicType::class, $topic[0]);
         $topicForm->handleRequest($request);
-        // $subCategory = $topic->getForumSubCategory();
 
         if($topicForm->isSubmitted() && $topicForm->isValid()) {
 
+            $topicTitle = $topicForm->get('topicTitle')->getData();
+            $topic[0]->setEditDate($currentDate);
+            $topic[0]->setTopicTitle($topicTitle);
+
+            $entityManager->persist($topic[0]);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_forum_topic', ['id' => $topic[0]->getForumSubCategory()->getId()] );
         }
 
         return $this->render('forum/editTopic.html.twig', [
@@ -113,17 +119,47 @@ class ForumController extends AbstractController
     }
 
     #[Route('/forum/posts/{id}', name: 'app_forum_posts')]
-    public function postsByTopic(ForumTopic $topic, ForumPostRepository $postRepository): Response
+    public function postsByTopic(ForumTopic $topic, ForumPostRepository $postRepository, Request $request): Response
     {
-        $posts = $postRepository->findByTopic($topic) ;
+        $posts = $postRepository->findByTopic($topic);
+
+        $postForm = $this->createForm(ForumPostType::class);
+        $postForm->handleRequest($request);
+
 
         return $this->render('forum/listPostsByTopic.html.twig', [
             'posts' => $posts,
-            'topic' => $topic
+            'topic' => $topic,
+            'postForm' => $postForm
         ]);
     }
 
-//TODO new/edit Topic
+
+    #[Route('/forum/post/new', name: 'new_post')]
+    #[Route('/forum/post/{id}/edit', name: 'edit_post')]
+    public function new_edit(ForumPost $post, ForumPostRepository $postRepository, EntityManagerinterface $entityManager): Response
+    {
+        if (!$post) {
+            $post = new ForumPost(); 
+        }
+
+        if ($postForm->isSubmitted() && $postForm->isValid()) {
+            
+            $entityManager->persist($post);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_forum_topic');
+        }
+
+        return $this->render('forum/new_editPost.html.twig', [
+
+            'edit' => $post->getId()
+        ]);
+    }
+
+
+
+//TODO new/edit Topic (enlever la partie post du formulaire editTopic)
 //TODO new/edit Posts
 //TODO verrouillage / ban
 //TODO anonymisation des posts du forum si suppression de compte
