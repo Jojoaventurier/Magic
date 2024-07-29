@@ -35,27 +35,38 @@ class ForumController extends AbstractController
         ]);
     }
 
-    #[Route('/forum/topic/{id}', name: 'app_forum_topic')]
-    public function topicsBySubCategory(ForumTopic $newTopic = null, ForumPost $newPost = null, ForumSubCategory $subCategory, ForumTopicRepository $topicRepository, ForumPostRepository $postRepository, Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/forum/topics/{id}', name: 'app_forum_topic')]
+    public function topicsBySubCategory(ForumTopicRepository $topicRepository, ForumSubCategory $subCategory): Response
     {
         $topics = $topicRepository->findBySubCategory($subCategory); // récupère tous les topics de la sous-catégorie
+    
+        return $this->render('forum/listTopicsBySubCategory.html.twig', [
+            'topics' => $topics,
+            'subCategory' => $subCategory
+        ]);
+    }
+
+    #[Route('/forum/topic/{id}/new', name: 'new_topic')]
+    public function new_edit_topic(ForumTopic $topic = null, ForumPost $newPost = null, ForumSubCategory $subCategory, ForumTopicRepository $topicRepository, ForumPostRepository $postRepository, Request $request, EntityManagerInterface $entityManager) {
 
         $currentDate = new \DateTime();// récupère la date actuelle
 
         $user = $this->getUser(); // récupère le user en session
-
-        $newTopic = new ForumTopic; // création d'une nouvelle entité Topic
-        $topicForm = $this->createForm(ForumTopicType::class); // création d'un forumlaire sur la base de TopicType
+        if(!$topic) {
+            $topic = new ForumTopic; // création d'une nouvelle entité Topic
+        }
+        
+        $topicForm = $this->createForm(ForumTopicType::class); // création d'un formulaire sur la base de TopicType
         $topicForm->handleRequest($request);
- 
+
         if ($topicForm->isSubmitted() && $topicForm->isValid()) { // si le formulaire est soumis et valide
             // dd($topicForm->get('forumPost')->getData());
-            $newTopic = $topicForm->getData(); // on récupère les données du formulaire pour le titre du sujet qu'on stocke dans la variable $newTopic
+            $topic = $topicForm->getData(); // on récupère les données du formulaire pour le titre du sujet qu'on stocke dans la variable $newTopic
 
-            $newTopic->setCreationDate($currentDate); // on établit la date de création avec$currentDate
-            $newTopic->setEditDate($currentDate); // lors de la création creationDate = editDate
-            $newTopic->setForumSubcategory($subCategory); // établit le lien entre le topic et la sous catégorie actuelle
-            $newTopic->setUser($user); // définit l'auteur du nouveau topic
+            $topic->setCreationDate($currentDate); // on établit la date de création avec$currentDate
+            $topic->setEditDate($currentDate); // lors de la création creationDate = editDate
+            $topic->setForumSubcategory($subCategory); // établit le lien entre le topic et la sous catégorie actuelle
+            $topic->setUser($user); // définit l'auteur du nouveau topic
        
 
             $newPost = new ForumPost(); // on récupère les données du formulaire pour le contenu du message qu'on stocke dans la variable $newPost
@@ -63,26 +74,29 @@ class ForumController extends AbstractController
             $newPost->setTextContent($text);
             $newPost->setCreationDate($currentDate);
             $newPost->setEditDate($currentDate);
-            $newPost->setForumTopic($newTopic);
+            $newPost->setForumTopic($topic);
             $newPost->setUser($user);
 
-            $newTopic->addForumPost($newPost);
-            $newPost->setForumTopic($newTopic);
+            $topic->addForumPost($newPost);
+            $newPost->setForumTopic($topic);
 
-            $entityManager->persist($newTopic); // on prépare la requête d'ajout à la BDD
+            $entityManager->persist($topic); // on prépare la requête d'ajout à la BDD
             $entityManager->persist($newPost);
             $entityManager->flush(); // on exécute la requête
 
             return $this->redirectToRoute('app_forum_topic', ['id' => $subCategory->getId()]);
         }
-        
 
-        return $this->render('forum/listTopicsBySubCategory.html.twig', [
-            'topics' => $topics,
+        return $this->render('forum/editTopic.html.twig', [
             'topicForm' => $topicForm,
+            'subCategory' => $subCategory->getId(),
         ]);
     }
 
+    #[Route('/forum/topic/{id}/edit', name: 'edit_topic')]
+    public function editTopic() {
+        
+    }
 
     #[Route('/forum/posts/{id}', name: 'app_forum_posts')]
     public function postsByTopic(ForumTopic $topic, ForumPostRepository $postRepository): Response
@@ -91,6 +105,7 @@ class ForumController extends AbstractController
 
         return $this->render('forum/listPostsByTopic.html.twig', [
             'posts' => $posts,
+            'topic' => $topic
         ]);
     }
 

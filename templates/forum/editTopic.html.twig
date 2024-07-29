@@ -1,1 +1,15 @@
 {% extends 'base.html.twig' %}
+
+
+{% block title %}Modifier le sujet{% endblock %}
+
+{% block body %}
+
+
+
+{{ form_start(topicForm) }}
+    {{form_row(topicForm.topicTitle)}}
+{{ form_end(topicForm) }}
+
+
+{% endblock %}

@@ -4,17 +4,14 @@
 
 {% block body %}
 
-    <h1>Topics By SubCategory</h1>
+    <h1>{{ subCategory.subCategoryName }}</h1>
 
     {% for topic in topics %}
         <a href="{{ path('app_forum_posts', {'id': topic.id}) }}">{{ topic.topicTitle }}</a>
     {% endfor %}
 
-    {% if app.user %}
-    {{ form_start(topicForm) }}
-        {{form_row(topicForm.topicTitle)}}
-    {{ form_end(topicForm) }}
-
+    {% if app.user %} <!--Si un utilisateur est connecté, il peut ajouter un sujet à la sous-catégorie du forum-->
+        <a href="{{ path('new_topic', {id: subCategory.id}) }}">Créer un sujet</a>
     {% endif %}
 
     

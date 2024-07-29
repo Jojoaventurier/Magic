@@ -4,14 +4,31 @@
 
 {% block body %}
 
-
-<h1>Posts by topic</h1>
+<h1>{{ topic.topicTitle }}</h1>
+{% if app.user is same as topic.user %}
+    <a href="{{ path('edit_topic', {id: topic.id}) }}">Modifier</a>
+    <a>Supprimer</a>
+{% endif %}
 
 {% for post in posts %}
-    {{ post.user.userName }}
-    {{ post.creationDate|date('d.m.Y H:i') }}
-    {{ post.editDate|date('d.m.Y H:i') }}
-    {{ post.textContent }}
+
+    <p>
+        Message posté par {{ post.user.userName }} le 
+        {% if post.creationDate is same as post.editDate %}
+            {{ post.creationDate|date('d.m.Y H:i') }}
+            {% else %}
+            {{ post.editDate|date('d.m.Y H:i') }}
+        {% endif %}
+    </p>
+    <p>
+        {{ post.textContent }}
+    </p>
+
+    {% if app.user is same as post.user %}
+        <a>Modifier</a>
+        <a>Supprimer</a>
+    {% endif %}
+
 {% endfor %}
 
 
