@@ -47,26 +47,30 @@ class ForumController extends AbstractController
         $newTopic = new ForumTopic; // création d'une nouvelle entité Topic
         $topicForm = $this->createForm(ForumTopicType::class); // création d'un forumlaire sur la base de TopicType
         $topicForm->handleRequest($request);
-
+ 
         if ($topicForm->isSubmitted() && $topicForm->isValid()) { // si le formulaire est soumis et valide
-
+            // dd($topicForm->get('forumPost')->getData());
             $newTopic = $topicForm->getData(); // on récupère les données du formulaire pour le titre du sujet qu'on stocke dans la variable $newTopic
+
             $newTopic->setCreationDate($currentDate); // on établit la date de création avec$currentDate
             $newTopic->setEditDate($currentDate); // lors de la création creationDate = editDate
             $newTopic->setForumSubcategory($subCategory); // établit le lien entre le topic et la sous catégorie actuelle
             $newTopic->setUser($user); // définit l'auteur du nouveau topic
-            
-            // $newPost = new ForumPost(); // on récupère les données du formulaire pour le contenu du message qu'on stocke dans la variable $newPost
-            // $newPost->setCreationDate($currentDate);
-            // $newPost->setEditDate($currentDate);
-            // $newPost->setForumTopic($newTopic);
-            // $newPost->setUser($user);
+       
 
-            // $newPost->setForumTopic($newTopic);
+            $newPost = new ForumPost(); // on récupère les données du formulaire pour le contenu du message qu'on stocke dans la variable $newPost
+            $text = $topicForm->get('forumPost')->get('textContent')->getData();
+            $newPost->setTextContent($text);
+            $newPost->setCreationDate($currentDate);
+            $newPost->setEditDate($currentDate);
+            $newPost->setForumTopic($newTopic);
+            $newPost->setUser($user);
 
+            $newTopic->addForumPost($newPost);
+            $newPost->setForumTopic($newTopic);
 
             $entityManager->persist($newTopic); // on prépare la requête d'ajout à la BDD
-            // $entityManager->persist($newPost);
+            $entityManager->persist($newPost);
             $entityManager->flush(); // on exécute la requête
 
             return $this->redirectToRoute('app_forum_topic', ['id' => $subCategory->getId()]);
