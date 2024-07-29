@@ -83,32 +83,6 @@ class ForumController extends AbstractController
         ]);
     }
 
-    // #[Route('/session/new', name: 'new_session')]
-    // #[Route('/session/{id}/edit', name: 'edit_session')]
-    // public function new_edit(Session $session = null, Request $request, EntityManagerInterface $entityManager): Response
-    // {
-    //     if (!$session) { // si pas de session on récupère une session
-    //         $session = new Session();
-    //     }
-    //     $form = $this->createForm(SessionType::class, $session); // création du formulaire qu'on stocke dans la variable $form
-    //     $form->handleRequest($request);
-    //     if ($form->isSubmitted() && $form->isValid()) { // si le formulaire est soumis et validé
-
-    //         $session = $form->getData(); // on récupère les données du formulaire qu'on stocke dans une variable $session
-    //         $entityManager->persist($session); // on prépare la requête d'ajout à la BDD
-    //         $entityManager->flush(); // on exécute la requête
-
-    //         return $this->redirectToRoute('edit_session', ['id' =>$session->getId()]);
-    //     }
-
-    //     return $this->render('session/new.html.twig', [ // vue retournée pour l'affichage
-    //         'formAddSession' => $form,
-    //         'edit' => $session->getId(), // on récupère l'id de la session à éditer
-    //         'session' => $session,
-    //     ]);
-
-
-
 
     #[Route('/forum/posts/{id}', name: 'app_forum_posts')]
     public function postsByTopic(ForumTopic $topic, ForumPostRepository $postRepository): Response
