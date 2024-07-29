@@ -26,7 +26,10 @@ class ForumTopicType extends AbstractType
                     'style' => 'width: 700px; font-size: 0.8rem' // personnalisation de l'affichage de la case de texte à remplir par l'utilisateur
                 ],
                 'label' => 'Titre du sujet :'])
-            ->add('textContent', ForumPostType::class)
+            ->add('forumPost', ForumPostType::class, 
+            [
+                'mapped' => false
+            ])
             ->add('Valider', SubmitType::class);
     }
 
