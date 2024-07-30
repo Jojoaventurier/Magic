@@ -21,10 +21,7 @@ class DeckBuilderController extends AbstractController
     public function cardDetail(): Response
     {
 
-        
-
-
-        return $this->render('deck_builder/index.html.twig', [
+        return $this->render('deck_builder/cardDetail.html.twig', [
             'controller_name' => 'DeckBuilderController',
         ]);
     }

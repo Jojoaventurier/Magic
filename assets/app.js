@@ -65,7 +65,7 @@ function cardSearch() {
 
                     // Crée un élément <a> pour envelopper l'image
                     let link = document.createElement("a"); // on créé un élément lien
-                    link.href = `${card.scryfall_uri}`; // on attribue le lien vers la carte au href du lien créé
+                    link.href = `/card/${card.id}`; // on attribue le lien vers la carte au href du lien créé pour renvoyer vers le détail de la carte
                     link.appendChild(displayCard);//  l'image est ajoutée au lien
                 
                     // console.log(displayCard.src)
