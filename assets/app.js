@@ -13,7 +13,7 @@ console.log('hello')
 
 
     /**
-     * Récupérer une carte de l'API scryfall.com
+     * Récupérer une liste de cartes de l'API scryfall.com
      */
     console.log('world')
 
@@ -24,13 +24,6 @@ const board = document.querySelector(".board")
 let button = document.getElementById("researchStart")
 
 button.addEventListener('click', cardSearch);
-
-
-
-
-
-
-
 
 
 function cardSearch() {
