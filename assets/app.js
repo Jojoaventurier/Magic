@@ -8,28 +8,54 @@ import './bootstrap.js';
 import './styles/app.css';
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
-console.log('hello')
 
+const detailBoard = document.querySelector("#detailBoard");
 
+let card = document.getElementById("cardInput");
 
-    /**
-     * Récupérer une liste de cartes de l'API scryfall.com
-     */
-    console.log('world')
+if(card !== null) {
 
-const search = document.querySelector(".search")
-const selectCard = document.querySelector(".card")
-const board = document.querySelector(".board")
+    let cardId = card.value;
 
-let button = document.getElementById("researchStart")
+    // console.log(cardId)
 
-button.addEventListener('click', cardSearch);
+    fetch('https://api.scryfall.com/cards/'+cardId+'')
+                
+                // Convertit la réponse en format JSON
+                .then((response) => response.json())
+                
+                // Une fois que les données JSON sont disponibles
+                .then((data) => {
+                    // console.log(data.name);
+                    
+                    let attributeName = document.createElement("div"); // ajoute les résultats à la barre Select
+                    let attributeOracleText = document.createElement("div");
+                    let attributeManaCost = document.createElement("div");
+                    let attributeCMC = document.createElement("div");
+                    let displayCard = new Image(287.5,402.5); // affiche les cartes reçues en résultat de la recherche 
+                        displayCard.src = data.image_uris.normal;
 
+                    attributeName.innerHTML = data.name;
+                    attributeOracleText.innerHTML = data.oracle_text
+                    attributeManaCost.innerHTML = data.mana_cost
+                    attributeCMC.innerHTML = data.cmc
+
+                    detailBoard.appendChild(attributeName);
+                    detailBoard.appendChild(displayCard);
+                    detailBoard.appendChild(attributeOracleText);
+                    detailBoard.appendChild(attributeManaCost);
+                    detailBoard.appendChild(attributeCMC);
+
+                });
+}
+
+const search = document.querySelector(".search");
+const selectCard = document.querySelector(".card");
+const board = document.querySelector(".board");
+const researchStartButton = document.getElementById("researchStart");
 
 function cardSearch() {
 
-    button.addEventListener("click", () => {
-        
         let value = search.value
         // console.log(value)
 
@@ -42,8 +68,6 @@ function cardSearch() {
             
             // Une fois que les données JSON sont disponibles
             .then((recup) => {
-            
-                // console.log(recup["data"]);
 
                 // enlève les cartes affichées de la précédente recherche
                 const myNode = document.getElementById("cardBoard");
@@ -71,14 +95,11 @@ function cardSearch() {
                     // console.log(displayCard.src)
                     selectCard.appendChild(option)
                     board.appendChild(link) // on ajoute le lien qui ajoute l'image
-
-
             })
         })
-    }) 
-}
+    }
 
-//TODO cdn jquery -> warp
+researchStartButton.addEventListener('click', cardSearch);
 
 
 
