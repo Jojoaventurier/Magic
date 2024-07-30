@@ -20,7 +20,7 @@ class ForumPost
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $creationDate = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $editDate = null;
 
     #[ORM\ManyToOne(inversedBy: 'forumPosts')]

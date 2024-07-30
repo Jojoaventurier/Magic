@@ -35,7 +35,7 @@ class ForumController extends AbstractController
         ]);
     }
 
-    #[Route('/forum/topics/{id}', name: 'app_forum_topic')]
+    #[Route('/forum/topics/{id}', name: 'app_forum_topics')]
     public function topicsBySubCategory(ForumTopicRepository $topicRepository, ForumSubCategory $subCategory): Response
     {
         $topics = $topicRepository->findBySubCategory($subCategory); // récupère tous les topics de la sous-catégorie
@@ -64,7 +64,6 @@ class ForumController extends AbstractController
             $topic = $topicForm->getData(); // on récupère les données du formulaire pour le titre du sujet qu'on stocke dans la variable $newTopic
 
             $topic->setCreationDate($currentDate); // on établit la date de création avec$currentDate
-            $topic->setEditDate($currentDate); // lors de la création creationDate = editDate
             $topic->setForumSubcategory($subCategory); // établit le lien entre le topic et la sous catégorie actuelle
             $topic->setUser($user); // définit l'auteur du nouveau topic
        
@@ -72,7 +71,6 @@ class ForumController extends AbstractController
             $text = $topicForm->get('forumPost')->get('textContent')->getData(); // on récupère les données du formulaire pour le contenu du message qu'on stocke dans la variable $text
             $newPost->setTextContent($text);
             $newPost->setCreationDate($currentDate);
-            $newPost->setEditDate($currentDate);
             $newPost->setForumTopic($topic);
             $newPost->setUser($user);
 
@@ -83,7 +81,7 @@ class ForumController extends AbstractController
             $entityManager->persist($newPost);
             $entityManager->flush(); // on exécute la requête
 
-            return $this->redirectToRoute('app_forum_topic', ['id' => $subCategory->getId()]);
+            return $this->redirectToRoute('app_forum_topics', ['id' => $subCategory->getId()]);
         }
 
         return $this->render('forum/newTopic.html.twig', [
@@ -109,7 +107,7 @@ class ForumController extends AbstractController
             $entityManager->persist($topic);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_forum_topic', ['id' => $topic->getForumSubCategory()->getId()] );
+            return $this->redirectToRoute('app_forum_topics', ['id' => $topic->getForumSubCategory()->getId()] );
         }
 
         return $this->render('forum/editTopic.html.twig', [
@@ -135,8 +133,8 @@ class ForumController extends AbstractController
     }
 
 
-    #[Route('/forum/post/{id}/new', name: 'new_post')] // id category
-    #[Route('/forum/post/{topic}/edit/{post}', name: 'edit_post')] // id post
+    #[Route('/forum/post/{id}/new', name: 'new_post')] // id subcategory
+    #[Route('/forum/post/{topic}/edit/{post}', name: 'edit_post')] 
     public function new_edit(ForumPost $post = null, ForumTopic $topic, ForumPostRepository $postRepository, ForumTopicRepository $topicRepository , EntityManagerinterface $entityManager, Request $request): Response
     {
         if (!$post) {
@@ -154,14 +152,15 @@ class ForumController extends AbstractController
             
             $post = $postForm->getData();
 
-            if($post->getCreationDate() === null ) {
+            if($post->getCreationDate()) {
 
-                $post->setCreationDate($currentDate);
-                $post->setForumTopic($topic);
-                $post->setUser($user);
-            } //TODO problème ici ? message affiche toujours : modifié le 
+                $post->setEditDate($currentDate);
+
+            } 
             
-            $post->setEditDate($currentDate);
+            $post->setCreationDate($currentDate);
+            $post->setForumTopic($topic);
+            $post->setUser($user);
             
             $entityManager->persist($post);
             $entityManager->flush();
@@ -176,10 +175,21 @@ class ForumController extends AbstractController
         ]);
     }
 
+    #[Route('/post/{id}/delete', name: 'delete_post')]
+    public function delete(ForumPost $post, EntityManagerInterface $entityManager): Response
+    {
+        $topic = $post->getForumTopic();
+
+        $entityManager->remove($post); // préparation de la requête
+        $entityManager->flush(); // execution de la requête
+
+        return $this->redirectToRoute('app_forum_posts', ['id' => $topic->getId()]);
+    }
+
 
 
 //TODO (enlever la partie post du formulaire editTopic)
-//TODO Delete
+
 //TODO verrouillage / ban
 //TODO anonymisation des posts du forum si suppression de compte
 

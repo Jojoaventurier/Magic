@@ -9,7 +9,7 @@
     <a href="{{ path('edit_topic', {id: topic.id}) }}">Modifier</a>
     <a>Supprimer</a>
 {% endif %}
-{% if topic.creationDate is same as topic.editDate %}
+{% if topic.editDate is same as null %}
     <p>posté par {{ topic.user.userName }} le {{ topic.creationDate|date('d.m.Y H:i') }} </p>
     {% else %}
     <p>posté par {{ topic.user.userName }} le {{ topic.creationDate|date('d.m.Y H:i') }} et modifié le {{ topic.editDate|date('d.m.Y H:i') }} </p>
@@ -19,7 +19,7 @@
 {% for post in posts %}
     <p>
         Par {{ post.user.userName }} <br>
-        {% if post.creationDate is same as post.editDate %}
+        {% if post.editDate is same as null %}
             posté le {{ post.creationDate|date('d.m.Y H:i') }} ,
             {% else %}
             modifié le {{ post.editDate|date('d.m.Y H:i') }}
@@ -31,7 +31,7 @@
 
     {% if app.user is same as post.user %}
         <a href="{{ path('edit_post', {'topic': topic.id, 'post': post.id}) }}">Modifier</a>
-        <a>Supprimer</a>
+        <a href="{{ path('delete_post', {id : post.id}) }}">Supprimer</a>
     {% endif %}
 {% endfor %}
 

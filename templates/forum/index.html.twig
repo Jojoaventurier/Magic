@@ -17,7 +17,7 @@
 
         {% for subCategory in category.subCategories %}
 
-        <a href="{{ path('app_forum_topic', {id: subCategory.id}) }}">{{ subCategory.subCategoryName }}</a>
+        <a href="{{ path('app_forum_topics', {id: subCategory.id}) }}">{{ subCategory.subCategoryName }}</a>
 
         {% endfor %} <br>
       
