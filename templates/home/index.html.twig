@@ -40,7 +40,7 @@
                     .then(response => response.json())
                     // Une fois que les données JSON sont disponibles
                     .then(data => {
-                        console.log(data); // Vérifie le format des données
+                     //   console.log(data); Vérifie le format des données
 
                         if (data.data && Array.isArray(data.data)) { // on vérifiqe qu'on récupère bien des données de l'api, et quelle soit sous forme de tableau
 
@@ -50,7 +50,7 @@
                                         myNode.removeChild(myNode.lastChild); // on enlève le dernier enfant de cardBoard jusqu'à ce qu'il n'y en ait plus
                                     }
                                 }
-
+                                
                             cardSelect.innerHTML = ''; // Supprime les entrées précédentes
 
                             data.data.forEach(card => {
