@@ -3,13 +3,22 @@
 {% block title %}Gestion des decks{% endblock %}
 
 {% block body %}
-<h1>Bienvenue sur lade gestion des decks</h1>
+<h1>Bienvenue sur la page de gestion de vos decks</h1>
 
 <main>
 
-    <a href="{{ path('create_deck') }}">créer un deck</a>
+    {# <a href="{{ path('create_deck') }}">créer un deck</a> #}
 
-    <div id="cardBoard" class="board"></div>
+    {{ form_errors(form) }}
+
+    {{ form_start(form) }}
+
+        {{ form_row(form.deckName) }}
+        {{ form_row(form.status) }}
+
+    {{ form_end(form) }}
+
+
 </main>
 
 {% endblock %}
