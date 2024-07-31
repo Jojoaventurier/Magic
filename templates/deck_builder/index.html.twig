@@ -1,3 +1,15 @@
+{% extends 'base.html.twig' %}
 
+{% block title %}Gestion des decks{% endblock %}
 
- 
+{% block body %}
+<h1>Bienvenue sur lade gestion des decks</h1>
+
+<main>
+
+    <a href="{{ path('create_deck') }}">créer un deck</a>
+
+    <div id="cardBoard" class="board"></div>
+</main>
+
+{% endblock %}

@@ -9,13 +9,25 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DeckBuilderController extends AbstractController
 {
-    #[Route('/deck/builder', name: 'app_deck_builder')]
+    #[Route('/deck/manager', name: 'app_deck_manager')]
     public function index(): Response
     {
         return $this->render('deck_builder/index.html.twig', [
             'controller_name' => 'DeckBuilderController',
         ]);
     }
+
+    #[Route('/deck/new', name: 'create_deck')]
+    public function createDeck(): Response
+    {
+
+
+        return $this->render('deck_builder/deckBuilder.html.twig', [
+            'controller_name' => 'DeckBuilderController',
+        ]);
+    }
+
+
 
     // #[Route("/card/{id}", name="card_detail")}
     // public function detail($id): Response
