@@ -9,23 +9,87 @@
     <a href="{{ path('app_articleForm')}}">Rédiger un article</a>
 {% endif %}
 
-
 <main>
     <h1>Récupérer des cartes</h1>
 
     <input type="text" class="search" name="search" id="searchId" placeholder="Chercher une carte..">
     <select class="card" name="cardName" id="cardId"></select>
-    <button  type="button" id="researchStart">Rechercher</button>
+    <button type="button" id="researchStart">Rechercher</button>
 
-    <div id="cardBoard" class ="board"></div>
-
+    <div id="cardBoard" class="board"></div>
 </main>
 
-
 {% block javascripts %}
-        {% block importmap %}{{ importmap('app') }}{% endblock %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchId');
+            const cardSelect = document.getElementById('cardId');
+            const researchButton = document.getElementById('researchStart');
+            const cardBoard = document.getElementById('cardBoard');
+
+            researchButton.addEventListener('click', function() {
+                const query = searchInput.value;
+                fetch(`https://api.scryfall.com/cards/search?q=name:${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data); // Vérifie le format des données
+
+                        if (data.data && Array.isArray(data.data)) {
+
+                            const myNode = document.getElementById("cardBoard");
+                                if (myNode) {
+                                    while (myNode.firstChild) {
+                                        myNode.removeChild(myNode.lastChild);
+                                    }
+                                }
+                                
+                            cardSelect.innerHTML = ''; // Clear previous options
+                            data.data.forEach(card => {
+                                const option = document.createElement('option');
+                                option.value = card.id;
+                                option.textContent = card.name;
+                                cardSelect.appendChild(option);
+
+                                if (card.image_uris && card.image_uris.normal) {
+                                    let displayCard = new Image(250,350); // affiche les cartes reçues en résultat de la recherche 
+                                    displayCard.src = `${card.image_uris.normal}`;
+                                    displayCard.id = `${card.id}` // attribution de l'id scryfall de la carte à l'id de l'élément html image généré
+                                    displayCard.classList.add('singleCard'); // on ajoute une classe singleCard si manipulation en css nécessaire
+            
+                                    // Crée un élément <a> pour envelopper l'image
+                                    var cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}";
+                                    let link = document.createElement("a"); // on créé un élément lien
+                                    let url = cardDetailUrl.replace('REPLACE_CARD_ID', card.id);
+                                    link.href = url; // on attribue le lien vers la carte au href du lien créé pour renvoyer vers le détail de la carte
+
+                                    link.appendChild(displayCard);//  l'image est ajoutée au lien
+                                    cardBoard.appendChild(link) // on ajoute le lien qui ajoute l'image
+                                }
+                            });
+                        } else {
+                            console.error('Erreur: la réponse de l\'API ne contient pas un tableau de cartes dans "data"');
+                        }
+                    })
+                    .catch(error => console.error('Erreur:', error));
+            });
+
+            cardSelect.addEventListener('change', function() {
+                const cardId = cardSelect.value;
+                fetch(`/api/card/${cardId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        cardBoard.innerHTML = `
+                            <h2>${data.name}</h2>
+                            <p>${data.description}</p>
+                        `;
+                    })
+                    .catch(error => console.error('Erreur:', error));
+            });
+        });
+    </script>
+{% endblock %}
 {% endblock %}
 
-{% endblock %}
+ 
 
 
