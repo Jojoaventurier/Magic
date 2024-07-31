@@ -5,14 +5,16 @@
 {% block body %}
 <h1>Bienvenue sur la page de gestion de vos decks</h1>
 
-<main>
 
     {% for deck in userDecks %}
-        {{ deck.deckName }}
-        {{ deck.creationDate|date('d.m.Y H:i')}}
+        <a href="{{ path('app_deck_builder', {'id': deck.id}) }}"> 
+            {{ deck.deckName }} créé le
+            {{ deck.creationDate|date('d.m.Y H:i')}}<br>
+        </a>
     {% endfor %}
 
 
+<h3>Créer un nouveau deck</h3>
     {{ form_errors(form) }}
 
     {{ form_start(form) }}
@@ -21,8 +23,5 @@
         {{ form_row(form.status) }}
 
     {{ form_end(form) }}
-
-
-</main>
 
 {% endblock %}

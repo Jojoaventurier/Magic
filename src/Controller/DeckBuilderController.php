@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Deck;
+use App\Entity\User;
 use App\Form\DeckFormType;
 use App\Repository\DeckRepository;
 use App\Repository\UserRepository;
@@ -14,14 +15,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DeckBuilderController extends AbstractController
 {
-    #[Route('/{user}/deck/manager', name: 'app_deck_manager')]
-    public function index(Deck $deck = null, EntityManagerInterface $entityManager, Request $request, DeckRepository $deckRepository): Response
+    #[Route('/{id}/deck/manager', name: 'app_deck_manager')]
+    public function index(Deck $deck = null, EntityManagerInterface $entityManager, Request $request, DeckRepository $deckRepository, User $user): Response
     {
         $currentDate = new \DateTime();// récupère la date actuelle
         $user = $this->getUser(); // récupère le user en session
 
-        $userDecks = $deckRepository->findBy(['id' => $user->getId() ]);
-        
+        $userDecks = $deckRepository->findBy(['user' => $user ]);
+
         if(!$deck) {
             $deck = new Deck;
         }
