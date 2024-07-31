@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Deck;
 use App\Form\DeckFormType;
 use App\Repository\DeckRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,12 +14,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DeckBuilderController extends AbstractController
 {
-    #[Route('/deck/manager', name: 'app_deck_manager')]
-    public function index(Deck $deck = null, EntityManagerInterface $entityManager, Request $request): Response
+    #[Route('/{user}/deck/manager', name: 'app_deck_manager')]
+    public function index(Deck $deck = null, EntityManagerInterface $entityManager, Request $request, DeckRepository $deckRepository): Response
     {
         $currentDate = new \DateTime();// récupère la date actuelle
         $user = $this->getUser(); // récupère le user en session
 
+        $userDecks = $deckRepository->findBy(['id' => $user->getId() ]);
+        
         if(!$deck) {
             $deck = new Deck;
         }
@@ -42,6 +45,7 @@ class DeckBuilderController extends AbstractController
 
         return $this->render('deck_builder/index.html.twig', [
             'form' => $form,
+            'userDecks' => $userDecks
         ]);
 }
 

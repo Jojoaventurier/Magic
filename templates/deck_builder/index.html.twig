@@ -7,7 +7,11 @@
 
 <main>
 
-    {# <a href="{{ path('create_deck') }}">créer un deck</a> #}
+    {% for deck in userDecks %}
+        {{ deck.deckName }}
+        {{ deck.creationDate|date('d.m.Y H:i')}}
+    {% endfor %}
+
 
     {{ form_errors(form) }}
 
