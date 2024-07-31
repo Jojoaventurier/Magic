@@ -38,6 +38,8 @@ class DeckBuilderController extends AbstractController
     public function cardDetail(Request $request): Response
     {
         $cardId = $request->get('cardId');
+
+        // $cardId = $
         // dd($request->get('cardId'));
         return $this->render('deck_builder/cardDetail.html.twig', [
             'cardId' => $cardId

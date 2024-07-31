@@ -21,8 +21,8 @@
 
         {% block body %}{% endblock %}
         
-        {% block javascripts %}
-        {# {% block importmap %}{% endblock %} #}
-        {% endblock %}
+        {# {% block javascripts %}
+        {% block importmap %}{% endblock %} provoque réoétition du script
+        {% endblock %} #}
     </body>
 </html>

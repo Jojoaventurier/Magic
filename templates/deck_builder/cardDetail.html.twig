@@ -1,17 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block javascripts %}
-        {% block importmap %}{{ importmap('app') }}{% endblock %}
-{% endblock %}
-
 {% block title %}Détail d'une carte{% endblock %}
 
 {% block body %}
 
-<div id="cardInput" style="display: none;">{{ cardId }}</div>
-
+<input id="cardInput" type=""hidden" value="{{ cardId }}">
 
 <div id="detailBoard" class="detailBoard">
+    Détails de la carte {{ cardId }}
 </div>
+
+
+
+{% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+{% endblock %}
 
 {% endblock %}

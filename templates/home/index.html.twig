@@ -1,9 +1,5 @@
 {% extends 'base.html.twig' %}
 
-{% block javascripts %}
-        {% block importmap %}{{ importmap('app') }}{% endblock %}
-{% endblock %}
-
 {% block title %}Accueil Magic-Hub{% endblock %}
 
 {% block body %}
@@ -24,6 +20,11 @@
     <div id="cardBoard" class ="board"></div>
 
 </main>
+
+
+{% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+{% endblock %}
 
 {% endblock %}
 

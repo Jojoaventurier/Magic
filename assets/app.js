@@ -14,13 +14,13 @@ console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
         console.log('Page chargée et script exécuté!');
     
         const detailBoard = document.querySelector("#detailBoard");
-        let card = document.getElementById("cardInput");
+        let card = document.querySelector("#cardInput");
     
         console.log(card)
     
             if(card && detailBoard) {
     
-                let cardId = card.textContent;
+                let cardId = card.value;
     
                 console.log(cardId);
                 fetch('https://api.scryfall.com/cards/' + cardId)
@@ -110,8 +110,8 @@ function cardSearch() {
                         // Crée un élément <a> pour envelopper l'image
                         let link = document.createElement("a"); // on créé un élément lien
                         link.href = `/card/${card.id}`; // on attribue le lien vers la carte au href du lien créé pour renvoyer vers le détail de la carte
-                        link.appendChild(displayCard);//  l'image est ajoutée au lien
 
+                        link.appendChild(displayCard);//  l'image est ajoutée au lien
                         board.appendChild(link) // on ajoute le lien qui ajoute l'image
                     }
 
