@@ -55,7 +55,6 @@ const selectCard = document.querySelector("#cardId");
 const board = document.querySelector("#cardBoard");
 const researchStartButton = document.getElementById("researchStart");
 
-
 if (search && selectCard && board && researchStartButton) {
     researchStartButton.addEventListener('click', cardSearch);
 }
@@ -115,10 +114,6 @@ function cardSearch() {
         //     console.error('Erreur lors de la récupération des données de la carte :', error);
         // });
     }
-
-
-
-
 
 
 /**
