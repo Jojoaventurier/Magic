@@ -4,16 +4,10 @@
 
 {% block body %}
 
-<input id="cardInput" type=""hidden" value="{{ cardId }}">
+<input id="cardInput" type="hidden" value="{{ cardId }}">
 
 <div id="detailBoard" class="detailBoard">
     Détails de la carte {{ cardId }}
 </div>
-
-
-
-{% block javascripts %}
-        {% block importmap %}{{ importmap('app') }}{% endblock %}
-{% endblock %}
 
 {% endblock %}

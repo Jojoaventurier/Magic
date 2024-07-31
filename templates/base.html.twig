@@ -21,8 +21,9 @@
 
         {% block body %}{% endblock %}
         
-        {# {% block javascripts %}
-        {% block importmap %}{% endblock %} provoque réoétition du script
-        {% endblock %} #}
+        {% block javascripts %}
+        <script src="{{ asset('cardDetail.js') }}"></script>
+        {% block importmap %}{{ importmap('app') }}{% endblock %} 
+        {% endblock %}
     </body>
 </html>

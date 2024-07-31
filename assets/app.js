@@ -9,57 +9,6 @@ import './bootstrap.js';
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
 
-    document.addEventListener('DOMContentLoaded', function() {
-
-        console.log('Page chargée et script exécuté!');
-    
-        const detailBoard = document.querySelector("#detailBoard");
-        let card = document.querySelector("#cardInput");
-    
-        console.log(card)
-    
-            if(card && detailBoard) {
-    
-                let cardId = card.value;
-    
-                console.log(cardId);
-                fetch('https://api.scryfall.com/cards/' + cardId)
-                            
-                            // Convertit la réponse en format JSON
-                            .then((response) => response.json())
-                            
-                            // Une fois que les données JSON sont disponibles
-                            .then((data) => {
-                                // console.log(data.name);
-                                
-                                let attributeName = document.createElement("div"); // ajoute les résultats à la barre Select
-                                let attributeOracleText = document.createElement("div");
-                                let attributeManaCost = document.createElement("div");
-                                let attributeCMC = document.createElement("div");
-                                let displayCard = new Image(287.5,402.5); // affiche les cartes reçues en résultat de la recherche 
-                                if (data.image_uris && data.image_uris.normal) {
-                                    displayCard.src = data.image_uris.normal;
-                                }
-    
-                                attributeName.innerHTML = data.name;
-                                attributeOracleText.innerHTML = data.oracle_text
-                                attributeManaCost.innerHTML = data.mana_cost
-                                attributeCMC.innerHTML = data.cmc
-    
-                                detailBoard.appendChild(attributeName);
-                                detailBoard.appendChild(displayCard);
-                                detailBoard.appendChild(attributeOracleText);
-                                detailBoard.appendChild(attributeManaCost);
-                                detailBoard.appendChild(attributeCMC);
-                            })
-                            // .catch((error) => {
-                            //     console.error('Erreur lors de la récupération des données de carte:', error);
-                            // })
-        }
-    });
-
-
-
 
 const search = document.querySelector("#searchId");
 const selectCard = document.querySelector("#cardId");
@@ -108,9 +57,11 @@ function cardSearch() {
                         displayCard.classList.add('singleCard'); // on ajoute une classe singleCard si manipulation en css nécessaire
 
                         // Crée un élément <a> pour envelopper l'image
+                        var cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}";
                         let link = document.createElement("a"); // on créé un élément lien
-                        link.href = `/card/${card.id}`; // on attribue le lien vers la carte au href du lien créé pour renvoyer vers le détail de la carte
-
+                        let url = cardDetailUrl.replace('REPLACE_CARD_ID', card.id);
+                        link.href = url; // on attribue le lien vers la carte au href du lien créé pour renvoyer vers le détail de la carte
+                        // console.log(url)
                         link.appendChild(displayCard);//  l'image est ajoutée au lien
                         board.appendChild(link) // on ajoute le lien qui ajoute l'image
                     }
