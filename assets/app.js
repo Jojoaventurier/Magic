@@ -13,13 +13,12 @@ const detailBoard = document.querySelector("#detailBoard");
 
 let card = document.getElementById("cardInput");
 
-if(card !== null) {
+if(card && detailBoard) {
 
     let cardId = card.value;
 
     // console.log(cardId)
-
-    fetch('https://api.scryfall.com/cards/'+cardId+'')
+    fetch('https://api.scryfall.com/cards/' + cardId)
                 
                 // Convertit la réponse en format JSON
                 .then((response) => response.json())
@@ -45,21 +44,27 @@ if(card !== null) {
                     detailBoard.appendChild(attributeOracleText);
                     detailBoard.appendChild(attributeManaCost);
                     detailBoard.appendChild(attributeCMC);
-
-                });
+                })
+            // .catch((error) => {
+            //     console.error('Erreur lors de la récupération des données de carte:', error);
+            // });
 }
 
-const search = document.querySelector(".search");
-const selectCard = document.querySelector(".card");
-const board = document.querySelector(".board");
+const search = document.querySelector("#searchId");
+const selectCard = document.querySelector("#cardId");
+const board = document.querySelector("#cardBoard");
 const researchStartButton = document.getElementById("researchStart");
+
+
+if (search && selectCard && board && researchStartButton) {
+    researchStartButton.addEventListener('click', cardSearch);
+}
 
 function cardSearch() {
 
-        let value = search.value
-        // console.log(value)
-
-        selectCard.innerText = null 
+    let value = search.value
+    selectCard.innerText = null 
+    if(value) {
 
         // fetch(`https://api.scryfall.com/cards/search?q=name:${value}+lang:fr`)
         fetch(`https://api.scryfall.com/cards/search?q=name:${value}`)
@@ -71,8 +76,10 @@ function cardSearch() {
 
                 // enlève les cartes affichées de la précédente recherche
                 const myNode = document.getElementById("cardBoard");
-                while (myNode.firstChild) {
-                    myNode.removeChild(myNode.lastChild);
+                if (myNode) {
+                    while (myNode.firstChild) {
+                        myNode.removeChild(myNode.lastChild);
+                    }
                 }
 
                 recup["data"].forEach((card) => {
@@ -81,6 +88,9 @@ function cardSearch() {
                     option.value = `${card.id}`
                     option.innerHTML = `${card.name}`
 
+
+                // Vérifier si card.image_uris et card.image_uris.normal existent
+                if (card.image_uris && card.image_uris.normal) {
                     let displayCard = new Image(250,350); // affiche les cartes reçues en résultat de la recherche 
                     displayCard.src = `${card.image_uris.normal}`;
                     // displayCard.value = `${card.id}`
@@ -93,13 +103,20 @@ function cardSearch() {
                     link.appendChild(displayCard);//  l'image est ajoutée au lien
                 
                     // console.log(displayCard.src)
-                    selectCard.appendChild(option)
                     board.appendChild(link) // on ajoute le lien qui ajoute l'image
-            })
-        })
+                }
+
+                    selectCard.appendChild(option)
+                    console.log('debug');
+            });
+        })}
+
+        // .catch((error) => {
+        //     console.error('Erreur lors de la récupération des données de la carte :', error);
+        // });
     }
 
-researchStartButton.addEventListener('click', cardSearch);
+
 
 
 
@@ -108,33 +125,36 @@ researchStartButton.addEventListener('click', cardSearch);
  *  Fonction de prévisualisation des articles rédigés pour le site
  */
 let btnPreview = document.querySelector('.open-preview');
-btnPreview.addEventListener('click', e => {
 
-    let title = document.querySelector('#article_form_articleTitle').value; // Get value of current form title input
-    let text = document.querySelector('#article_form_articleText').value; //Get value of current form text input
+if(btnPreview) {
 
-    document.querySelector('.title').textContent = title; //Set title as content of preview div
-    document.querySelector('.text').textContent = text; //Set text as content of preview div
-    
-    document.querySelector('.modal').classList.add('modal--open'); // Open modal
-});
+    btnPreview.addEventListener('click', e => {
 
-let btnClosePreview = document.querySelector('.close-preview');
-btnClosePreview.addEventListener('click', e=> {
-    document.querySelector('.modal').classList.remove('modal--open'); // Close modal   
-});
+        let title = document.querySelector('#article_form_articleTitle').value; // Get value of current form title input
+        let text = document.querySelector('#article_form_articleText').value; //Get value of current form text input
 
-let form = document.querySelector('article-form');
-form.addEventListener('submit', e => {
-    document.querySelector('.modal').classList.remove('modal--open'); // Hide modal
-    // console.log('form submitted', form);
-// Debugging only, prevent actual form submit, you might want to remove this later
-// e.preventDefault();
-// return false;
-});
+        document.querySelector('.title').textContent = title; //Set title as content of preview div
+        document.querySelector('.text').textContent = text; //Set text as content of preview div
+        
+        document.querySelector('.modal').classList.add('modal--open'); // Open modal
+    });
 
-    
+    let btnClosePreview = document.querySelector('.close-preview');
+    if (btnClosePreview) {
+        btnClosePreview.addEventListener('click', e => {
+            document.querySelector('.modal').classList.remove('modal--open');
+        });
+    }
 
+    let form = document.querySelector('#article-form');
+    if (form) {
+        form.addEventListener('submit', e => {
+            document.querySelector('.modal').classList.remove('modal--open');
+            // e.preventDefault(); // Si tu veux désactiver l'envoi du formulaire pour le débogage
+            // return false;
+        });
+    } 
+}
 
 
 

@@ -133,7 +133,7 @@ class ForumController extends AbstractController
     }
 
 
-    #[Route('/forum/post/{id}/new', name: 'new_post')] // id subcategory
+    #[Route('/forum/post/{topic}/new', name: 'new_post')] // id subcategory
     #[Route('/forum/post/{topic}/edit/{post}', name: 'edit_post')] 
     public function new_edit(ForumPost $post = null, ForumTopic $topic, ForumPostRepository $postRepository, ForumTopicRepository $topicRepository , EntityManagerinterface $entityManager, Request $request): Response
     {

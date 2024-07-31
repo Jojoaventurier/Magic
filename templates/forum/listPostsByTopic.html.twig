@@ -35,6 +35,6 @@
     {% endif %}
 {% endfor %}
 
-<a href="{{ path('new_post', {id: topic.id}) }}">Répondre</a>
+<a href="{{ path('new_post', {topic: topic.id}) }}">Répondre</a>
 
 {% endblock %}
