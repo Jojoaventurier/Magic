@@ -62,6 +62,20 @@ document.addEventListener('DOMContentLoaded', function() { // le script se décl
 
                             link.appendChild(displayCard);//  l'image est ajoutée au lien créé précédemment
                             cardBoard.appendChild(link) // on ajoute le lien à la div qui affiche les carte (le l'image est ajoutée au lien, qui lui même est ajouté à la div cardBoard)
+                        } else if(card.card_faces[0]['image_uris'] && card.card_faces[0]['image_uris']['normal']) { // récupère la premiere face de la carte double face sinon ne s'affichent
+                            
+                            let displayCard = new Image(250,350); 
+                            displayCard.src = `${card.card_faces[0]['image_uris']['normal']}`;
+                            displayCard.id = `${card.id}` 
+                            displayCard.classList.add('singleCard'); 
+    
+                            var cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}"; 
+                            let link = document.createElement("a"); 
+                            let url = cardDetailUrl.replace('REPLACE_CARD_ID', card.id);
+                            link.href = url; 
+
+                            link.appendChild(displayCard);//  l'image est ajoutée au lien créé précédemment
+                            cardBoard.appendChild(link)
                         }
                     });
                 } else {
