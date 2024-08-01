@@ -94,9 +94,9 @@ class DeckBuilderController extends AbstractController
             $card = new Card();
         }
         $cardId = $request->get('cardId');
-        $imageUrl = $request->get('imageUrl');
+        // $imageUrl = $request->get('imageUrl');
         $card->setScryfallId($cardId);
-        $card->setNormalImageUrl($imageUrl);
+        // $card->setNormalImageUrl($imageUrl);
 
         $card->addDeck($deck);
 
