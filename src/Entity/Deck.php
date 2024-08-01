@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\DeckRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -39,6 +41,17 @@ class Deck
 
     #[ORM\Column(nullable: true)]
     private ?bool $isLegal = null;
+
+    /**
+     * @var Collection<int, Card>
+     */
+    #[ORM\ManyToMany(targetEntity: Card::class, inversedBy: 'decks')]
+    private Collection $cards;
+
+    public function __construct()
+    {
+        $this->cards = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -137,6 +150,30 @@ class Deck
     public function setLegal(bool $isLegal): static
     {
         $this->isLegal = $isLegal;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Card>
+     */
+    public function getCards(): Collection
+    {
+        return $this->cards;
+    }
+
+    public function addCard(Card $card): static
+    {
+        if (!$this->cards->contains($card)) {
+            $this->cards->add($card);
+        }
+
+        return $this;
+    }
+
+    public function removeCard(Card $card): static
+    {
+        $this->cards->removeElement($card);
 
         return $this;
     }

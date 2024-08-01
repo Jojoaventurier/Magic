@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Card;
 use App\Entity\Deck;
 use App\Entity\User;
 use App\Form\DeckFormType;
+use App\Repository\CardRepository;
 use App\Repository\DeckRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -63,7 +65,6 @@ class DeckBuilderController extends AbstractController
  
     
     #[Route('/search', name: 'app_search')]
-
     public function advancedSearch(): Response
     {
        $user =  $this->getUser();
@@ -83,6 +84,30 @@ class DeckBuilderController extends AbstractController
             'cardId' => $cardId
         ]);
     }
+
+    #[Route('/user/{user}/deck/{deck}/card/{cardId}', name: 'save_card_deck')]
+    public function saveCard(Deck $deck, Card $card = null, EntityManagerInterface $entityManager, DeckRepository $deckRepository, CardRepository $cardRepository, Request $request): Response 
+    {
+        $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
+
+        if(!$card) {
+            $card = new Card();
+        }
+        $cardId = $request->get('cardId');
+        $card->setScryfallId($cardId);
+
+        $card->addDeck($deck);
+
+        $entityManager->persist($card);
+        $entityManager->persist($deck); 
+        $entityManager->flush();
+
+         
+        return $this->render('decks/deckBuilder.html.twig', [
+            'deck' => $deck,
+        ]);
+    }
+
 
     // #[Route("/card/{id}", name="card_detail")}
     // public function detail($id): Response

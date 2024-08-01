@@ -19,16 +19,20 @@
 
 {% if deck.format.formatName is same as "Commander" %}
     Veuillez choisir un commandant pour le deck :
-
-{% endif %}
-<main>
-    <input type="text" class="search" name="search" id="searchId" placeholder="Chercher une carte...">
+    <input type="text" class="search" name="search" id="searchId" placeholder="Chercher un commandant">
     <select class="card" name="cardName" id="cardSelect"></select>
-    <button type="button" id="researchStart">Rechercher</button>
+    <button type="button" id="researchStart">Rechercher</button><br>
+    <a id="saveCommander" href="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'cardId': 'replace_card'}) }}" >Valider le commandant</a>
+    <!--Vérifier que le lien n'est cliquable qu'une fois un commandant sélectionné-->
+
 
     <div id="cardBoard" class="board">
         <img id="cardImage">
     </div>
+
+{% endif %}
+<main>
+
 </main>
 
 
@@ -44,11 +48,11 @@
         const cardSelect = document.getElementById('cardSelect'); 
         const researchButton = document.getElementById('researchStart'); 
         const cardBoard = document.getElementById('cardBoard'); 
+        const saveCommanderUrl = document.getElementById('saveCommander')
     
         researchButton.addEventListener('click', function() { 
             const query = searchInput.value; 
     
-          
             // fetch(`https://api.scryfall.com/cards/search?q=name:${query}+lang:fr`) 
             fetch(`https://api.scryfall.com/cards/search?q=is:commander+name:${query}`) //+type:legendary+type:creature
          
@@ -58,24 +62,22 @@
     
                     if (data.data && Array.isArray(data.data)) { 
     
-                        const myNode = document.getElementById("cardBoard"); 
-                            if (myNode) {
-                                while (myNode.firstChild) {
-                                    myNode.removeChild(myNode.lastChild); 
-                                }
-                            }
-                            
                         cardSelect.innerHTML = ''; // Supprime les entrées précédentes
     
                         data.data.forEach(card => {
                             
                             const option = document.createElement('option'); // rajoute une option au select pour chaque carte récupérée depuis l'API
-                            option.value = card.image_uris.normal;
+                            option.value = card.id;
                             option.textContent = card.name;
                             cardSelect.appendChild(option);
 
                             console.log(option.value)
-
+                            if(option.value) {
+                                
+                                let url = saveCommanderUrl.href
+                                url = url.replace('replace_card', option.value); 
+                                saveCommanderUrl.href = url
+                            }; 
                         });
                     } else {
                         console.error('Erreur: la réponse de l\'API ne contient pas un tableau de cartes dans "data"');
@@ -83,9 +85,21 @@
                 })
                 .catch(error => console.error('Erreur:', error));
         });
+        
+
+
+
+
+
     });
 
-    let image = document.getElementById('cardImage')
+
+
+
+
+</script>
+
+    {# let image = document.getElementById('cardImage')
     //image.src = card.image_uris.normal
     let select = document.getElementById('cardName')
     let option = select.option
@@ -109,13 +123,7 @@
             //displayCard.id = `${card.id}`
             displayCard.classList.add('singleCard'); 
         }
-    }
+    } #}
 
-
-
-
-
-    
-</script>
 {% endblock %}
 {% endblock %}
