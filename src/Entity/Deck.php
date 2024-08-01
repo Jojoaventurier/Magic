@@ -37,6 +37,9 @@ class Deck
     #[ORM\JoinColumn(nullable: false)]
     private ?Format $format = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isLegal = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -122,6 +125,18 @@ class Deck
     public function setFormat(?Format $format): static
     {
         $this->format = $format;
+
+        return $this;
+    }
+
+    public function isLegal(): ?bool
+    {
+        return $this->isLegal;
+    }
+
+    public function setLegal(bool $isLegal): static
+    {
+        $this->isLegal = $isLegal;
 
         return $this;
     }
