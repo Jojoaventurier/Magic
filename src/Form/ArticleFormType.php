@@ -27,6 +27,7 @@ class ArticleFormType extends AbstractType
                 'class' => Category::class,
                 'choice_label' => 'categoryName',
             ]);
+            //TODO : imageupload ?
             // ->add('Valider', SubmitType::class);
         
     }

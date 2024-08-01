@@ -7,6 +7,15 @@
 <h1>Deck Builder</h1>
 <h2>{{ deck.deckName }}</h2>
 <p>créé le {{ deck.creationDate|date('d.m.Y H:i') }}</p>
+<p>Format : {{ deck.format.formatName}} <a href="">(modifier)</a></p> <!--TODO -> lien modifier-->
+<p>
+    Description du deck :<br>
+    {% if deck.deckDescription is same as null %}
+        Aucune description pour le moment...
+        {% else %}
+        {{ deck.deckDescription }}
+    {% endif %}
+</p>
 <main>
 
 </main>

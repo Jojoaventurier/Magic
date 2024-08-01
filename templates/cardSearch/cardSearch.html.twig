@@ -4,12 +4,15 @@
 
 {% block body %}
 
-{% if is_granted("ROLE_USER") %}
-    <a href="{{ path('app_deck_manager', {'id': user.id})}}">MES DECKSSSSS</a>
+{% if app.user %}
+    <a href="{{ path('app_deck_manager', {'id': user.id})}}">MES DECKS</a>
 {% endif %}
 
 <main>
     <h1>Recherche de Cartes</h1>
+
+
+    
 
     <input type="text" class="search" name="search" id="searchId" placeholder="Chercher une carte...">
     <select class="card" name="cardName" id="cardSelect"></select>

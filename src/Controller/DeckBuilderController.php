@@ -60,8 +60,29 @@ class DeckBuilderController extends AbstractController
             'deck' => $deck,
         ]);
     }
+ 
+    
+    #[Route('/search', name: 'app_search')]
+
+    public function advancedSearch(): Response
+    {
+       $user =  $this->getUser();
+        
+        return $this->render('cardSearch/cardSearch.html.twig', [
+            'user' => $user
+        ]);
+    }
 
 
+    #[Route('/card/{cardId}', name: 'app_card_detail')]
+    public function cardDetail(Request $request): Response
+    {
+        $cardId = $request->get('cardId');
+        
+        return $this->render('cardSearch/cardDetail.html.twig', [
+            'cardId' => $cardId
+        ]);
+    }
 
     // #[Route("/card/{id}", name="card_detail")}
     // public function detail($id): Response
@@ -78,15 +99,4 @@ class DeckBuilderController extends AbstractController
     //         'card' => $card,
     //     ]);
     // }
-
-
-    #[Route('/card/{cardId}', name: 'app_card_detail')]
-    public function cardDetail(Request $request): Response
-    {
-        $cardId = $request->get('cardId');
-
-        return $this->render('cardSearch/cardDetail.html.twig', [
-            'cardId' => $cardId
-        ]);
-    }
 }

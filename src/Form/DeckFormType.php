@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Deck;
 use App\Entity\User;
+use App\Entity\Format;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -24,9 +25,10 @@ class DeckFormType extends AbstractType
                     'Privé' => false
                 ]
             ])
-            // ->add('format', ChoiceType::class, [  //TODO ??
-            //     'choice_label' => 'formatName'
-            // ])
+            ->add('format', EntityType::class, [
+                'class' => Format::class,
+                'choice_label' => 'formatName'
+            ])
             ->add('Valider', SubmitType::class);
     }
 

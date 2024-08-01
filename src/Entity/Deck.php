@@ -30,6 +30,13 @@ class Deck
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $deckDescription = null;
+
+    #[ORM\ManyToOne(inversedBy: 'decks')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Format $format = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -91,6 +98,30 @@ class Deck
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getDeckDescription(): ?string
+    {
+        return $this->deckDescription;
+    }
+
+    public function setDeckDescription(?string $deckDescription): static
+    {
+        $this->deckDescription = $deckDescription;
+
+        return $this;
+    }
+
+    public function getFormat(): ?Format
+    {
+        return $this->format;
+    }
+
+    public function setFormat(?Format $format): static
+    {
+        $this->format = $format;
 
         return $this;
     }
