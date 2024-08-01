@@ -1,17 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil Magic-Hub{% endblock %}
+{% block title %}Recherche de Cartes{% endblock %}
 
 {% block body %}
-<h1>Bienvenue sur la page d'accueil</h1>
 
 {% if is_granted("ROLE_USER") %}
-    <a href="{{ path('app_articleForm')}}">Rédiger un article</a>
     <a href="{{ path('app_deck_manager', {'id': user.id})}}">MES DECKSSSSS</a>
 {% endif %}
 
 <main>
-    <h2>Rechercher une carte</h2>
+    <h1>Recherche de Cartes</h1>
 
     <input type="text" class="search" name="search" id="searchId" placeholder="Chercher une carte...">
     <select class="card" name="cardName" id="cardSelect"></select>

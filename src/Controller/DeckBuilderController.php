@@ -44,7 +44,7 @@ class DeckBuilderController extends AbstractController
             return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
         }
 
-        return $this->render('deck_builder/index.html.twig', [
+        return $this->render('decks/decksManager.html.twig', [
             'form' => $form,
             'userDecks' => $userDecks
         ]);
@@ -56,7 +56,7 @@ class DeckBuilderController extends AbstractController
 
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
 
-        return $this->render('deck_builder/deckBuilder.html.twig', [
+        return $this->render('decks/deckBuilder.html.twig', [
             'deck' => $deck,
         ]);
     }
@@ -85,7 +85,7 @@ class DeckBuilderController extends AbstractController
     {
         $cardId = $request->get('cardId');
 
-        return $this->render('deck_builder/cardDetail.html.twig', [
+        return $this->render('cardSearch/cardDetail.html.twig', [
             'cardId' => $cardId
         ]);
     }
