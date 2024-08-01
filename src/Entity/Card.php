@@ -24,6 +24,9 @@ class Card
     #[ORM\ManyToMany(targetEntity: Deck::class, mappedBy: 'cards')]
     private Collection $decks;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $normalImageUrl = null;
+
     public function __construct()
     {
         $this->decks = new ArrayCollection();
@@ -69,6 +72,18 @@ class Card
         if ($this->decks->removeElement($deck)) {
             $deck->removeCard($this);
         }
+
+        return $this;
+    }
+
+    public function getNormalImageUrl(): ?string
+    {
+        return $this->normalImageUrl;
+    }
+
+    public function setNormalImageUrl(?string $normalImageUrl): static
+    {
+        $this->normalImageUrl = $normalImageUrl;
 
         return $this;
     }

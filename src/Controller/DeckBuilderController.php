@@ -85,7 +85,7 @@ class DeckBuilderController extends AbstractController
         ]);
     }
 
-    #[Route('/user/{user}/deck/{deck}/card/{cardId}', name: 'save_card_deck')]
+    #[Route('/user/{user}/deck/{deck}/card/{cardId}/{imageUrl}', name: 'save_card_deck')]
     public function saveCard(Deck $deck, Card $card = null, EntityManagerInterface $entityManager, DeckRepository $deckRepository, CardRepository $cardRepository, Request $request): Response 
     {
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
@@ -94,7 +94,9 @@ class DeckBuilderController extends AbstractController
             $card = new Card();
         }
         $cardId = $request->get('cardId');
+        $imageUrl = $request->get('imageUrl');
         $card->setScryfallId($cardId);
+        $card->setNormalImageUrl($imageUrl);
 
         $card->addDeck($deck);
 

@@ -22,7 +22,7 @@
     <input type="text" class="search" name="search" id="searchId" placeholder="Chercher un commandant">
     <select class="card" name="cardName" id="cardSelect"></select>
     <button type="button" id="researchStart">Rechercher</button><br>
-    <a id="saveCommander" href="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'cardId': 'replace_card'}) }}" >Valider le commandant</a>
+    <a id="saveCommander" href="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'cardId': 'replace_card', 'imageUrl': 'replace_url'}) }}" >Valider le commandant</a>
     <!--Vérifier que le lien n'est cliquable qu'une fois un commandant sélectionné-->
 
 
@@ -67,16 +67,21 @@
                         data.data.forEach(card => {
                             
                             const option = document.createElement('option'); // rajoute une option au select pour chaque carte récupérée depuis l'API
-                            option.value = card.id;
+
+                            option.value = [card.id, card.image_uris.normal];
+                            array = option.value
+                            console.log(option.value)
                             option.textContent = card.name;
                             cardSelect.appendChild(option);
 
-                            console.log(option.value)
+                            //console.log(option.value)
                             if(option.value) {
-                                
+                                console.log(array)
                                 let url = saveCommanderUrl.href
-                                url = url.replace('replace_card', option.value); 
+                                url = url.replace('replace_card', array[0]); 
+                                url = url.replace('replace_url', array[1]); 
                                 saveCommanderUrl.href = url
+                                console.log(saveCommanderUrl);
                             }; 
                         });
                     } else {
