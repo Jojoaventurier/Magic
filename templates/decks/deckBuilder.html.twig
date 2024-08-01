@@ -16,8 +16,21 @@
         {{ deck.deckDescription }}
     {% endif %}
 </p>
-<main>
 
+{% if deck.format.formatName is same as "Commander" %}
+    Veuillez choisir un commandant pour le deck :
+
+{% endif %}
+<main>
+    <input type="text" class="search" name="search" id="searchId" placeholder="Chercher une carte...">
+    <select class="card" name="cardName" id="cardSelect"></select>
+    <button type="button" id="researchStart">Rechercher</button>
+
+    <div id="cardBoard" class="board"></div>
 </main>
 
+
+{% block javascripts %} 
+<script src="{{ asset('app.js') }}"></script>
+{% endblock %}
 {% endblock %}
