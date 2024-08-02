@@ -48,6 +48,9 @@ class Deck
     #[ORM\ManyToMany(targetEntity: Card::class, inversedBy: 'decks')]
     private Collection $cards;
 
+    #[ORM\Column(nullable: true, options: ["default" => false])]
+    private ?bool $hasCommander = null;
+
     public function __construct()
     {
         $this->cards = new ArrayCollection();
@@ -174,6 +177,18 @@ class Deck
     public function removeCard(Card $card): static
     {
         $this->cards->removeElement($card);
+
+        return $this;
+    }
+
+    public function hasCommander(): ?bool
+    {
+        return $this->hasCommander;
+    }
+
+    public function setHasCommander(?bool $hasCommander): static
+    {
+        $this->hasCommander = $hasCommander;
 
         return $this;
     }

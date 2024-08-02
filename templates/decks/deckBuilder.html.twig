@@ -17,20 +17,30 @@
     {% endif %}
 </p>
 
-{% if deck.format.formatName is same as "Commander" %}
+{% if (deck.format.formatName is same as "Commander") and (deck.hasCommander is same as false) or (deck.hasCommander is same as null)  %} 
     Veuillez choisir un commandant pour le deck :
-    <input type="text" class="search" name="search" id="searchId" placeholder="Chercher un commandant">
+    <input type="text" class="search" name="search" id="searchId" placeholder="Chercher une carte...">
     <select class="card" name="cardName" id="cardSelect"></select>
     <button type="button" id="researchStart">Rechercher</button><br>
-    <a id="saveCommander" href="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'cardId': 'replace_card', 'imageUrl': 1}) }}" >Valider le commandant</a>
-    <!--Vérifier que le lien n'est cliquable qu'une fois un commandant sélectionné-->
-
+    
+    <form id="saveCardForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id}) }}">
+        <input type="hidden" id="cardIdInput" name="cardId">
+        <input type="hidden" id="cardImageUrlInput" name="cardImageUrl">
+        <button type="submit">Ajouter la carte</button>
+    </form>
+{% endif %}
 
     <div id="cardBoard" class="board">
         <img id="cardImage">
     </div>
 
-{% endif %}
+    <div id="displayDeck" class="board">
+        {% for card in deck.cards %}
+            <img class="singleCard" src="{{ card.normalImageUrl }}">
+        {% endfor %}
+    </div>
+
+
 <main>
 
 </main>
@@ -48,7 +58,10 @@
         const cardSelect = document.getElementById('cardSelect'); 
         const researchButton = document.getElementById('researchStart'); 
         const cardBoard = document.getElementById('cardBoard'); 
-        let saveCommanderUrl = document.getElementById('saveCommander')
+        const saveCardForm = document.getElementById('saveCardForm');
+        const cardIdInput = document.getElementById('cardIdInput');
+        const cardImageUrlInput = document.getElementById('cardImageUrlInput');
+
     
         researchButton.addEventListener('click', function() { 
             const query = searchInput.value; 
@@ -68,10 +81,11 @@
                             
                             const option = document.createElement('option'); // rajoute une option au select pour chaque carte récupérée depuis l'API
 
-                            option.value = card.id ;
+                            option.value = [`${card.id}, ${card.image_uris.normal}`];
                             option.textContent = card.name;
                             cardSelect.appendChild(option);
                             //console.log(option.value)
+
                         });
                     } else {
                         console.error('Erreur: la réponse de l\'API ne contient pas un tableau de cartes dans "data"');
@@ -80,11 +94,42 @@
                 .catch(error => console.error('Erreur:', error));
         });
 
+        
+        // modification dynamique selon ce que l'utilsiateur choisit dans le select
         cardSelect.addEventListener('change', function() {
             let value = cardSelect.value;
             let text = cardSelect.options[cardSelect.selectedIndex].textContent;
 
-            console.log(value, text);
+             // explose le contenu du tableau au niveau de la virgule
+            let valueArray = value.split(", ");
+
+            let cardId = valueArray[0];
+            let cardImageUrl = valueArray[1];
+            cardIdInput.value = cardId;
+            cardImageUrlInput.value = cardImageUrl;
+
+            const myNode = document.getElementById("cardBoard"); // permet de réinitialiser l'affichage des cartes, si l'utilisateur appuie une nouvelle fois sur le bouton de recherche, les cartes affichées précédemment sont enlevées
+            if (myNode) {
+                while (myNode.firstChild) {// tant que cardBoard a des enfants (les cartes que l'on affiche)
+                    myNode.removeChild(myNode.lastChild); // on enlève le dernier enfant de cardBoard jusqu'à ce qu'il n'y en ait plus
+                }
+            }
+
+            //if (card.image_uris && card.image_uris.normal) {
+                let displayCard = new Image(250,350); //création d'un affichage pour prévisualiser le commandant sélectionné dans le select
+                displayCard.src = valueArray[1]; 
+                displayCard.name = text ;
+                displayCard.classList.add('singleCard'); 
+
+                let cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}"; 
+                let link = document.createElement("a"); 
+                let url = cardDetailUrl.replace('REPLACE_CARD_ID', valueArray[0]);
+                link.href = url; 
+
+                link.appendChild(displayCard);
+                cardBoard.appendChild(link)
+            //}
+           // console.log(value, text);
         });
 
         function select() {

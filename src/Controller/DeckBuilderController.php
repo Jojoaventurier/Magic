@@ -85,18 +85,25 @@ class DeckBuilderController extends AbstractController
         ]);
     }
 
-    #[Route('/user/{user}/deck/{deck}/card/{cardId}/{imageUrl}', name: 'save_card_deck')]
+    #[Route('/user/{user}/deck/{deck}/card', name: 'save_card_deck', methods: ['POST'])]
     public function saveCard(Deck $deck, Card $card = null, EntityManagerInterface $entityManager, DeckRepository $deckRepository, CardRepository $cardRepository, Request $request): Response 
     {
+
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
+        $currentDate = new \DateTime();
+        $deck->setUpdateDate($currentDate);
+
+        if(!$deck->getCards()) {
+            $deck->setHasCommander(true);
+        }
 
         if(!$card) {
             $card = new Card();
         }
         $cardId = $request->get('cardId');
-        // $imageUrl = $request->get('imageUrl');
+        $imageUrl = $request->request->get('cardImageUrl');
         $card->setScryfallId($cardId);
-        // $card->setNormalImageUrl($imageUrl);
+        $card->setNormalImageUrl($imageUrl);
 
         $card->addDeck($deck);
 
@@ -105,9 +112,7 @@ class DeckBuilderController extends AbstractController
         $entityManager->flush();
 
          
-        return $this->render('decks/deckBuilder.html.twig', [
-            'deck' => $deck,
-        ]);
+        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
     }
 
 

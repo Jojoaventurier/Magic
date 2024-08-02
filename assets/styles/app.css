@@ -53,3 +53,8 @@ body {
     display: flex;
     flex-wrap: wrap;
   }
+
+  .singleCard {
+    width: 250px;
+    height: 350px;
+  }

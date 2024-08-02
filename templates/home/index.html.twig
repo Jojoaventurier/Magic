@@ -82,7 +82,7 @@
                                 displayCard.id = `${card.id}` 
                                 displayCard.classList.add('singleCard'); 
         
-                                var cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}"; 
+                                let cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}"; 
                                 let link = document.createElement("a"); 
                                 let url = cardDetailUrl.replace('REPLACE_CARD_ID', card.id);
                                 link.href = url; 
@@ -97,7 +97,8 @@
                     })
                     .catch(error => console.error('Erreur:', error));
             });
-
+            link.appendChild(displayCard);//  l'image est ajoutée au lien créé précédemment
+            cardBoard.appendChild(link)
 
         });
     </script>
