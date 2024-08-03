@@ -12,11 +12,11 @@
     <h1>Recherche de Cartes</h1>
 
 
+    <div>AJOUTER DES FILTES APPELES EN JS POUR MODIFIER LES REQUETES ENVERS LAPI</div>
     
-
-    <input type="text" class="search" name="search" id="searchId" placeholder="Chercher une carte...">
-    <select class="card" name="cardName" id="cardSelect"></select>
-    <button type="button" id="researchStart">Rechercher</button>
+    <input type="text" class="search" name="search" id="searchId" placeholder="Chercher une carte..."> <!-- affiche la barre de recherche, la valeur entrée par l'utilisateur est utilisée en JS pour effectuer la requête vers l'API scryfall-->
+    <select class="card" name="cardName" id="cardSelect"></select> <!-- select que l'on récupère en JS pour y ajouter la liste de cartes récupérée en affichant le nom de la carte, la valeur intrinsèque sera l'id de la carte-->
+    <button type="button" id="researchStart">Rechercher</button> <!--bouton pour lancer la recherche et déclencher l'appel API -->
 
     <div id="cardBoard" class="board"></div>
 </main>
@@ -76,7 +76,8 @@
                                 link.appendChild(displayCard);//  l'image est ajoutée au lien créé précédemment
                                 cardBoard.appendChild(link) // on ajoute le lien à la div qui affiche les carte (le l'image est ajoutée au lien, qui lui même est ajouté à la div cardBoard)
                            
-                            } else if(card.card_faces[0]['image_uris'] && card.card_faces[0]['image_uris']['normal']) { // exception qui récupère la premiere face de la carte double face sinon ne s'affichent pas
+                            } else if(card.card_faces[0]['image_uris'] && card.card_faces[0]['image_uris']['normal']) { // les cartes doubles faces ont une architecture JSON différente des cartes "normales" on ne peut pas accéder à à l'id de la meme façon
+                                // exception qui récupère la premiere face de la carte double face sinon ne s'affichent pas
                             console.log('carte double face')
                             let displayCard = new Image(250,350); 
                             displayCard.src = `${card.card_faces[0]['image_uris']['normal']}`;
