@@ -55,11 +55,11 @@
                             
                         cardSelect.innerHTML = ''; // Supprime les entrées précédentes
     
-                        data.data.forEach(card => {
+                        data.data.forEach(card => { 
                             const option = document.createElement('option'); // rajoute une option au select pour chaque carte récupérée depuis l'API
-                            option.value = card.id;
-                            option.textContent = card.name;
-                            cardSelect.appendChild(option);
+                            option.value = card.id; // la valeur du sélect est l'id de la carte
+                            option.textContent = card.name; // le texte affiché est le nom de la carte
+                            cardSelect.appendChild(option); //on ajoute une option au select pour chaque carte
     
                             if (card.image_uris && card.image_uris.normal) {
                                 let displayCard = new Image(250,350); // créé un nouvel élément <img> d'une taille fixe
@@ -76,7 +76,7 @@
                                 link.appendChild(displayCard);//  l'image est ajoutée au lien créé précédemment
                                 cardBoard.appendChild(link) // on ajoute le lien à la div qui affiche les carte (le l'image est ajoutée au lien, qui lui même est ajouté à la div cardBoard)
                            
-                            } else if(card.card_faces[0]['image_uris'] && card.card_faces[0]['image_uris']['normal']) { // récupère la premiere face de la carte double face sinon ne s'affichent
+                            } else if(card.card_faces[0]['image_uris'] && card.card_faces[0]['image_uris']['normal']) { // exception qui récupère la premiere face de la carte double face sinon ne s'affichent pas
                             console.log('carte double face')
                             let displayCard = new Image(250,350); 
                             displayCard.src = `${card.card_faces[0]['image_uris']['normal']}`;
