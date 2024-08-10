@@ -82,6 +82,8 @@
 
                             option.value = [`${card.id}, ${card.image_uris.normal}`];
                             option.textContent = card.name;
+                            const emptySpace = document.createElement('option');
+                            cardSelect.appendChild(emptySpace);
                             cardSelect.appendChild(option);
                             //console.log(option.value)
 
