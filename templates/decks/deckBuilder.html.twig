@@ -75,6 +75,8 @@
                     if (data.data && Array.isArray(data.data)) { 
     
                         cardSelect.innerHTML = ''; // Supprime les entrées précédentes
+                        const emptySpace = document.createElement('option');
+                        cardSelect.appendChild(emptySpace);
     
                         data.data.forEach(card => {
                             
@@ -82,8 +84,6 @@
 
                             option.value = [`${card.id}, ${card.image_uris.normal}`];
                             option.textContent = card.name;
-                            const emptySpace = document.createElement('option');
-                            cardSelect.appendChild(emptySpace);
                             cardSelect.appendChild(option);
                             //console.log(option.value)
 
