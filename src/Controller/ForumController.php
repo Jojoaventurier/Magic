@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Form\SearchType;
 use App\Entity\ForumPost;
+use App\Model\SearchData;
 use App\Entity\ForumTopic;
 use App\Form\ForumPostType;
 use App\Form\ForumTopicType;
@@ -23,15 +25,23 @@ class ForumController extends AbstractController
 {   
     
     #[Route('/forum', name: 'app_forum')]
-    public function index(ForumCategoryRepository $categoryRepository, ForumSubCategoryRepository $subCategoryRepository): Response
+    public function index(ForumCategoryRepository $categoryRepository, ForumSubCategoryRepository $subCategoryRepository, Request $request): Response
     {
         $categories = $categoryRepository->findAll();
         $subCategories = $subCategoryRepository->findAll();
 
+        $searchData = new SearchData();
+        $searchForm = $this->createForm(SearchType::class, $searchData);
+        $searchForm->handleRequest($request);
+        if($searchForm->isSubmitted() && $searchForm->isValid()) {
+            dd($searchData);
+        }
+
 
         return $this->render('forum/index.html.twig', [
             'categories' => $categories,
-            'subCategories' => $subCategories
+            'subCategories' => $subCategories,
+            '$searchForm' => $searchForm
         ]);
     }
 

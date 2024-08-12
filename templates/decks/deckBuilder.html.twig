@@ -133,46 +133,16 @@
            // console.log(value, text);
         });
 
-        function select() {
-            cardSelect.dispatchEvent(new Event('change'));
-        }
+        //function select() {
+        //    cardSelect.dispatchEvent(new Event('change'));
+        //}
 
         // Déclenchement manuel de l'événement change pour considérer la première valeur
         //if(cardSelect.value)
         //cardSelect.dispatchEvent(new Event('change'));
     });
 
-
-
-
-
 </script>
-
-    {# let image = document.getElementById('cardImage')
-    //image.src = card.image_uris.normal
-    let select = document.getElementById('cardName')
-    let option = select.option
-    let card = option.value
-
-    if (card.image_uris && card.image_uris.normal && card) {
-        //let displayCard = new Image(250,350); 
-       image.src = card; 
-        //displayCard.id = `${card.id}`
-        displayCard.classList.add('singleCard'); 
-    }
-
-
-    function updateCardImage() {
-        let image = document.getElementById('cardImage')
-        image.src = card.image_uris.normal
-
-        if (card.image_uris && card.image_uris.normal) {
-            //let displayCard = new Image(250,350); 
-            image.src = `${card.image_uris.normal}`; 
-            //displayCard.id = `${card.id}`
-            displayCard.classList.add('singleCard'); 
-        }
-    } #}
 
 {% endblock %}
 {% endblock %}
