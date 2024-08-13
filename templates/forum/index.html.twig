@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ForumController!{% endblock %}
+{% block title %}Bienvenue sur le forum de Magic-Hub!{% endblock %}
 
 {% block body %}
 <style>
@@ -15,6 +15,7 @@
     {% include "components/_search_data.html.twig" with {
         searchForm: searchForm
     } only %}
+
 
     {% for category in categories %}
     
@@ -50,6 +51,7 @@
             </div>
         {% endfor %}
     </div>
+    
     <div class="navigation flex justify-center mb-8">
         {{ knp_pagination_render(topics) }}        
     </div>

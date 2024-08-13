@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ForumTopic;
+use App\Entity\ForumSubCategory;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
@@ -19,7 +20,7 @@ class ForumTopicRepository extends ServiceEntityRepository
     }
 
     /**
-     * Récupérer les posts créés classés par date de création, avec inclusion de la pagination
+     * Récupérer les sujets créés classés par date de création, avec inclusion de la pagination
      * @param int $page
      * @return PaginationInterface
      */
@@ -36,15 +37,25 @@ class ForumTopicRepository extends ServiceEntityRepository
             return $topics;
     }
 
-    public function findBySubCategory($subCategory): array
+     /**
+     * Récupérer les sujets créés d'une sous-catégorie,  classés  par date de création, avec inclusion de la pagination
+     * @param int $page
+     * @param ForumSubCategory $subCategory
+     * @return PaginationInterface
+     */
+
+    public function findBySubCategory(int $page, ForumSubCategory $subCategory ): PaginationInterface
     {
-        return $this->createQueryBuilder('p')
+        $data =  $this->createQueryBuilder('p')
             ->andWhere('p.forumSubCategory = :val')
             ->setParameter('val', $subCategory)
             ->addOrderBy('p.creationDate', 'DESC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
+
+            $topics = $this->paginatorInterface->paginate($data, $page, 9);
+
+            return $topics;
     }
 
     //    /**

@@ -57,9 +57,9 @@ class ForumController extends AbstractController
     }
 
     #[Route('/forum/topics/{id}', name: 'app_forum_topics')]
-    public function topicsBySubCategory(ForumTopicRepository $topicRepository, ForumSubCategory $subCategory): Response
+    public function topicsBySubCategory(ForumTopicRepository $topicRepository, ForumSubCategory $subCategory, Request $request): Response
     {
-        $topics = $topicRepository->findBySubCategory($subCategory); // récupère tous les topics de la sous-catégorie
+        $topics = $topicRepository->findBySubCategory($request->query->getInt('page', 1), $subCategory ); // récupère tous les topics de la sous-catégorie
     
         return $this->render('forum/listTopicsBySubCategory.html.twig', [
             'topics' => $topics,
