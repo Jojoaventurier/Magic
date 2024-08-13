@@ -32,6 +32,9 @@
     {% if researchToken is same as 'searched' %}
         <h3>Résultats trouvés dans les sujets :</h3>
     {% endif %}
+    {% if topics is empty %}
+        <p>Aucun résultat trouvé.</p>
+    {% endif %}
 
     <div class="forum-wrapper">
         {% for topic in topics %}
@@ -60,33 +63,39 @@
 
     {% if researchToken is same as 'searched' %}
         <h3>Résultats trouvés dans les messages :</h3>
-    {% endif %}
 
-    <div class="forum-wrapper">
-        {% for post in posts %}
-        <div class="postCard">
-            <p>Related topic : {{ post.forumTopic.topicTitle }}</p>
-            <p>
-                Par {{ post.user.userName }} 
-                {% if post.editDate is same as null %}
-                    posté le {{ post.creationDate|date('d.m.Y H:i') }} ,
-                    {% else %}
-                    modifié le {{ post.editDate|date('d.m.Y H:i') }}
-                {% endif %}
-            </p>
-            <p>
-                {{ post.textContent }}
-            </p>
-                {% if app.user is same as post.user %}
-                    <a href="{{ path('edit_post', {'topic': post.forumTopic.id, 'post': post.id}) }}">Modifier</a>
-                    <a href="{{ path('delete_post', {id : post.id}) }}">Supprimer</a> 
-                {% endif %}
-            </div>
-        {% endfor %}
-    </div>
-    <div class="navigation flex justify-center mb-8">
-        {{ knp_pagination_render(posts) }}        
-    </div>
+        {% if posts is empty %}
+        <p>Aucun résultat trouvé.</p>
+        {% endif %}
+
+
+        <div class="forum-wrapper">
+            {% for post in posts %}
+            <div class="postCard">
+                <p>Related topic : {{ post.forumTopic.topicTitle }}</p>
+                <p>
+                    Par {{ post.user.userName }} 
+                    {% if post.editDate is same as null %}
+                        posté le {{ post.creationDate|date('d.m.Y H:i') }} ,
+                        {% else %}
+                        modifié le {{ post.editDate|date('d.m.Y H:i') }}
+                    {% endif %}
+                </p>
+                <p>
+                    {{ post.textContent }}
+                </p>
+                    {% if app.user is same as post.user %}
+                        <a href="{{ path('edit_post', {'topic': post.forumTopic.id, 'post': post.id}) }}">Modifier</a>
+                        <a href="{{ path('delete_post', {id : post.id}) }}">Supprimer</a> 
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="navigation flex justify-center mb-8">
+            {{ knp_pagination_render(posts) }}        
+        </div>
+
+    {% endif %}
     
 
 

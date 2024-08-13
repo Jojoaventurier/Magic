@@ -31,6 +31,7 @@ class ForumController extends AbstractController
         $subCategories = $subCategoryRepository->findAll();
 
         $topics = $topicRepository->findByLast($request->query->getInt('page', 1));
+        $posts = '';
         
         $searchData = new SearchData();
         $searchForm = $this->createForm(SearchType::class, $searchData);
@@ -58,6 +59,7 @@ class ForumController extends AbstractController
             'subCategories' => $subCategories,
             'searchForm' => $searchForm->createView(),
             'topics' => $topics,
+            'posts' => $posts,
             'researchToken' => $researchToken
         ]);
     }
