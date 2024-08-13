@@ -40,6 +40,7 @@ class ForumController extends AbstractController
         if($searchForm->isSubmitted() && $searchForm->isValid()) {
             $searchData->page = $request->query->getInt('page', 1);
             $topics = $topicRepository->findBySearch($searchData);
+            $posts = $postRepository->findBySearch($searchData);
             $researchToken = 'searched';
 
             return $this->render('forum/index.html.twig', [
@@ -47,6 +48,7 @@ class ForumController extends AbstractController
                 'subCategories' => $subCategories,
                 'searchForm' => $searchForm->createView(),
                 'topics' => $topics,
+                'posts' => $posts,
                 'researchToken' => $researchToken
             ]);
         }
