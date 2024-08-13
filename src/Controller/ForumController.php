@@ -25,7 +25,7 @@ class ForumController extends AbstractController
 {   
     
     #[Route('/forum', name: 'app_forum')]
-    public function index(ForumCategoryRepository $categoryRepository, ForumSubCategoryRepository $subCategoryRepository, Request $request): Response
+    public function index(ForumPostRepository $postRepository, ForumCategoryRepository $categoryRepository, ForumSubCategoryRepository $subCategoryRepository, Request $request): Response
     {
         $categories = $categoryRepository->findAll();
         $subCategories = $subCategoryRepository->findAll();
@@ -35,6 +35,14 @@ class ForumController extends AbstractController
         $searchForm->handleRequest($request);
         if($searchForm->isSubmitted() && $searchForm->isValid()) {
             $searchData->page = $request->query->getInt('page', 1);
+            $posts = $postRepository->findBySearch($searchData);
+
+            return $this->render('forum/index.html.twig', [
+                'categories' => $categories,
+                'subCategories' => $subCategories,
+                'searchForm' => $searchForm->createView(),
+                'posts' => $posts
+            ]);
         }
 
 

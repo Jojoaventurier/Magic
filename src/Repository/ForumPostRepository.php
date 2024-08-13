@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\ForumPost;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Model\SearchData;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<ForumPost>
@@ -24,6 +25,25 @@ class ForumPostRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    public function findBySearch(SearchData $searchData): PaginationInterface
+    {
+        $posts = $this->createQueryBuilder('p')
+            ->where('p.state LIKE :state')
+            ->setParameter('state', '%STATE_PUBLISHED%')
+            ->addOrderBy('p.creationDate', 'DESC');
+
+            if(!empty($searchData->q)) {
+                $posts = $posts
+                ->andWhere('p.title Like :q')
+                ->setParameter('q', "%{$searchData->q}%");
+            }
+
+            $posts = $posts
+                ->getQuery()
+                ->getResult();
+
     }
 
 //    /**
