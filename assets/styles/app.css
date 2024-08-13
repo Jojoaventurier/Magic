@@ -8,9 +8,16 @@ body {
 
 .forum-wrapper {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   max-width: 800px;
   width: 100%;
+}
+
+.postCard {
+  width: 100%;
+  max-width: 800px;
+  padding: 10px;
 }
 
 

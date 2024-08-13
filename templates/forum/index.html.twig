@@ -43,13 +43,12 @@
             <p>
                 {{ post.textContent }}
             </p>
-
             {% if app.user is same as post.user %}
-                <a href="{{ path('edit_post', {'topic': topic.id, 'post': post.id}) }}">Modifier</a>
+                <a href="{{ path('edit_post', {'topic': post.forumTopic.id, 'post': post.id}) }}">Modifier</a>
                 <a href="{{ path('delete_post', {id : post.id}) }}">Supprimer</a>
-            {% endif %}
-            {% endfor %}
-        </div>
+                {% endif %}
+            </div>
+        {% endfor %}
 
     </div>
 </div>
