@@ -41,7 +41,7 @@ class ForumController extends AbstractController
         return $this->render('forum/index.html.twig', [
             'categories' => $categories,
             'subCategories' => $subCategories,
-            '$searchForm' => $searchForm
+            'searchForm' => $searchForm->createView()
         ]);
     }
 
