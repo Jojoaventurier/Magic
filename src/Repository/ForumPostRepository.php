@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\ForumPost;
 use App\Model\SearchData;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**

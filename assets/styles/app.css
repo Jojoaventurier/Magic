@@ -6,11 +6,14 @@ body {
   background-color: skyblue;
 }
 
-.wrapper {
+.forum-wrapper {
   display: flex;
   justify-content: center;
-  
+  max-width: 800px;
+  width: 100%;
 }
+
+
 
 #article_form_articleText {
     width: 500px;

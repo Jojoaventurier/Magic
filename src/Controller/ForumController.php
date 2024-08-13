@@ -14,6 +14,7 @@ use App\Repository\ForumPostRepository;
 use App\Repository\ForumTopicRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ForumCategoryRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\ForumSubCategoryRepository;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,10 +26,17 @@ class ForumController extends AbstractController
 {   
     
     #[Route('/forum', name: 'app_forum')]
-    public function index(ForumPostRepository $postRepository, ForumCategoryRepository $categoryRepository, ForumSubCategoryRepository $subCategoryRepository, Request $request): Response
+    public function index(ForumPostRepository $postRepository, PaginatorInterface $paginatorInterface, ForumCategoryRepository $categoryRepository, ForumSubCategoryRepository $subCategoryRepository, Request $request): Response
     {
         $categories = $categoryRepository->findAll();
         $subCategories = $subCategoryRepository->findAll();
+
+        $data = $postRepository->findAll();
+        $posts = $paginatorInterface->paginate(
+            $data,
+            $request->query->getInt('page', 1),
+            9
+        );
 
         $searchData = new SearchData();
         $searchForm = $this->createForm(SearchType::class, $searchData);
@@ -44,12 +52,14 @@ class ForumController extends AbstractController
                 'posts' => $posts
             ]);
         }
+        
 
 
         return $this->render('forum/index.html.twig', [
             'categories' => $categories,
             'subCategories' => $subCategories,
-            'searchForm' => $searchForm->createView()
+            'searchForm' => $searchForm->createView(),
+            'posts' => $data
         ]);
     }
 
