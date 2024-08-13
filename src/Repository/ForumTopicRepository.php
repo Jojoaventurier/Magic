@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Model\SearchData;
 use App\Entity\ForumTopic;
 use App\Entity\ForumSubCategory;
 use Doctrine\Persistence\ManagerRegistry;
@@ -56,6 +57,33 @@ class ForumTopicRepository extends ServiceEntityRepository
             $topics = $this->paginatorInterface->paginate($data, $page, 9);
 
             return $topics;
+    }
+
+    /**
+     * Récupère les posts où on retrouve le mot clé saisi par l'utilisateur
+     * 
+     * @param SearchData $searchData
+     * @return PaginationInterface
+     */
+    public function findBySearch(SearchData $searchData): PaginationInterface
+    {
+        $data = $this->createQueryBuilder('p')
+            ->addOrderBy('p.creationDate', 'DESC');
+
+            if(!empty($searchData->q)) {
+                $data = $data
+                ->andWhere('p.topicTitle LIKE :q')
+                ->setParameter('q', "%{$searchData->q}%");
+            }
+
+            $data = $data
+                ->getQuery()
+                ->getResult();
+
+            $topics = $this->paginatorInterface->paginate($data, $searchData->page, 9);
+
+            return $topics;
+
     }
 
     //    /**

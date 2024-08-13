@@ -34,18 +34,20 @@ class ForumController extends AbstractController
         
         $searchData = new SearchData();
         $searchForm = $this->createForm(SearchType::class, $searchData);
+        $researchToken = 'unsearched';
 
         $searchForm->handleRequest($request);
         if($searchForm->isSubmitted() && $searchForm->isValid()) {
             $searchData->page = $request->query->getInt('page', 1);
-            $posts = $postRepository->findBySearch($searchData);
-            dd($posts);
+            $topics = $topicRepository->findBySearch($searchData);
+            $researchToken = 'searched';
 
             return $this->render('forum/index.html.twig', [
                 'categories' => $categories,
                 'subCategories' => $subCategories,
                 'searchForm' => $searchForm->createView(),
-                'posts' => $posts,
+                'topics' => $topics,
+                'researchToken' => $researchToken
             ]);
         }
         
@@ -53,7 +55,8 @@ class ForumController extends AbstractController
             'categories' => $categories,
             'subCategories' => $subCategories,
             'searchForm' => $searchForm->createView(),
-            'topics' => $topics
+            'topics' => $topics,
+            'researchToken' => $researchToken
         ]);
     }
 
