@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\ForumPost;
 use App\Model\SearchData;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\PaginatorInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -13,7 +14,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
  */
 class ForumPostRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private PaginatorInterface $paginatorInterface)
     {
         parent::__construct($registry, ForumPost::class);
     }
@@ -29,22 +30,33 @@ class ForumPostRepository extends ServiceEntityRepository
         ;
     }
 
+
+    /**
+     * Récupère les posts où on retrouve le mot clé saisi par l'utilisateur
+     * 
+     * @param SearchData $searchData
+     * @return PaginationInterface
+     */
     public function findBySearch(SearchData $searchData): PaginationInterface
     {
-        $posts = $this->createQueryBuilder('p')
+        $data = $this->createQueryBuilder('p')
             ->where('p.state LIKE :state')
             ->setParameter('state', '%STATE_PUBLISHED%')
             ->addOrderBy('p.creationDate', 'DESC');
 
             if(!empty($searchData->q)) {
-                $posts = $posts
+                $data = $data
                 ->andWhere('p.title Like :q')
                 ->setParameter('q', "%{$searchData->q}%");
             }
 
-            $posts = $posts
+            $data = $data
                 ->getQuery()
                 ->getResult();
+
+            $posts = $this->paginatorInterface->paginate($data, $searchData->page, 9);
+
+            return $posts;
 
     }
 

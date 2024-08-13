@@ -32,13 +32,14 @@ class ForumController extends AbstractController
 
         $topics = $topicRepository->findByLast($request->query->getInt('page', 1));
         
-
         $searchData = new SearchData();
         $searchForm = $this->createForm(SearchType::class, $searchData);
+
         $searchForm->handleRequest($request);
         if($searchForm->isSubmitted() && $searchForm->isValid()) {
             $searchData->page = $request->query->getInt('page', 1);
             $posts = $postRepository->findBySearch($searchData);
+            dd($posts);
 
             return $this->render('forum/index.html.twig', [
                 'categories' => $categories,
