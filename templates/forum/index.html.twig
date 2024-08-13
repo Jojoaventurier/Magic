@@ -30,27 +30,30 @@
 
 
     <div class="forum-wrapper">
-        {% for post in posts %}
+        {% for topic in topics %}
         <div class="postCard">
             <p>
-                Par {{ post.user.userName }} 
-                {% if post.editDate is same as null %}
-                    posté le {{ post.creationDate|date('d.m.Y H:i') }} ,
+                Par {{ topic.user.userName }} 
+                {% if topic.editDate is same as null %}
+                    posté le {{ topic.creationDate|date('d.m.Y H:i') }} ,
                     {% else %}
-                    modifié le {{ post.editDate|date('d.m.Y H:i') }}
+                    modifié le {{ topic.editDate|date('d.m.Y H:i') }}
                 {% endif %}
             </p>
             <p>
-                {{ post.textContent }}
+                {{ topic.topicTitle }}
             </p>
-            {% if app.user is same as post.user %}
-                <a href="{{ path('edit_post', {'topic': post.forumTopic.id, 'post': post.id}) }}">Modifier</a>
-                <a href="{{ path('delete_post', {id : post.id}) }}">Supprimer</a>
+            {% if app.user is same as topic.user %}
+                <a href="{{ path('edit_topic', {'id': topic.id}) }}">Modifier</a>
+                {# <a href="{{ path('lock_topic', {id : topic.id}) }}">Verrouiller</a> #} 
                 {% endif %}
             </div>
         {% endfor %}
-
     </div>
+    <div class="navigation flex justify-center mb-8">
+        {{ knp_pagination_render(topics) }}        
+    </div>
+
 </div>
 
 {% endblock %}

@@ -19,24 +19,19 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Repository\ForumSubCategoryRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ForumController extends AbstractController
 {   
     
     #[Route('/forum', name: 'app_forum')]
-    public function index(ForumPostRepository $postRepository, PaginatorInterface $paginatorInterface, ForumCategoryRepository $categoryRepository, ForumSubCategoryRepository $subCategoryRepository, Request $request): Response
+    public function index(ForumPostRepository $postRepository, ForumCategoryRepository $categoryRepository, ForumSubCategoryRepository $subCategoryRepository, ForumTopicRepository $topicRepository, Request $request): Response
     {
         $categories = $categoryRepository->findAll();
         $subCategories = $subCategoryRepository->findAll();
 
-        $data = $postRepository->findAll();
-        $posts = $paginatorInterface->paginate(
-            $data,
-            $request->query->getInt('page', 1),
-            9
-        );
+        $topics = $topicRepository->findByLast($request->query->getInt('page', 1));
+        
 
         $searchData = new SearchData();
         $searchForm = $this->createForm(SearchType::class, $searchData);
@@ -49,17 +44,15 @@ class ForumController extends AbstractController
                 'categories' => $categories,
                 'subCategories' => $subCategories,
                 'searchForm' => $searchForm->createView(),
-                'posts' => $posts
+                'posts' => $posts,
             ]);
         }
         
-
-
         return $this->render('forum/index.html.twig', [
             'categories' => $categories,
             'subCategories' => $subCategories,
             'searchForm' => $searchForm->createView(),
-            'posts' => $data
+            'topics' => $topics
         ]);
     }
 
@@ -218,7 +211,7 @@ class ForumController extends AbstractController
 
 //TODO (enlever la partie post du formulaire editTopic)
 
-//TODO verrouillage / ban
+//TODO verrouillage topic / ban
 //TODO anonymisation des posts du forum si suppression de compte
 
 }

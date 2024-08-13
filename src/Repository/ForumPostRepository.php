@@ -23,6 +23,7 @@ class ForumPostRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->andWhere('p.forumTopic = :val')
             ->setParameter('val', $topic)
+            ->addOrderBy('p.creationDate', 'DESC')
             ->getQuery()
             ->getResult()
         ;
