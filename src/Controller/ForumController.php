@@ -34,7 +34,7 @@ class ForumController extends AbstractController
         $searchForm = $this->createForm(SearchType::class, $searchData);
         $searchForm->handleRequest($request);
         if($searchForm->isSubmitted() && $searchForm->isValid()) {
-            dd($searchData);
+            $searchData->page = $request->query->getInt('page', 1);
         }
 
 

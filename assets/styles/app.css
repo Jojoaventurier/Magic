@@ -6,6 +6,12 @@ body {
   background-color: skyblue;
 }
 
+.wrapper {
+  display: flex;
+  justify-content: center;
+  
+}
+
 #article_form_articleText {
     width: 500px;
     height: 500px;
