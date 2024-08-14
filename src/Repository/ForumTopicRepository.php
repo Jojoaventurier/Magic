@@ -78,6 +78,13 @@ class ForumTopicRepository extends ServiceEntityRepository
                 ->setParameter('q', "%{$searchData->q}%");
             }
 
+            if(!empty($searchData->forumSubCategories)) {
+                $data = $data
+                ->join('t.forumSubCategory', 'c')
+                ->andWhere('c.id IN (:forumSubCategory)')
+                ->setParameter('forumSubCategory', $searchData->forumSubCategories);
+            }
+
             $data = $data
                 ->getQuery()
                 ->getResult();
