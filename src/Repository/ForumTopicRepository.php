@@ -67,12 +67,14 @@ class ForumTopicRepository extends ServiceEntityRepository
      */
     public function findBySearch(SearchData $searchData): PaginationInterface
     {
-        $data = $this->createQueryBuilder('p')
+        $data = $this->createQueryBuilder('t')
             ->addOrderBy('p.creationDate', 'DESC');
 
             if(!empty($searchData->q)) {
                 $data = $data
-                ->andWhere('p.topicTitle LIKE :q')
+                ->join('t.forumPosts', 'p')
+                ->andWhere('t.topicTitle LIKE :q')
+                ->orWhere('p.textContent LIKE :q')
                 ->setParameter('q', "%{$searchData->q}%");
             }
 

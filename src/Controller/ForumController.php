@@ -31,7 +31,7 @@ class ForumController extends AbstractController
         $subCategories = $subCategoryRepository->findAll();
 
         $topics = $topicRepository->findByLast($request->query->getInt('page', 1));
-        $posts = '';
+        // $posts = '';
         
         $searchData = new SearchData();
         $searchForm = $this->createForm(SearchType::class, $searchData);
@@ -41,7 +41,7 @@ class ForumController extends AbstractController
         if($searchForm->isSubmitted() && $searchForm->isValid()) {
             $searchData->page = $request->query->getInt('page', 1);
             $topics = $topicRepository->findBySearch($searchData);
-            $posts = $postRepository->findBySearch($searchData);
+            // $posts = $postRepository->findBySearch($searchData);
             $researchToken = 'searched';
 
             return $this->render('forum/index.html.twig', [
@@ -49,7 +49,7 @@ class ForumController extends AbstractController
                 'subCategories' => $subCategories,
                 'searchForm' => $searchForm->createView(),
                 'topics' => $topics,
-                'posts' => $posts,
+                // 'posts' => $posts,
                 'researchToken' => $researchToken
             ]);
         }
@@ -59,7 +59,7 @@ class ForumController extends AbstractController
             'subCategories' => $subCategories,
             'searchForm' => $searchForm->createView(),
             'topics' => $topics,
-            'posts' => $posts,
+            // 'posts' => $posts,
             'researchToken' => $researchToken
         ]);
     }
@@ -148,7 +148,8 @@ class ForumController extends AbstractController
     #[Route('/forum/posts/{id}', name: 'app_forum_posts')]
     public function postsByTopic(ForumTopic $topic, ForumPostRepository $postRepository, Request $request): Response
     {
-        $posts = $postRepository->findByTopic($topic);
+
+        $posts = $postRepository->findByTopic($request->query->getInt('page', 1), $topic);
 
         $postForm = $this->createForm(ForumPostType::class);
         $postForm->handleRequest($request);

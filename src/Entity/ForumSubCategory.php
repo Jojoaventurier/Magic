@@ -91,4 +91,9 @@ class ForumSubCategory
 
         return $this;
     }
+
+    public function __toString() 
+    {
+        return $this->subCategoryName;
+    }
 }

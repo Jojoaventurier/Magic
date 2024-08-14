@@ -13,30 +13,27 @@
 
 
     {% include "components/_search_data.html.twig" with {
-        searchForm: searchForm
+        searchForm: searchForm ?? null
     } only %}
 
 
     {% for category in categories %}
-    
        <h3>{{ category.forumCategoryName }}</h3> 
 
         {% for subCategory in category.subCategories %}
-
         <a href="{{ path('app_forum_topics', {id: subCategory.id}) }}">{{ subCategory.subCategoryName }}</a>
-
         {% endfor %} <br>
-      
     {% endfor %}
 
     {% if researchToken is same as 'searched' %}
-        <h3>Résultats trouvés dans les sujets :</h3>
+        <h3>Résultats de la recherche :</h3>
     {% endif %}
     {% if topics is empty %}
         <p>Aucun résultat trouvé.</p>
     {% endif %}
 
     <div class="forum-wrapper">
+
         {% for topic in topics %}
         <div class="postCard">
             <p>
@@ -56,12 +53,14 @@
                 {% endif %}
             </div>
         {% endfor %}
+
     </div>
+
     <div class="navigation flex justify-center mb-8">
         {{ knp_pagination_render(topics) }}        
     </div>
 
-    {% if researchToken is same as 'searched' %}
+    {# {% if researchToken is same as 'searched' %}
         <h3>Résultats trouvés dans les messages :</h3>
 
         {% if posts is empty %}
@@ -95,10 +94,8 @@
             {{ knp_pagination_render(posts) }}        
         </div>
 
-    {% endif %}
+    {% endif %} #}
     
-
-
 </div>
 
 {% endblock %}

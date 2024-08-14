@@ -3,38 +3,49 @@
 {% block title %}Posts by topics{% endblock %}
 
 {% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
 
-<h1>{{ topic.topicTitle }}</h1>
-{% if app.user is same as topic.user %}
-    <a href="{{ path('edit_topic', {id: topic.id}) }}">Modifier</a>
-    <a>Supprimer</a>
-{% endif %}
-{% if topic.editDate is same as null %}
-    <p>posté par {{ topic.user.userName }} le {{ topic.creationDate|date('d.m.Y H:i') }} </p>
-    {% else %}
-    <p>posté par {{ topic.user.userName }} le {{ topic.creationDate|date('d.m.Y H:i') }} et modifié le {{ topic.editDate|date('d.m.Y H:i') }} </p>
-{% endif %}
+<div class="example-wrapper">
 
-
-{% for post in posts %}
-    <p>
-        Par {{ post.user.userName }} <br>
-        {% if post.editDate is same as null %}
-            posté le {{ post.creationDate|date('d.m.Y H:i') }} ,
-            {% else %}
-            modifié le {{ post.editDate|date('d.m.Y H:i') }}
-        {% endif %}
-    </p>
-    <p>
-        {{ post.textContent }}
-    </p>
-
-    {% if app.user is same as post.user %}
-        <a href="{{ path('edit_post', {'topic': topic.id, 'post': post.id}) }}">Modifier</a>
-        <a href="{{ path('delete_post', {id : post.id}) }}">Supprimer</a>
+    <h1>{{ topic.topicTitle }}</h1>
+    {% if app.user is same as topic.user %}
+        <a href="{{ path('edit_topic', {id: topic.id}) }}">Modifier</a>
+        <a>Supprimer</a>
     {% endif %}
-{% endfor %}
+    {% if topic.editDate is same as null %}
+        <p>posté par {{ topic.user.userName }} le {{ topic.creationDate|date('d.m.Y H:i') }} </p>
+        {% else %}
+        <p>posté par {{ topic.user.userName }} le {{ topic.creationDate|date('d.m.Y H:i') }} et modifié le {{ topic.editDate|date('d.m.Y H:i') }} </p>
+    {% endif %}
 
-<a href="{{ path('new_post', {topic: topic.id}) }}">Répondre</a>
+
+    {% for post in posts %}
+        <p>
+            Par {{ post.user.userName }} <br>
+            {% if post.editDate is same as null %}
+                posté le {{ post.creationDate|date('d.m.Y H:i') }} ,
+                {% else %}
+                modifié le {{ post.editDate|date('d.m.Y H:i') }}
+            {% endif %}
+        </p>
+        <p>
+            {{ post.textContent }}
+        </p>
+
+        {% if app.user is same as post.user %}
+            <a href="{{ path('edit_post', {'topic': topic.id, 'post': post.id}) }}">Modifier</a>
+            <a href="{{ path('delete_post', {id : post.id}) }}">Supprimer</a>
+        {% endif %}
+    {% endfor %}
+
+    <a href="{{ path('new_post', {topic: topic.id}) }}">Répondre</a>
+
+    <div class="navigation flex justify-center mb-8">
+        {{ knp_pagination_render(posts) }}        
+    </div>
+</div>
 
 {% endblock %}

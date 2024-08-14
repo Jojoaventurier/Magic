@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\ForumPost;
 use App\Model\SearchData;
+use App\Entity\ForumTopic;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
@@ -19,44 +20,53 @@ class ForumPostRepository extends ServiceEntityRepository
         parent::__construct($registry, ForumPost::class);
     }
 
-    public function findByTopic($topic): array
+
+         /**
+     * Récupérer les posts d'un sujet, classés  par date de création, avec inclusion de la pagination
+     * @param int $page
+     * @param ForumTopic $topic
+     * @return PaginationInterface
+     */
+    public function findByTopic(int $page, ForumTopic $topic): PaginationInterface
     {
-        return $this->createQueryBuilder('p')
+        $data = $this->createQueryBuilder('p')
             ->andWhere('p.forumTopic = :val')
             ->setParameter('val', $topic)
             ->addOrderBy('p.creationDate', 'DESC')
             ->getQuery()
-            ->getResult()
-        ;
-    }
+            ->getResult();
 
-
-    /**
-     * Récupère les posts où on retrouve le mot clé saisi par l'utilisateur
-     * 
-     * @param SearchData $searchData
-     * @return PaginationInterface
-     */
-    public function findBySearch(SearchData $searchData): PaginationInterface
-    {
-        $data = $this->createQueryBuilder('p')
-            ->addOrderBy('p.creationDate', 'DESC');
-
-            if(!empty($searchData->q)) {
-                $data = $data
-                ->andWhere('p.textContent LIKE :q')
-                ->setParameter('q', "%{$searchData->q}%");
-            }
-
-            $data = $data
-                ->getQuery()
-                ->getResult();
-
-            $posts = $this->paginatorInterface->paginate($data, $searchData->page, 9);
-
+        $posts = $this->paginatorInterface->paginate($data, $page, 9);
             return $posts;
-
     }
+
+
+    // /**
+    //  * Récupère les posts où on retrouve le mot clé saisi par l'utilisateur
+    //  * 
+    //  * @param SearchData $searchData
+    //  * @return PaginationInterface
+    //  */
+    // public function findBySearch(SearchData $searchData): PaginationInterface
+    // {
+    //     $data = $this->createQueryBuilder('p')
+    //         ->addOrderBy('p.creationDate', 'DESC');
+
+    //         if(!empty($searchData->q)) {
+    //             $data = $data
+    //             ->andWhere('p.textContent LIKE :q')
+    //             ->setParameter('q', "%{$searchData->q}%");
+    //         }
+
+    //         $data = $data
+    //             ->getQuery()
+    //             ->getResult();
+
+    //         $posts = $this->paginatorInterface->paginate($data, $searchData->page, 9);
+
+    //         return $posts;
+
+    // }
 
 //    /**
 //     * @return ForumPost[] Returns an array of ForumPost objects
