@@ -82,8 +82,8 @@
                             
                             const option = document.createElement('option'); // rajoute une option au select pour chaque carte récupérée depuis l'API
                             cardJS = JSON.stringify(card)
-                            option.value = [`${card.id}, ${cardJS}`];
-                            //console.log(JSON.stringify(card));
+                            option.value =  JSON.stringify([card.id, cardJS])
+
                             option.textContent = card.name;
                             cardSelect.appendChild(option);
                          
@@ -97,20 +97,19 @@
         });
 
         
-        // modification dynamique selon ce que l'utilsiateur choisit dans le select
+        // modification dynamique selon ce que l'utilisateur choisit dans le select
         cardSelect.addEventListener('change', function() {
-            let value = cardSelect.value;
+
             let text = cardSelect.options[cardSelect.selectedIndex].textContent;
 
-             // explose le contenu du tableau au niveau de la virgule
-            let valueArray = value.split(", ");
-
-            let cardId = valueArray[0];
-            let cardDataJS = valueArray[1];
-            console.log(valueArray);
+            const cardValue = JSON.parse(cardSelect.value); // Parse the JSON string back into an array
+            const cardId = cardValue[0]; // First element is the card ID
+            const cardDataJS = cardValue[1]; // Second element is the card data as JSON
+        
             cardIdInput.value = cardId;
             cardData.value = cardDataJS;
-            //console.log(cardData.value)
+            console.log(cardValue[0])
+            console.log(cardValue[1])
 
             const myNode = document.getElementById("cardBoard"); // permet de réinitialiser l'affichage des cartes, si l'utilisateur appuie une nouvelle fois sur le bouton de recherche, les cartes affichées précédemment sont enlevées
             if (myNode) {
@@ -121,7 +120,7 @@
 
             //if (card.image_uris && card.image_uris.normal) {
                 let displayCard = new Image(250,350); //création d'un affichage pour prévisualiser le commandant sélectionné dans le select
-                displayCard.src = valueArray[1]; 
+                displayCard.src = cardValue[1]; 
                 displayCard.name = text ;
                 displayCard.classList.add('singleCard'); 
 

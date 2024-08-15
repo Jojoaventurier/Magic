@@ -104,17 +104,16 @@ class DeckBuilderController extends AbstractController
 
         $cardId = $request->get('cardId');
         $data = $request->get('cardData');
-        dd($data);
+        $dataJS = json_decode($data, true);
 
         $card->setScryfallId($cardId);
-        $card->setData($data);
+        $card->setData($dataJS);
 
         // $card->addDeck($deck);
 
         $entityManager->persist($card);
         $entityManager->persist($deck); 
         $entityManager->flush();
-
          
         return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
     }
