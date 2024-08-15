@@ -31,25 +31,23 @@ class ForumController extends AbstractController
         $subCategories = $subCategoryRepository->findAll();
 
         $topics = $topicRepository->findByLast($request->query->getInt('page', 1));
-        // $posts = '';
+
         
         $searchData = new SearchData();
         $searchForm = $this->createForm(SearchType::class, $searchData);
-        $researchToken = 'unsearched';
+        $researchToken = false;
 
         $searchForm->handleRequest($request);
         if($searchForm->isSubmitted() && $searchForm->isValid()) {
             $searchData->page = $request->query->getInt('page', 1);
             $topics = $topicRepository->findBySearch($searchData);
-            // $posts = $postRepository->findBySearch($searchData);
-            $researchToken = 'searched';
+            $researchToken = true;
 
             return $this->render('forum/index.html.twig', [
                 'categories' => $categories,
                 'subCategories' => $subCategories,
                 'searchForm' => $searchForm->createView(),
                 'topics' => $topics,
-                // 'posts' => $posts,
                 'researchToken' => $researchToken
             ]);
         }
