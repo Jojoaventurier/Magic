@@ -16,7 +16,7 @@ class Deck
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 14)]
+    #[ORM\Column(length: 20)]
     private ?string $deckName = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -28,7 +28,7 @@ class Deck
     #[ORM\Column]
     private ?bool $status = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
+    #[ORM\Column(length: 150, nullable: true)]
     private ?string $deckDescription = null;
 
     #[ORM\Column(nullable: true)]

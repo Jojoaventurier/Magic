@@ -108,7 +108,7 @@ class ForumTopicRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?ForumTopic
+    //    public functio findOnneBySomeField($value): ?ForumTopic
     //    {
     //        return $this->createQueryBuilder('f')
     //            ->andWhere('f.exampleField = :val')

@@ -93,30 +93,23 @@ class DeckBuilderController extends AbstractController
         $currentDate = new \DateTime();
         $deck->setUpdateDate($currentDate);
 
-        //TODO recherche multifiltre
-        //TODO [PRIORITY] enregister la carte sous format de data JSON
-        //TODO deck (exceptions commandant, affichages etc) -> systeme pour changer les fetch sur la recherche -> ajouter la recherche générale -> trouver un moyen d'afficher correctement les carte doubles faces -> boutons pour ajouter/supprimer une carte au deck
-        //TODO page de recherche avancée avec multifiltres (changement de requete)
-        //TODO FRONT FRONT FRONT 
-        //TODO collection ? // page profil
-        //TODO affichage double cartes sur toutes les vues : cardDetail
-        //TODO pb : code javascript répété sur les vues 
-        //TODO bug quand register -> utilisateur non connecté
 
-        if(!$deck->getCards()) {
-            $deck->setHasCommander(true);
-        }
+        // if(!$deck->getCards()) {
+        //     $deck->setHasCommander(true);
+        // }
 
         if(!$card) {
             $card = new Card();
         }
 
         $cardId = $request->get('cardId');
-        $imageUrl = $request->request->get('cardImageUrl');
-        $card->setScryfallId($cardId);
-        $card->setNormalImageUrl($imageUrl);
+        $data = $request->get('cardData');
+        dd($data);
 
-        $card->addDeck($deck);
+        $card->setScryfallId($cardId);
+        $card->setData($data);
+
+        // $card->addDeck($deck);
 
         $entityManager->persist($card);
         $entityManager->persist($deck); 
@@ -143,3 +136,14 @@ class DeckBuilderController extends AbstractController
     //     ]);
     // }
 }
+
+
+  //TODO recherche multifiltre
+        //TODO [PRIORITY] enregister la carte sous format de data JSON
+        //TODO deck (exceptions commandant, affichages etc) -> systeme pour changer les fetch sur la recherche -> ajouter la recherche générale -> trouver un moyen d'afficher correctement les carte doubles faces -> boutons pour ajouter/supprimer une carte au deck
+        //TODO page de recherche avancée avec multifiltres (changement de requete)
+        //TODO FRONT FRONT FRONT 
+        //TODO collection ? // page profil
+        //TODO affichage double cartes sur toutes les vues : cardDetail
+        //TODO pb : code javascript répété sur les vues 
+        //TODO bug quand register -> utilisateur non connecté

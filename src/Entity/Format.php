@@ -27,6 +27,9 @@ class Format
     #[ORM\OneToMany(targetEntity: Deck::class, mappedBy: 'format')]
     private Collection $decks;
 
+    #[ORM\Column(length: 20)]
+    private ?string $formatName = null;
+
     public function __construct()
     {
         $this->decks = new ArrayCollection();
@@ -87,6 +90,18 @@ class Format
                 $deck->setFormat(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getFormatName(): ?string
+    {
+        return $this->formatName;
+    }
+
+    public function setFormatName(string $formatName): static
+    {
+        $this->formatName = $formatName;
 
         return $this;
     }

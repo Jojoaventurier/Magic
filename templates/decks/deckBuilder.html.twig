@@ -25,7 +25,7 @@
     
     <form id="saveCardForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id}) }}">
         <input type="hidden" id="cardIdInput" name="cardId">
-        <input type="hidden" id="cardImageUrlInput" name="cardImageUrl">
+        <input type="hidden" id="cardData" name="cardData">
         <button type="submit">Ajouter la carte</button>
     </form>
 {% endif %}
@@ -35,9 +35,9 @@
     </div>
 
     <div id="displayDeck" class="board">
-        {% for card in deck.cards %}
+        {# {% for card in deck.cards %}
             <img class="singleCard" src="{{ card.normalImageUrl }}">
-        {% endfor %}
+        {% endfor %} #}
     </div>
 
 
@@ -59,7 +59,7 @@
         const cardBoard = document.getElementById('cardBoard'); 
         const saveCardForm = document.getElementById('saveCardForm');
         const cardIdInput = document.getElementById('cardIdInput');
-        const cardImageUrlInput = document.getElementById('cardImageUrlInput');
+        const cardData = document.getElementById('cardData');
 
     
         researchButton.addEventListener('click', function() { 
@@ -81,11 +81,12 @@
                         data.data.forEach(card => {
                             
                             const option = document.createElement('option'); // rajoute une option au select pour chaque carte récupérée depuis l'API
-
-                            option.value = [`${card.id}, ${card.image_uris.normal}`];
+                            cardJS = JSON.stringify(card)
+                            option.value = [`${card.id}, ${cardJS}`];
+                            //console.log(JSON.stringify(card));
                             option.textContent = card.name;
                             cardSelect.appendChild(option);
-                            //console.log(option.value)
+                         
 
                         });
                     } else {
@@ -105,9 +106,11 @@
             let valueArray = value.split(", ");
 
             let cardId = valueArray[0];
-            let cardImageUrl = valueArray[1];
+            let cardDataJS = valueArray[1];
+            console.log(valueArray);
             cardIdInput.value = cardId;
-            cardImageUrlInput.value = cardImageUrl;
+            cardData.value = cardDataJS;
+            //console.log(cardData.value)
 
             const myNode = document.getElementById("cardBoard"); // permet de réinitialiser l'affichage des cartes, si l'utilisateur appuie une nouvelle fois sur le bouton de recherche, les cartes affichées précédemment sont enlevées
             if (myNode) {
