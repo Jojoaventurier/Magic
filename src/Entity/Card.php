@@ -18,18 +18,18 @@ class Card
     #[ORM\Column(length: 255)]
     private ?string $scryfallId = null;
 
-    /**
-     * @var Collection<int, Deck>
-     */
-    #[ORM\ManyToMany(targetEntity: Deck::class, mappedBy: 'cards')]
-    private Collection $decks;
+    #[ORM\Column]
+    private array $data = [];
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $normalImageUrl = null;
+    /**
+     * @var Collection<int, Composition>
+     */
+    #[ORM\OneToMany(targetEntity: Composition::class, mappedBy: 'card')]
+    private Collection $compositions;
 
     public function __construct()
     {
-        $this->decks = new ArrayCollection();
+        $this->compositions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -49,41 +49,44 @@ class Card
         return $this;
     }
 
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    public function setData(array $data): static
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
     /**
-     * @return Collection<int, Deck>
+     * @return Collection<int, Composition>
      */
-    public function getDecks(): Collection
+    public function getCompositions(): Collection
     {
-        return $this->decks;
+        return $this->compositions;
     }
 
-    public function addDeck(Deck $deck): static
+    public function addComposition(Composition $composition): static
     {
-        if (!$this->decks->contains($deck)) {
-            $this->decks->add($deck);
-            $deck->addCard($this);
+        if (!$this->compositions->contains($composition)) {
+            $this->compositions->add($composition);
+            $composition->setCard($this);
         }
 
         return $this;
     }
 
-    public function removeDeck(Deck $deck): static
+    public function removeComposition(Composition $composition): static
     {
-        if ($this->decks->removeElement($deck)) {
-            $deck->removeCard($this);
+        if ($this->compositions->removeElement($composition)) {
+            // set the owning side to null (unless already changed)
+            if ($composition->getCard() === $this) {
+                $composition->setCard(null);
+            }
         }
-
-        return $this;
-    }
-
-    public function getNormalImageUrl(): ?string
-    {
-        return $this->normalImageUrl;
-    }
-
-    public function setNormalImageUrl(?string $normalImageUrl): static
-    {
-        $this->normalImageUrl = $normalImageUrl;
 
         return $this;
     }

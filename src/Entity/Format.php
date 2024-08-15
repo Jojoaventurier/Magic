@@ -15,24 +15,17 @@ class Format
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 15)]
-    private ?string $formatName = null;
+    #[ORM\Column]
+    private ?int $minNbOfCards = null;
 
     #[ORM\Column]
     private ?int $maxNbOfCards = null;
-
-    #[ORM\Column]
-    private ?int $minNbOfCards = null;
 
     /**
      * @var Collection<int, Deck>
      */
     #[ORM\OneToMany(targetEntity: Deck::class, mappedBy: 'format')]
     private Collection $decks;
-
-    #[ORM\Column(nullable: true)]
-    private ?array $authorizedSets = null;
-
 
     public function __construct()
     {
@@ -44,14 +37,14 @@ class Format
         return $this->id;
     }
 
-    public function getFormatName(): ?string
+    public function getMinNbOfCards(): ?int
     {
-        return $this->formatName;
+        return $this->minNbOfCards;
     }
 
-    public function setFormatName(string $formatName): static
+    public function setMinNbOfCards(int $minNbOfCards): static
     {
-        $this->formatName = $formatName;
+        $this->minNbOfCards = $minNbOfCards;
 
         return $this;
     }
@@ -64,18 +57,6 @@ class Format
     public function setMaxNbOfCards(int $maxNbOfCards): static
     {
         $this->maxNbOfCards = $maxNbOfCards;
-
-        return $this;
-    }
-
-    public function getMinNbOfCards(): ?int
-    {
-        return $this->minNbOfCards;
-    }
-
-    public function setMinNbOfCards(int $minNbOfCards): static
-    {
-        $this->minNbOfCards = $minNbOfCards;
 
         return $this;
     }
@@ -109,17 +90,4 @@ class Format
 
         return $this;
     }
-
-    public function getAuthorizedSets(): ?array
-    {
-        return $this->authorizedSets;
-    }
-
-    public function setAuthorizedSets(?array $authorizedSets): static
-    {
-        $this->authorizedSets = $authorizedSets;
-
-        return $this;
-    }
-
 }

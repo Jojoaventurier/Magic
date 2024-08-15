@@ -68,6 +68,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Deck::class, mappedBy: 'user')]
     private Collection $decks;
 
+    /**
+     * @var Collection<int, Deck>
+     */
+
+
     public function __construct()
     {
         $this->forumTopics = new ArrayCollection();
@@ -287,4 +292,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+
+
 }
