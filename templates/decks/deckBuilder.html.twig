@@ -124,13 +124,14 @@
 
             //if (card.image_uris && card.image_uris.normal) {
                 let displayCard = new Image(250,350); //création d'un affichage pour prévisualiser le commandant sélectionné dans le select
-                displayCard.src = cardValue[1]; 
+                displayCard.src = cardValue[1]; //image_uris.normal
                 displayCard.name = text ;
                 displayCard.classList.add('singleCard'); 
-
+                console.log(cardValue[1]);
                 let cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}"; 
                 let link = document.createElement("a"); 
-                let url = cardDetailUrl.replace('REPLACE_CARD_ID', valueArray[0]);
+                let url = cardDetailUrl.replace('REPLACE_CARD_ID', cardValue[0]);
+
                 link.href = url; 
 
                 link.appendChild(displayCard);
