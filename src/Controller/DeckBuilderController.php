@@ -91,46 +91,42 @@ class DeckBuilderController extends AbstractController
     }
 
     #[Route('/user/{user}/deck/{deck}/card', name: 'save_card_deck', methods: ['POST'])]
-    public function saveCard(Deck $deck, Card $card = null, Composition $composition = null, EntityManagerInterface $entityManager, DeckRepository $deckRepository, CardRepository $cardRepository, Request $request): Response 
+    public function saveCard(Deck $deck, Card $card = null, Composition $composition = null, EntityManagerInterface $entityManager, DeckRepository $deckRepository, CardRepository $cardRepository, CompositionRepository $compositionRepository, Request $request): Response 
     {
-
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
         $currentDate = new \DateTime();
         $deck->setUpdateDate($currentDate);
 
-        
         $cardId = $request->get('cardId');
         $card = $cardRepository->findOneBy(['scryfallId' => $cardId]);
-
-
+        $composition = $compositionRepository->findOneBy(['deck' => $deck, 'card' => $card]);
+    
         if(!$card) {
             $card = new Card();
-        }
-        if(!$composition) {
+            $data = $request->get('cardData');
+            $dataJS = json_decode($data, true); // true pour récupérer un tableau
+
+            $entityManager->persist($card);
+
             $composition = new Composition();
-        } else {
-            $quantity = $composition->getQuantity();
-            $quantity += 1;
-            $composition->setQuantity($quantity);
-        }
-        dd($composition);
-        
-        $cardId = $request->get('cardId');
-        $data = $request->get('cardData');
-        $dataJS = json_decode($data, true); // true pour récupérer un tableau
 
-        $card->setScryfallId($cardId);
-        $card->setData($dataJS);
-        $composition->setDeck($deck);
-        $composition->setCard($card);
-        $composition->setQuantity($quantity);
+            $card->setScryfallId($cardId);
+            $card->setData($dataJS);
+            $composition->setDeck($deck);
+            $composition->setCard($card);
+            $composition->setQuantity(1);
+            $entityManager->persist($composition);
 
+            } else {
+
+                $quantity = $composition->getQuantity();
+                $quantity += 1;
+                $composition->setQuantity($quantity);
+                $entityManager->persist($composition);
+            }  
+ 
         // $card->addDeck($deck);
-        $entityManager->persist($composition);
-        $entityManager->persist($card);
-        $entityManager->persist($deck); 
         $entityManager->flush();
-         
         return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
     }
 

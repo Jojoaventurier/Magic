@@ -36,7 +36,12 @@
 
     <div id="displayDeck" class="board">
         {% for element in composition %}
+
+        {% if element.quantity > 1 %}
+            <img class="singleCard" src="{{ element.card.data.image_uris.normal }}"><span>X{{ element.quantity}}</span>
+            {% else %}
             <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
+        {% endif %}
         {% endfor %}
     </div>
 
@@ -76,6 +81,7 @@
     
                         cardSelect.innerHTML = ''; // Supprime les entrées précédentes
                         const emptySpace = document.createElement('option');
+                        emptySpace.innerHTML = 'Veuillez choisir un commandant'
                         cardSelect.appendChild(emptySpace);
     
                         data.data.forEach(card => {
