@@ -6,10 +6,12 @@ use App\Entity\Card;
 use App\Entity\Deck;
 use App\Entity\User;
 use App\Form\DeckFormType;
+use App\Entity\Composition;
 use App\Repository\CardRepository;
 use App\Repository\DeckRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\CompositionRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -53,13 +55,16 @@ class DeckBuilderController extends AbstractController
 }
 
     #[Route('/deck/{id}', name: 'app_deck_builder')]
-    public function deckBuild(Deck $deck, DeckRepository $deckRepository): Response
+    public function deckBuild(Deck $deck, DeckRepository $deckRepository, CompositionRepository $compositionRepository): Response
     {
 
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
+        $composition = $compositionRepository->findBy(['deck' => $deck]);
+
 
         return $this->render('decks/deckBuilder.html.twig', [
             'deck' => $deck,
+            'composition' => $composition 
         ]);
     }
  
@@ -86,20 +91,20 @@ class DeckBuilderController extends AbstractController
     }
 
     #[Route('/user/{user}/deck/{deck}/card', name: 'save_card_deck', methods: ['POST'])]
-    public function saveCard(Deck $deck, Card $card = null, EntityManagerInterface $entityManager, DeckRepository $deckRepository, CardRepository $cardRepository, Request $request): Response 
+    public function saveCard(Deck $deck, Card $card = null, Composition $composition = null, EntityManagerInterface $entityManager, DeckRepository $deckRepository, CardRepository $cardRepository, Request $request): Response 
     {
 
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
         $currentDate = new \DateTime();
         $deck->setUpdateDate($currentDate);
-
-
-        // if(!$deck->getCards()) {
-        //     $deck->setHasCommander(true);
-        // }
+        
+        $quantity = 1;
 
         if(!$card) {
             $card = new Card();
+        }
+        if(!$composition) {
+            $composition = new Composition();
         }
 
         $cardId = $request->get('cardId');
@@ -108,9 +113,12 @@ class DeckBuilderController extends AbstractController
 
         $card->setScryfallId($cardId);
         $card->setData($dataJS);
+        $composition->setDeck($deck);
+        $composition->setCard($card);
+        $composition->setQuantity($quantity);
 
         // $card->addDeck($deck);
-
+        $entityManager->persist($composition);
         $entityManager->persist($card);
         $entityManager->persist($deck); 
         $entityManager->flush();

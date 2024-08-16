@@ -26,7 +26,7 @@
     <form id="saveCardForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id}) }}">
         <input type="hidden" id="cardIdInput" name="cardId">
         <input type="hidden" id="cardData" name="cardData">
-        <button type="submit">Ajouter la carte</button>
+        <button type="submit">Ajouter le commandant</button>
     </form>
 {% endif %}
 
@@ -35,9 +35,9 @@
     </div>
 
     <div id="displayDeck" class="board">
-        {# {% for card in deck.cards %}
-            <img class="singleCard" src="{{ card.normalImageUrl }}">
-        {% endfor %} #}
+        {% for element in composition %}
+            <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
+        {% endfor %}
     </div>
 
 
