@@ -97,19 +97,27 @@ class DeckBuilderController extends AbstractController
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
         $currentDate = new \DateTime();
         $deck->setUpdateDate($currentDate);
+
         
-        $quantity = 1;
+        $cardId = $request->get('cardId');
+        $card = $cardRepository->findOneBy(['scryfallId' => $cardId]);
+
 
         if(!$card) {
             $card = new Card();
         }
         if(!$composition) {
             $composition = new Composition();
+        } else {
+            $quantity = $composition->getQuantity();
+            $quantity += 1;
+            $composition->setQuantity($quantity);
         }
-
+        dd($composition);
+        
         $cardId = $request->get('cardId');
         $data = $request->get('cardData');
-        $dataJS = json_decode($data, true);
+        $dataJS = json_decode($data, true); // true pour récupérer un tableau
 
         $card->setScryfallId($cardId);
         $card->setData($dataJS);
