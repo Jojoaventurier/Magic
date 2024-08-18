@@ -12,9 +12,6 @@
 body {
 }
 
-.ninety {
-  width: 90%;
-}
 
 .gradient {
   background: #200122;  /* fallback for old browsers */
@@ -29,13 +26,22 @@ body {
 }
 
 .title-homepage {
-  font-size: 4rem;
+  font-size: 5.8rem;
   font-weight: 100;
+}
+
+.slim {
+  font-weight: 200;
 }
 
 .bold {
   font-weight: 500;
 }
+
+.ninety {
+  width: 90%;
+}
+
 
 .row {
   display: flex;
@@ -56,12 +62,13 @@ body {
   justify-content: center;
   align-items: center;
   width: 50%
-
 }
 
 .low-opacity {
-  opacity: 0.5;
+  opacity: 0.4;
 }
+
+/*===========================================     HOMEPAGE     ===================================================*/
 
 .search-field {
   padding-left:10px;
@@ -78,8 +85,12 @@ body {
   bottom: 2.2px;
 }
 
-#mana-homepage img {
-  width: 30%;
+.big-mana {
+  width: 6rem;
+}
+
+.small-mana {
+  width: 2.3rem;
 }
 
 .forum-wrapper {
