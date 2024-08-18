@@ -12,6 +12,10 @@
 body {
 }
 
+.ninety {
+  width: 90%;
+}
+
 .gradient {
   background: #200122;  /* fallback for old browsers */
   background: -webkit-linear-gradient(to right, #6f0000, #200122);  /* Chrome 10-25, Safari 5.1-6 */
@@ -33,6 +37,14 @@ body {
   font-weight: 500;
 }
 
+.row {
+  display: flex;
+}
+
+.center {
+  justify-content: center
+}
+
 .row-container {
   width: 100%;
   display: flex;
@@ -44,10 +56,24 @@ body {
   justify-content: center;
   align-items: center;
 
-  min-width: 350px;
-  max-width: 850px;
+
   width: 50%
 
+}
+
+.search-field {
+  padding-left:10px;
+  background-color: white;
+}
+
+.searchDiv {
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  right: 5px;
+  bottom: 2.2px;
 }
 
 .forum-wrapper {
