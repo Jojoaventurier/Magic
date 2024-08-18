@@ -14,14 +14,22 @@
     <div class="column">
         <h1 class='white title-homepage justify-center'>Bienvenue sur <br><span class="bold">Magic-Hub</span></h1>
     </div>
-    <div class="column"></div>
+    <div class="column">
+        <div>
+            <input type="text" class="search" name="search" id="searchId" placeholder="Chercher une carte...">
+            <button class="white" type="button" id="researchStart">Rechercher</button>
+
+            <div>
+                <a class="white">RECHERCHE AVANCEE</a>
+                <a class="white">TOUS LES SETS</a>
+                <a class="white">COMMANDANT ALEATOIRE</a>
+            </div>
+        </div>
+        
+    </div>
 </div>
 <main>
-    <h2>Rechercher une carte</h2>
-
-    <input type="text" class="search" name="search" id="searchId" placeholder="Chercher une carte...">
-    <select class="card" name="cardName" id="cardSelect"></select>
-    <button type="button" id="researchStart">Rechercher</button>
+   
 
     <div id="cardBoard" class="board"></div>
 </main>
