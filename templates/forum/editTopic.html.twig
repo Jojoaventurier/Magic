@@ -7,6 +7,8 @@
 
 {{ form_start(topicForm) }}
 
+    {% do topicForm.forumPost.textContent.setRendered %} <!-- empêche l'apparition du formulaire de post, pour n'avoir qu'à modifier le titre -->
+
     {{form_row(topicForm.topicTitle)}}
     
 {{ form_end(topicForm) }}
