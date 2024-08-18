@@ -79,6 +79,8 @@ class DeckBuilderController extends AbstractController
         ]);
     }
 
+    
+
 
     #[Route('/card/{cardId}', name: 'app_card_detail')]
     public function cardDetail(Request $request): Response
