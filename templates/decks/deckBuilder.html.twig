@@ -6,7 +6,7 @@
 
 <h1 class="flex justify-center">Deck Builder</h1>
 
-<div class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+<div class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
 
     <h2>{{ deck.deckName }}</h2>
 
@@ -28,42 +28,41 @@
     <a class="red" href="{{ path('delete_all_cards_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer toutes les cartes du deck</a><br>
 </div>
 
-{% if (deck.format.formatName is same as "Commander") and (deck.hasCommander is same as false) or (deck.hasCommander is same as null)  %} 
-    Rechercher une carte :
-    <input type="text" class="search" name="search" id="searchId" placeholder="Cherchez une carte...">
-    <select class="card" name="cardName" id="cardSelect"></select>
-    <button type="button" id="researchStart">Rechercher</button><br>
+<div class="row space-x-4 p-4">
+ 
+        Rechercher une carte :
+        <input type="text" class="search" name="search" id="searchId" placeholder="Cherchez une carte...">
+        <select class="card" name="cardName" id="cardSelect"></select>
+        <button type="button" id="researchStart">Rechercher</button><br>
+
+        <form id="saveCardForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id}) }}">
+            <input type="hidden" id="cardIdInput" name="cardId">
+            <input type="hidden" id="cardData" name="cardData">
+            <button type="submit">Ajouter la carte</button>
+        </form>
+</div>
+
+<div id="cardBoard" class="board">
+    <img id="cardImage">
+</div>
+
+<div id="displayDeck" class="board">
     
-    <form id="saveCardForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id}) }}">
-        <input type="hidden" id="cardIdInput" name="cardId">
-        <input type="hidden" id="cardData" name="cardData">
-        <button type="submit">Ajouter la carte</button>
-    </form>
-{% endif %}
-
-    <div id="cardBoard" class="board">
-        <img id="cardImage">
-    </div>
-
-    <div id="displayDeck" class="board">
-        {% for element in composition %}
-
+    {% for element in composition %}
+    <div class="card">
         {% if element.quantity > 1 %}
-            <img class="singleCard" src="{{ element.card.data.image_uris.normal }}"><span>X{{ element.quantity}}</span><br>
+            <img class="singleCard" src="{{ element.card.data.image_uris.normal }}"><span>X{{ element.quantity}}</span>
             {% else %}
-            <img class="singleCard" src="{{ element.card.data.image_uris.normal }}"><br>
+            <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
         {% endif %}
 
         <a href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Ajouter +1</a>
-        <a href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer -1</a>
-        <a href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer la carte</a>
-        {% endfor %}
+        <a href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supp -1</a>
+        <a class="red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer</a>
     </div>
-
-
-<main>
-
-</main>
+    {% endfor %}
+    
+</div>
 
 {% block javascripts %} 
 
