@@ -4,12 +4,6 @@
 
 {% block body %}
 
-{% if is_granted("ROLE_USER") %}
-    <a href="{{ path('app_articleForm')}}">Rédiger un article</a>
-    <a href="{{ path('app_deck_manager', {'id': user.id})}}">MES DECKS</a>
-{% endif %}
-
-
 <div class="row-container gradient">
     <div class="column">
         <h1 class='white title-homepage justify-center'>Bienvenue sur <br><span class="bold">Magic-Hub</span></h1>
