@@ -18,7 +18,7 @@ class DeckFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('deckName', TextType::class)
+            ->add('deckName', TextType::class, ['label' => 'Nom du deck'] )
             ->add('status', ChoiceType::class, [
                 'choices' => [
                     'Public' => true,
@@ -29,6 +29,7 @@ class DeckFormType extends AbstractType
                 'class' => Format::class,
                 'choice_label' => 'formatName'
             ])
+            
             ->add('Valider', SubmitType::class);
     }
 

@@ -4,20 +4,29 @@
 
 {% block body %}
 
-<h1>Deck Builder</h1>
-<h2>{{ deck.deckName }}</h2>
-<p>créé le {{ deck.creationDate|date('d.m.Y H:i') }}</p>
-<p>Format : {{ deck.format.formatName}} <a href="">(modifier)</a></p> <!--TODO -> lien modifier-->
-<p>
-    Description du deck :<br>
-    {% if deck.deckDescription is same as null %}
-        Aucune description pour le moment...
-        {% else %}
-        {{ deck.deckDescription }}
-    {% endif %}
-</p>
-<a class="red" href="{{ path('delete_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer le deck</a><br>
-<a class="red" href="{{ path('delete_all_cards_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer toutes les cartes du deck</a><br>
+<h1 class="flex justify-center">Deck Builder</h1>
+
+<div class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+
+    <h2>{{ deck.deckName }}</h2>
+
+    <p class="font-normal text-gray-700 dark:text-gray-400">
+        créé le {{ deck.creationDate|date('d.m.Y H:i') }}
+    </p>
+    <p class="font-normal text-gray-700 dark:text-gray-400">
+        Format : {{ deck.format.formatName}} <a href="">(modifier)</a>
+    </p> <!--TODO -> lien modifier-->
+    <p class="font-normal text-gray-700 dark:text-gray-400">
+        Description du deck :<br>
+        {% if deck.deckDescription is same as null %}
+            Aucune description pour le moment...
+            {% else %}
+            {{ deck.deckDescription }}
+        {% endif %}
+    </p>
+    <a class="red" href="{{ path('delete_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer le deck</a><br>
+    <a class="red" href="{{ path('delete_all_cards_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer toutes les cartes du deck</a><br>
+</div>
 
 {% if (deck.format.formatName is same as "Commander") and (deck.hasCommander is same as false) or (deck.hasCommander is same as null)  %} 
     Veuillez choisir un commandant pour le deck :
@@ -28,7 +37,7 @@
     <form id="saveCardForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id}) }}">
         <input type="hidden" id="cardIdInput" name="cardId">
         <input type="hidden" id="cardData" name="cardData">
-        <button type="submit">Ajouter le commandant</button>
+        <button type="submit">Ajouter la carte</button>
     </form>
 {% endif %}
 
@@ -42,12 +51,12 @@
         {% if element.quantity > 1 %}
             <img class="singleCard" src="{{ element.card.data.image_uris.normal }}"><span>X{{ element.quantity}}</span><br>
             {% else %}
-            <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
+            <img class="singleCard" src="{{ element.card.data.image_uris.normal }}"><br>
         {% endif %}
 
-        <a href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Ajouter +1</a><br>
-        <a href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer -1</a><br>
-        <a href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer la carte</a><br>
+        <a href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Ajouter +1</a>
+        <a href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer -1</a>
+        <a href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer la carte</a>
         {% endfor %}
     </div>
 
@@ -87,14 +96,14 @@
     
                         cardSelect.innerHTML = ''; // Supprime les entrées précédentes
                         const emptySpace = document.createElement('option');
-                        emptySpace.innerHTML = 'Veuillez choisir un commandant'
+                        emptySpace.innerHTML = 'Veuillez choisir une carte'
                         cardSelect.appendChild(emptySpace);
     
                         data.data.forEach(card => {
                             
                             const option = document.createElement('option'); // rajoute une option au select pour chaque carte récupérée depuis l'API
                             cardJS = JSON.stringify(card)
-                            option.value =  JSON.stringify([card.id, cardJS])
+                            option.value =  JSON.stringify([card.id, cardJS, card.image_uris.normal])
 
                             option.textContent = card.name;
                             cardSelect.appendChild(option);
@@ -117,6 +126,7 @@
             const cardValue = JSON.parse(cardSelect.value); // Parse the JSON string back into an array
             const cardId = cardValue[0]; // First element is the card ID
             const cardDataJS = cardValue[1]; // Second element is the card data as JSON
+            const imageUrl = cardValue[2];
         
             cardIdInput.value = cardId;
             cardData.value = cardDataJS;
@@ -130,10 +140,10 @@
 
             //if (card.image_uris && card.image_uris.normal) {
                 let displayCard = new Image(250,350); //création d'un affichage pour prévisualiser le commandant sélectionné dans le select
-                displayCard.src = cardValue[1]; //image_uris.normal
+                displayCard.src = imageUrl; 
+                
                 displayCard.name = text ;
                 displayCard.classList.add('singleCard'); 
-                console.log(cardValue[1]);
                 let cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}"; 
                 let link = document.createElement("a"); 
                 let url = cardDetailUrl.replace('REPLACE_CARD_ID', cardValue[0]);
@@ -145,14 +155,6 @@
             //}
            // console.log(value, text);
         });
-
-        //function select() {
-        //    cardSelect.dispatchEvent(new Event('change'));
-        //}
-
-        // Déclenchement manuel de l'événement change pour considérer la première valeur
-        //if(cardSelect.value)
-        //cardSelect.dispatchEvent(new Event('change'));
     });
 
 </script>

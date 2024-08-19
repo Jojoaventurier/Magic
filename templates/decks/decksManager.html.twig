@@ -3,8 +3,8 @@
 {% block title %}Gestion des decks{% endblock %}
 
 {% block body %}
-<h1>Bienvenue sur la page de gestion de vos decks</h1>
 
+    <h1 class="flex justify-center">Mes Decks</h1>
 
     {% for deck in userDecks %}
         <a href="{{ path('app_deck_builder', {'id': deck.id}) }}"> 
@@ -14,16 +14,51 @@
     {% endfor %}
 
 
-<h3>Créer un nouveau deck</h3>
+<div>
 
-    {{ form_errors(form) }}
 
-    {{ form_start(form) }}
+<section class="bg-gray-100">
+    
+    <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+        
+      <div class="grid grid-cols-1 gap-x-16 gap-y-8 lg:grid-cols-5">
+        <div class="rounded-lg bg-white p-8 shadow-lg lg:col-span-3 lg:p-12">
+            <h3>Créer un nouveau deck</h3>
 
-        {{ form_row(form.deckName) }}
-        {{ form_row(form.status) }}
-        {{ form_row(form.format) }}
+            {{ form_errors(form) }}
 
-    {{ form_end(form) }}
+            {{ form_start(form) }}
+          <form action="#" class="space-y-4">
+            <div>
+                {{ form_row(form.deckName, { 'attr': {'class': 'w-full rounded-lg border-gray-200 p-3 text-sm'}}) }}
+              
+  
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        </div>
+
+            <div class="grid grid-cols-1 gap-4 text-center sm:grid-cols-3">
+            </div>
+            {{ form_row(form.status) }}
+            {{ form_row(form.format) }}
+            {# <div>
+              <label class="sr-only" for="message">Message</label>
+  
+              <textarea
+                class="w-full rounded-lg border-gray-200 p-3 text-sm"
+                placeholder="Message"
+                rows="8"
+                id="message"
+              ></textarea>
+            </div> #}
+            {{ form_row(form.Valider, { 'attr': {'class': "inline-block w-full rounded-lg bg-black px-5 py-3 font-medium text-white sm:w-auto"}}) }}
+            
+            {{ form_end(form) }}
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
 
 {% endblock %}
