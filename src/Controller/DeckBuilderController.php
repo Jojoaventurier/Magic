@@ -132,29 +132,25 @@ class DeckBuilderController extends AbstractController
         return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
     }
 
+    public function plusOne() {
 
-    // #[Route("/card/{id}", name="card_detail")}
-    // public function detail($id): Response
-    // {
-    //     // Récupère les détails de la carte en fonction de l'ID
-    //     $card = [
-    //         'id' => $id,
-    //         'name' => 'Nom de la carte ' . $id,
-    //         'description' => 'Description de la carte ' . $id,
-    //         // autres détails
-    //     ];
+    }
 
-    //     return $this->render('card_detail.html.twig', [
-    //         'card' => $card,
-    //     ]);
-    // }
+    public function minusOne() {
+
+    }
+
+    public function deleteCard() {
+
+    }
+
+    public function deleteAllCards() {
+        
+    }
+
 }
 
-
-  //TODO recherche multifiltre
-        //TODO [PRIORITY] enregister la carte sous format de data JSON
         //TODO deck (exceptions commandant, affichages etc) -> systeme pour changer les fetch sur la recherche -> ajouter la recherche générale -> trouver un moyen d'afficher correctement les carte doubles faces -> boutons pour ajouter/supprimer une carte au deck
-        //TODO page de recherche avancée avec multifiltres (changement de requete)
         //TODO FRONT FRONT FRONT 
         //TODO collection ? // page profil
         //TODO affichage double cartes sur toutes les vues : cardDetail

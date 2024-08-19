@@ -6,7 +6,7 @@
 
 {% if is_granted("ROLE_USER") %}
     <a href="{{ path('app_articleForm')}}">Rédiger un article</a>
-    <a href="{{ path('app_deck_manager', {'id': user.id})}}">MES DECKSSSSS</a>
+    <a href="{{ path('app_deck_manager', {'id': user.id})}}">MES DECKS</a>
 {% endif %}
 
 
