@@ -16,6 +16,8 @@
         {{ deck.deckDescription }}
     {% endif %}
 </p>
+<a class="red" href="{{ path('delete_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer le deck</a><br>
+<a class="red" href="{{ path('delete_all_cards_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer toutes les cartes du deck</a><br>
 
 {% if (deck.format.formatName is same as "Commander") and (deck.hasCommander is same as false) or (deck.hasCommander is same as null)  %} 
     Veuillez choisir un commandant pour le deck :
@@ -38,13 +40,14 @@
         {% for element in composition %}
 
         {% if element.quantity > 1 %}
-            <img class="singleCard" src="{{ element.card.data.image_uris.normal }}"><span>X{{ element.quantity}}</span>
+            <img class="singleCard" src="{{ element.card.data.image_uris.normal }}"><span>X{{ element.quantity}}</span><br>
             {% else %}
             <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
         {% endif %}
-        <a>Ajouter +1</a>
-        <a>Supprimer -1</a>
-        <a>Supprimer la carte</a>
+
+        <a href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Ajouter +1</a><br>
+        <a href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer -1</a><br>
+        <a href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer la carte</a><br>
         {% endfor %}
     </div>
 

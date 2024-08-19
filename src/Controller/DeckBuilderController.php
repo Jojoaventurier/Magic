@@ -119,33 +119,119 @@ class DeckBuilderController extends AbstractController
             $composition->setQuantity(1);
             $entityManager->persist($composition);
 
-            } else {
+            } else if($card && !$composition) {
 
-                $quantity = $composition->getQuantity();
-                $quantity += 1;
-                $composition->setQuantity($quantity);
-                $entityManager->persist($composition);
-            }  
+                    $composition = new Composition();
+                    $composition->setQuantity(1);
+                    $composition->setDeck($deck);
+                    $composition->setCard($card);
+                    $entityManager->persist($composition);
+                    
+                } else {
+                    $quantity = $composition->getQuantity();
+                    $quantity += 1;
+                    $composition->setQuantity($quantity);
+                    $entityManager->persist($composition);
+            }     
  
         // $card->addDeck($deck);
         $entityManager->flush();
         return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
     }
 
-    public function plusOne() {
+    #[Route('/user/{user}/deck/{deck}/{card}/plus', name: 'plus_card_deck', methods: ['POST', 'GET'])]
+    public function plusOne(Deck $deck, $card, DeckRepository $deckRepository, CardRepository $cardRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager, Request $request, ) {
 
+        $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
+        $currentDate = new \DateTime();
+        $deck->setUpdateDate($currentDate);
+
+        $card = $cardRepository->findOneBy(['scryfallId' => $card]);
+
+        $composition = $compositionRepository->findOneBy(['deck' => $deck, 'card' => $card]);
+
+        $quantity = $composition->getQuantity();
+        $quantity += 1;
+        $composition->setQuantity($quantity);
+        $entityManager->persist($composition);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
     }
 
-    public function minusOne() {
+    #[Route('/user/{user}/deck/{deck}/{card}/minus', name: 'minus_card_deck', methods: ['POST', 'GET'])]
+    public function minusOne(Deck $deck, $card, DeckRepository $deckRepository, CardRepository $cardRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager) {
 
+        $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
+        $currentDate = new \DateTime();
+        $deck->setUpdateDate($currentDate);
+
+
+        $card = $cardRepository->findOneBy(['scryfallId' => $card]);
+
+        $composition = $compositionRepository->findOneBy(['deck' => $deck, 'card' => $card]);
+
+        $quantity = $composition->getQuantity();
+
+        if($quantity > 1) {
+            $quantity -= 1;
+            $composition->setQuantity($quantity);
+            $entityManager->persist($composition);
+
+        } else if ($quantity == 1) {
+            $entityManager->remove($composition);
+        }
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
     }
 
-    public function deleteCard() {
 
-    }
-
-    public function deleteAllCards() {
+    #[Route('/user/{user}/deck/{deck}/{card}/delete', name: 'delete_card_deck', methods: ['GET'])]
+    public function deleteCardFromDeck(Deck $deck, $card, DeckRepository $deckRepository, CardRepository $cardRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager) {
         
+        $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
+        $card = $cardRepository->findOneBy(['scryfallId' => $card]);
+
+        $composition = $compositionRepository->findOneBy(['deck' => $deck, 'card' => $card]);
+
+        $entityManager->remove($composition);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
+    }
+
+    #[Route('/user/{user}/deck/{deck}/deleteAllCards', name: 'delete_all_cards_deck', methods: ['GET'])]
+    public function deleteAllCards(Deck $deck, DeckRepository $deckRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager) {
+        $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
+        $compositions = $compositionRepository->findBy(['deck' => $deck]);
+
+        foreach($compositions as $composition) {
+            $entityManager->remove($composition);
+        }
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
+    }
+
+    #[Route('/user/{user}/deck/{deck}/delete', name: 'delete_deck', methods: ['GET'])]
+    public function deleteDeck(Deck $deck, DeckRepository $deckRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager) {
+
+        $user = $this->getUser()->getId();
+        $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
+        $compositions = $compositionRepository->findBy(['deck' => $deck]);
+
+        foreach($compositions as $composition) {
+            $entityManager->remove($composition);
+        }
+
+        $entityManager->remove($deck);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_deck_manager', ['id' => $user]);
+
     }
 
 }

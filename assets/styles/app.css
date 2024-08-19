@@ -25,6 +25,10 @@ body {
   color: white;
 }
 
+.red {
+  color: red;
+}
+
 .title-homepage {
   font-size: 5.8rem;
   font-weight: 100;
