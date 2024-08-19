@@ -4,66 +4,47 @@
 
 {% block body %}
 
-    <h1 class="flex justify-center">Mes Decks</h1>
-    <div class="flex flex-col">
-        {% for deck in userDecks %}
+  <h1 class="flex justify-center bold my-6">Mes Decks</h1>
+  <div class="flex flex-col">
+      {% for deck in userDecks %}
+          <p class="flex justify-center">
             <a class="inline-flex justify-center w-prose" href="{{ path('app_deck_builder', {'id': deck.id}) }}"> 
-                {{ deck.deckName }} 
-                {% if deck.updateDate is same as null %}
-                créé le {{ deck.creationDate|date('d.m.Y H:i')}}
-                {% else %}
-                modifié le {{ deck.updateDate|date('d.m.Y H:i') }}
-                {% endif %}
-            </a>
-        {% endfor %}
-    </div>
+                <span class="bold">{{ deck.deckName }}</span>
+            </a> 
+            <span class="ml-2">
+              {% if deck.updateDate is same as null %}
+              créé le {{ deck.creationDate|date('d.m.Y à H:i')}}
+              {% else %}
+              modifié le {{ deck.updateDate|date('d.m.Y à H:i') }}
+              {% endif %}
+            </span>
+          </p>
+      {% endfor %}
+  </div>
 
 
-<div>
+  <section class="px-4 py-8 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-1">
+      
+      <div class="max-w-md mx-auto rounded-lg bg-white p-8 shadow-lg lg:max-w-lg lg:p-8">
+        <h3 class="mb-6 bold ">Ajouter un nouveau deck</h3>
 
+        {{ form_errors(form) }}
 
-<section class="bg-gray-100">
-    
-    <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+        {{ form_start(form, { 'attr': {'class': 'space-y-4'}}) }}
+        <div>
+          {{ form_row(form.deckName, { 'attr': {'class': 'w-full rounded-lg border border-gray-400 p-3 text-sm focus:outline-none focus:border-red-800 '}}) }}
+        </div>
+        {{ form_row(form.status) }}
+        {{ form_row(form.format) }}
+        {{ form_row(form.Valider, { 'attr': {'class': "inline-block w-full rounded-lg bg-black px-5 py-3 font-medium text-white sm:w-auto"}}) }}
         
-      <div class="grid grid-cols-1 gap-x-16 gap-y-8 lg:grid-cols-5">
-        <div class="rounded-lg bg-white p-8 shadow-lg lg:col-span-3 lg:p-12">
-            <h3>Créer un nouveau deck</h3>
-
-            {{ form_errors(form) }}
-
-            {{ form_start(form) }}
-          <form action="#" class="space-y-4">
-            <div>
-                {{ form_row(form.deckName, { 'attr': {'class': 'w-full rounded-lg border-gray-200 p-3 text-sm'}}) }}
-              
-  
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        </div>
-
-            <div class="grid grid-cols-1 gap-4 text-center sm:grid-cols-3">
-            </div>
-            {{ form_row(form.status) }}
-            {{ form_row(form.format) }}
-            {# <div>
-              <label class="sr-only" for="message">Message</label>
-  
-              <textarea
-                class="w-full rounded-lg border-gray-200 p-3 text-sm"
-                placeholder="Message"
-                rows="8"
-                id="message"
-              ></textarea>
-            </div> #}
-            {{ form_row(form.Valider, { 'attr': {'class': "inline-block w-full rounded-lg bg-black px-5 py-3 font-medium text-white sm:w-auto"}}) }}
-            
-            {{ form_end(form) }}
-          </form>
-        </div>
+        {{ form_end(form) }}
       </div>
     </div>
   </section>
 
-</div>
+
+
 
 {% endblock %}

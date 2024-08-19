@@ -4,18 +4,10 @@
 
 {% block body %}
 
-{% if app.user %}
-    <a href="{{ path('app_deck_manager', {'id': user.id})}}">MES DECKS</a>
-{% endif %}
-
 <main>
     <h1>Recherche de Cartes</h1>
 
-
-    <div>AJOUTER DES FILTES APPELES EN JS POUR MODIFIER LES REQUETES ENVERS LAPI</div>
-    
     <input type="text" class="search" name="search" id="searchId" placeholder="Chercher une carte..."> <!-- affiche la barre de recherche, la valeur entrée par l'utilisateur est utilisée en JS pour effectuer la requête vers l'API scryfall-->
-    <select class="card" name="cardName" id="cardSelect"></select> <!-- select que l'on récupère en JS pour y ajouter la liste de cartes récupérée en affichant le nom de la carte, la valeur intrinsèque sera l'id de la carte-->
     <button type="button" id="researchStart">Rechercher</button> <!--bouton pour lancer la recherche et déclencher l'appel API -->
 
     <div id="cardBoard" class="board"></div>
@@ -28,7 +20,7 @@
     document.addEventListener('DOMContentLoaded', function() { // le script se déclenche uniquement une fois le DOM chargé
     
         const searchInput = document.getElementById('searchId'); //on récupère l'élément qui sert de barre de recherche à l'utilisateur
-        const cardSelect = document.getElementById('cardSelect'); // on récupère l'élément HTML select
+        
         const researchButton = document.getElementById('researchStart'); // on récupère le bouton qui doit déclenche la recherche
         const cardBoard = document.getElementById('cardBoard'); // récupère la div dans laquelle les images et lien vers le détail des cartes récupérées seront insérées
     
@@ -53,13 +45,8 @@
                                 }
                             }
                             
-                        cardSelect.innerHTML = ''; // Supprime les entrées précédentes
     
                         data.data.forEach(card => { 
-                            const option = document.createElement('option'); // rajoute une option au select pour chaque carte récupérée depuis l'API
-                            option.value = card.id; // la valeur du sélect est l'id de la carte
-                            option.textContent = card.name; // le texte affiché est le nom de la carte
-                            cardSelect.appendChild(option); //on ajoute une option au select pour chaque carte
     
                             if (card.image_uris && card.image_uris.normal) {
                                 let displayCard = new Image(250,350); // créé un nouvel élément <img> d'une taille fixe

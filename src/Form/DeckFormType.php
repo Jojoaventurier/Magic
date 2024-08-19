@@ -18,12 +18,13 @@ class DeckFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('deckName', TextType::class, ['label' => 'Nom du deck'] )
+            ->add('deckName', TextType::class, ['label' => 'Veuillez saisir le nom du deck :'] )
             ->add('status', ChoiceType::class, [
                 'choices' => [
                     'Public' => true,
                     'Privé' => false
-                ]
+                ],
+                'label' => 'Publier en '
             ])
             ->add('format', EntityType::class, [
                 'class' => Format::class,

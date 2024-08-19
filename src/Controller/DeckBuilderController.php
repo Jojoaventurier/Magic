@@ -219,7 +219,8 @@ class DeckBuilderController extends AbstractController
     #[Route('/user/{user}/deck/{deck}/delete', name: 'delete_deck', methods: ['GET'])]
     public function deleteDeck(Deck $deck, DeckRepository $deckRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager) {
 
-        $user = $this->getUser()->getId();
+        $user = $this->getUser();
+        $userId = $user->getId();
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
         $compositions = $compositionRepository->findBy(['deck' => $deck]);
 
@@ -230,7 +231,7 @@ class DeckBuilderController extends AbstractController
         $entityManager->remove($deck);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_deck_manager', ['id' => $user]);
+        return $this->redirectToRoute('app_deck_manager', ['id' => $userId]);
 
     }
 
