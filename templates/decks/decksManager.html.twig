@@ -5,13 +5,18 @@
 {% block body %}
 
     <h1 class="flex justify-center">Mes Decks</h1>
-
-    {% for deck in userDecks %}
-        <a href="{{ path('app_deck_builder', {'id': deck.id}) }}"> 
-            {{ deck.deckName }} créé le
-            {{ deck.creationDate|date('d.m.Y H:i')}}<br>
-        </a>
-    {% endfor %}
+    <div class="flex flex-col">
+        {% for deck in userDecks %}
+            <a class="inline-flex justify-center w-prose" href="{{ path('app_deck_builder', {'id': deck.id}) }}"> 
+                {{ deck.deckName }} 
+                {% if deck.updateDate is same as null %}
+                créé le {{ deck.creationDate|date('d.m.Y H:i')}}
+                {% else %}
+                modifié le {{ deck.updateDate|date('d.m.Y H:i') }}
+                {% endif %}
+            </a>
+        {% endfor %}
+    </div>
 
 
 <div>

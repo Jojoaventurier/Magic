@@ -29,7 +29,7 @@
 </div>
 
 {% if (deck.format.formatName is same as "Commander") and (deck.hasCommander is same as false) or (deck.hasCommander is same as null)  %} 
-    Veuillez choisir un commandant pour le deck :
+    Rechercher une carte :
     <input type="text" class="search" name="search" id="searchId" placeholder="Cherchez une carte...">
     <select class="card" name="cardName" id="cardSelect"></select>
     <button type="button" id="researchStart">Rechercher</button><br>
@@ -85,8 +85,9 @@
         researchButton.addEventListener('click', function() { 
             const query = searchInput.value; 
     
+            // fetch(`https://api.scryfall.com/cards/search?q=is:commander+name:${query}`)
             // fetch(`https://api.scryfall.com/cards/search?q=name:${query}+lang:fr`) 
-            fetch(`https://api.scryfall.com/cards/search?q=is:commander+name:${query}`) //+type:legendary+type:creature
+            fetch(`https://api.scryfall.com/cards/search?q=${query}`) //+type:legendary+type:creature
          
                 .then(response => response.json())
                 .then(data => {
@@ -141,7 +142,7 @@
             //if (card.image_uris && card.image_uris.normal) {
                 let displayCard = new Image(250,350); //création d'un affichage pour prévisualiser le commandant sélectionné dans le select
                 displayCard.src = imageUrl; 
-                
+
                 displayCard.name = text ;
                 displayCard.classList.add('singleCard'); 
                 let cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}"; 
