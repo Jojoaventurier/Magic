@@ -3,12 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Deck;
+use App\Entity\User;
 use App\Repository\DeckRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CompositionRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\FrameworkBundle\Controller\RedirectController;
 
 class HomeController extends AbstractController
 {
@@ -55,6 +58,26 @@ class HomeController extends AbstractController
             'composition' => $composition,
             'user' => $user 
         ]);
+    }
+
+    #[Route('/deck/{id}/liked', name: 'like_deck')]
+    public function addLike(User $user, Deck $deck, DeckRepository $deckRepository, EntityManagerInterface $entityManager): Response
+    {   
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw $this->createAccessDeniedException('Vous devez être connectés pour ajouter un deck aux favoris.');
+        }
+        // Check if the user has already liked the deck
+        if (!$user->getDecksLiked()->contains($deck)) {
+            $user->addDecksLiked($deck);
+
+            // Persist the changes
+            $entityManager->persist($user);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_deck_consult', ['id' => $deck->getId()]);
     }
 
 }

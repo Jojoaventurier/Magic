@@ -4,10 +4,10 @@
 
 {% block body %}
 
-<h1>Tous les decks</h1>
+<h1 class="flex justify-center">Tous les decks</h1>
 
 {% for deck in decks %}
-        <p class="flex justify-center">
+        <p class="flex justify-center space-x-2">
             <a class="inline-flex justify-center w-prose" href="{{ path('app_deck_consult', {'id': deck.id}) }}"> 
                 <span class="bold">{{ deck.deckName }}</span>
             </a> 
@@ -18,8 +18,11 @@
             modifié le {{ deck.updateDate|date('d.m.Y à H:i') }}
             {% endif %}
             </span>
-            <span class="'bold">
-                {{ deck.user.userName }}
+            <span>
+            par <span class="bold">{{ deck.user.userName }}</span>
+            </span>
+            <span class="bold">
+                {{ deck.format.formatName }}
             </span>
             <span class="inline-flex">
                 (<img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-rounded/24/like--v1.png" alt="like--v1"/>

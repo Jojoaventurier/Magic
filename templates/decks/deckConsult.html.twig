@@ -27,25 +27,25 @@
 
         {% if app.user.decksLiked is not null %}
             {% for likedDeck in app.user.decksLiked %}
-                {% if deck.name is same as likedDeck.name %}
-                    <img width="20" height="20" src="https://img.icons8.com/material-rounded/24/like--v1.png" alt="like--v1"/>
+                {% if deck.deckName is same as likedDeck.deckName %}
+                    <span class="mx-2 inline-flex"><img class="w-4 h-4 mt-1 mx-1" src="https://img.icons8.com/material-rounded/24/like--v1.png" alt="like--v1"/> ajouté en favoris.</span>
                 {% else %}
+                <a href="{{ path('like_deck', {'id': deck.id}) }}">
                     <div class="border border-red-800 rounded inline-flex items-center space-x-2 p-1">
                         <p class="m-0 bold">Ajouter le deck aux favoris</p>
-                        <img class="w-5 h-5" src="https://img.icons8.com/material-outlined/24/like--v1.png" alt="like--v1"/>
+                        <img class="w-4 h-4" src="https://img.icons8.com/material-outlined/24/like--v1.png" alt="like--v1"/>
                     </div>
+                </a>
                 {% endif %}
             {% endfor %}
 
             {% endif %}
-            <div class="border border-red-800 rounded inline-flex items-center space-x-2 p-1">
-                <p class="m-0 bold">Ajouter le deck aux favoris</p>
-                <img class="w-5 h-5" src="https://img.icons8.com/material-outlined/24/like--v1.png" alt="like--v1"/>
-            </div>
+            
         {% endif %}
+
         <div class="border border-red-800 rounded inline-flex items-center space-x-2 p-1">
             <p class="m-0 bold">Rédiger un commentaire</p>
-            <img class="w-5 h-5" src="https://img.icons8.com/material-outlined/24/comments--v1.png" alt="comments--v1"/>
+            <img class="w-4 h-4" src="https://img.icons8.com/material-outlined/24/comments--v1.png" alt="comments--v1"/>
         </div>
         <div>
             <div class="inline-flex">
@@ -53,9 +53,6 @@
                 {{ deck.likes|length }}) 
             </div>
         </div>
-        
-    
-    
 </div>
 
 <div id="displayDeck" class="board">
