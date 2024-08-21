@@ -6,24 +6,30 @@
 
 <h1 class="flex justify-center">Deck Builder</h1>
 
-<div class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+<div class="space-y-2 block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
 
-    <h2>{{ deck.deckName }}</h2>
+    <h1><span class='bold'>{{ deck.deckName }}</span></h2>
 
     <p class="font-normal text-gray-700 dark:text-gray-400">
         créé le {{ deck.creationDate|date('d.m.Y H:i') }}
     </p>
     <p class="font-normal text-gray-700 dark:text-gray-400">
-        Format : {{ deck.format.formatName}} <a href="">(modifier)</a>
+        <span class="bold">Format</span> : {{ deck.format.formatName}}
     </p> <!--TODO -> lien modifier-->
     <p class="font-normal text-gray-700 dark:text-gray-400">
-        Description du deck :<br>
+        <span class="bold">Description du deck :</span><br>
         {% if deck.deckDescription is same as null %}
             Aucune description pour le moment...
             {% else %}
             {{ deck.deckDescription }}
         {% endif %}
     </p>
+    <div>
+        <div class="inline-flex">
+            (<img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-rounded/24/like--v1.png" alt="like--v1"/>
+            {{ deck.likes|length }}) 
+        </div>
+    </div>
     <a class="red" href="{{ path('delete_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer le deck</a><br>
     <a class="red" href="{{ path('delete_all_cards_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer toutes les cartes du deck</a><br>
 </div>

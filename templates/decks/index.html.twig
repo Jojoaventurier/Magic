@@ -7,22 +7,29 @@
 <h1>Tous les decks</h1>
 
 {% for deck in decks %}
-          <p class="flex justify-center">
+        <p class="flex justify-center">
             <a class="inline-flex justify-center w-prose" href="{{ path('app_deck_consult', {'id': deck.id}) }}"> 
                 <span class="bold">{{ deck.deckName }}</span>
             </a> 
             <span class="ml-2">
-              {% if deck.updateDate is same as null %}
-              créé le {{ deck.creationDate|date('d.m.Y à H:i')}}
-              {% else %}
-              modifié le {{ deck.updateDate|date('d.m.Y à H:i') }}
-              {% endif %}
+            {% if deck.updateDate is same as null %}
+            créé le {{ deck.creationDate|date('d.m.Y à H:i')}}
+            {% else %}
+            modifié le {{ deck.updateDate|date('d.m.Y à H:i') }}
+            {% endif %}
             </span>
             <span class="'bold">
                 {{ deck.user.userName }}
             </span>
-          </p>
-      {% endfor %}
+            <span class="inline-flex">
+                (<img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-rounded/24/like--v1.png" alt="like--v1"/>
+                {{ deck.likes|length }}) 
+            </span>
+        </p>
+        <p class="flex justify-center">
+            
+        </p>
+{% endfor %}
 
 
 

@@ -45,14 +45,15 @@ class HomeController extends AbstractController
     #[Route('/deck/{id}', name: 'app_deck_consult')]
     public function deckBuild(Deck $deck, DeckRepository $deckRepository, CompositionRepository $compositionRepository): Response
     {
-
+        $user = $this->getUser();
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
         $composition = $compositionRepository->findBy(['deck' => $deck]);
 
 
         return $this->render('decks/deckConsult.html.twig', [
             'deck' => $deck,
-            'composition' => $composition 
+            'composition' => $composition,
+            'user' => $user 
         ]);
     }
 
