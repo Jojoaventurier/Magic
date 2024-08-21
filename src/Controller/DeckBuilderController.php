@@ -54,7 +54,7 @@ class DeckBuilderController extends AbstractController
         ]);
 }
 
-    #[Route('/deck/{id}', name: 'app_deck_builder')]
+    #[Route('/build/deck/{id}', name: 'app_deck_builder')]
     public function deckBuild(Deck $deck, DeckRepository $deckRepository, CompositionRepository $compositionRepository): Response
     {
 

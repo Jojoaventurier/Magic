@@ -50,9 +50,16 @@ class Deck
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'decksLiked')]
+    private Collection $likes;
+
     public function __construct()
     {
         $this->compositions = new ArrayCollection();
+        $this->likes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -194,6 +201,30 @@ class Deck
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(User $like): static
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes->add($like);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(User $like): static
+    {
+        $this->likes->removeElement($like);
 
         return $this;
     }

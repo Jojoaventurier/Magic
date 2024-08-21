@@ -71,6 +71,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Deck>
      */
+    #[ORM\ManyToMany(targetEntity: Deck::class, mappedBy: 'likes')]
+    private Collection $decksLiked;
+
+    /**
+     * @var Collection<int, Deck>
+     */
 
 
     public function __construct()
@@ -78,6 +84,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->forumTopics = new ArrayCollection();
         $this->forumPosts = new ArrayCollection();
         $this->decks = new ArrayCollection();
+        $this->decksLiked = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -288,6 +295,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             if ($deck->getUser() === $this) {
                 $deck->setUser(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Deck>
+     */
+    public function getDecksLiked(): Collection
+    {
+        return $this->decksLiked;
+    }
+
+    public function addDecksLiked(Deck $decksLiked): static
+    {
+        if (!$this->decksLiked->contains($decksLiked)) {
+            $this->decksLiked->add($decksLiked);
+            $decksLiked->addLike($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDecksLiked(Deck $decksLiked): static
+    {
+        if ($this->decksLiked->removeElement($decksLiked)) {
+            $decksLiked->removeLike($this);
         }
 
         return $this;

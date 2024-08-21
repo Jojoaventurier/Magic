@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des decks{% endblock %}
+
+{% block body %}
+
+<h1>Tous les decks</h1>
+
+{% for deck in decks %}
+          <p class="flex justify-center">
+            <a class="inline-flex justify-center w-prose" href="{{ path('app_deck_consult', {'id': deck.id}) }}"> 
+                <span class="bold">{{ deck.deckName }}</span>
+            </a> 
+            <span class="ml-2">
+              {% if deck.updateDate is same as null %}
+              créé le {{ deck.creationDate|date('d.m.Y à H:i')}}
+              {% else %}
+              modifié le {{ deck.updateDate|date('d.m.Y à H:i') }}
+              {% endif %}
+            </span>
+            <span class="'bold">
+                {{ deck.user.userName }}
+            </span>
+          </p>
+      {% endfor %}
+
+
+
+{% block javascripts %} 
+{% endblock %}
+{% endblock %}
