@@ -13,6 +13,13 @@
     <p class="font-normal text-gray-700 dark:text-gray-400">
         créé le {{ deck.creationDate|date('d.m.Y H:i') }}
     </p>
+
+    {% if deck.updateDate %}
+    <p class="font-normal text-gray-700 dark:text-gray-400">
+        modifié le {{ deck.updateDate|date('d.m.Y H:i') }}
+    </p>
+    {% endif %}
+    
     <p class="font-normal text-gray-700 dark:text-gray-400">
         <span class="bold">Format</span> : {{ deck.format.formatName}}
     </p> <!--TODO -> lien modifier-->

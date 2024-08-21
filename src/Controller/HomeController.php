@@ -51,32 +51,56 @@ class HomeController extends AbstractController
         $user = $this->getUser();
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
         $composition = $compositionRepository->findBy(['deck' => $deck]);
+        $comments = [];
 
 
         return $this->render('decks/deckConsult.html.twig', [
             'deck' => $deck,
             'composition' => $composition,
-            'user' => $user 
+            'user' => $user,
+            'comments' => $comments
         ]);
     }
 
     #[Route('/deck/{id}/liked', name: 'like_deck')]
-    public function addLike(User $user, Deck $deck, DeckRepository $deckRepository, EntityManagerInterface $entityManager): Response
+    public function addLike(Deck $deck, EntityManagerInterface $entityManager): Response
     {   
         $user = $this->getUser();
-
+    
         if (!$user) {
-            throw $this->createAccessDeniedException('Vous devez être connectés pour ajouter un deck aux favoris.');
+            throw $this->createAccessDeniedException('Vous devez être connecté pour ajouter un deck aux favoris.');
         }
+    
         // Check if the user has already liked the deck
         if (!$user->getDecksLiked()->contains($deck)) {
             $user->addDecksLiked($deck);
-
+    
             // Persist the changes
             $entityManager->persist($user);
             $entityManager->flush();
         }
+    
+        return $this->redirectToRoute('app_deck_consult', ['id' => $deck->getId()]);
+    }
 
+    #[Route('/deck/{id}/likedremoved', name: 'remove_like_deck')]
+    public function removeLike(Deck $deck, EntityManagerInterface $entityManager): Response
+    {   
+        $user = $this->getUser();
+    
+        if (!$user) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour retirer un deck des favoris.');
+        }
+    
+        // Check if the user has already liked the deck
+        if ($user->getDecksLiked()->contains($deck)) {
+            $user->removeDecksLiked($deck);
+    
+            // Persist the changes
+            $entityManager->persist($user);
+            $entityManager->flush();
+        }
+    
         return $this->redirectToRoute('app_deck_consult', ['id' => $deck->getId()]);
     }
 

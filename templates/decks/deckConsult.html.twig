@@ -8,20 +8,27 @@
 
     <h1><span class='bold'>{{ deck.deckName }}</span></h2>
 
+    {% if deck.updateDate is same as null %}
+        <p class="font-normal text-gray-700 dark:text-gray-400">
+            créé le {{ deck.creationDate|date('d.m.Y H:i') }}
+        </p>
+    {% else %}
     <p class="font-normal text-gray-700 dark:text-gray-400">
-        créé le {{ deck.creationDate|date('d.m.Y H:i') }}
+        modifié le {{ deck.updateDate|date('d.m.Y H:i') }}
     </p>
+    {% endif %}
+
     <p class="font-normal text-gray-700 dark:text-gray-400">
         <span class="bold">Format</span> : {{ deck.format.formatName}}
     </p> <!--TODO -> lien modifier-->
-    <p class="font-normal text-gray-700 dark:text-gray-400">
+    <div class="mb-2">
         <span class="bold">Description du deck :</span><br>
         {% if deck.deckDescription is same as null %}
-            Aucune description pour le moment...
+            <p class="mb-2 font-normal text-gray-700 dark:text-gray-400">Aucune description pour le moment...</p>
             {% else %}
-            {{ deck.deckDescription }}
+            <p class="mb-2 font-normal text-gray-700 dark:text-gray-400">{{ deck.deckDescription }}</p>
         {% endif %}
-    </p>
+    </div>
 
 {% if app.user %}
     {% set isLiked = false %}
@@ -35,10 +42,11 @@
     {% endif %}
 
     {% if isLiked %}
-        <span class="mx-2 inline-flex">
+        <!-- Link to remove the deck from favorites -->
+        <a href="{{ path('remove_like_deck', {'id': deck.id}) }}" class="inline-flex items-center space-x-1">
             <img class="w-4 h-4 mt-1 mx-1" src="https://img.icons8.com/material-rounded/24/like--v1.png" alt="like--v1"/>
-            ajouté en favoris.
-        </span>
+            <p class="m-0 text-red-600">Retirer des favoris</p>      
+        </a>
     {% else %}
         <a href="{{ path('like_deck', {'id': deck.id}) }}">
             <div class="border border-red-800 rounded inline-flex items-center space-x-2 p-1">
@@ -74,6 +82,29 @@
     {% endfor %}
     
 </div>
+
+<section>
+
+    <h3>Commentaires :</h3>
+
+    {% for comment in comments %}
+    
+    <div>
+        <p>textContent</p>
+        {% if comment.updateDate is same as null %}
+        <p>posté par comment.user.userName le comment.creationDate</p>
+        {% else %}
+        <p>posté par comment.user.userName le comment.creationDate</p>
+        {% endif %}
+        
+        {% if app.user is same as comment.user %}
+        <a href="#">Modifier le commentaire</a>
+        <a href="#">Supprimer le commentaire</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+</section>
 
 {% block javascripts %} 
 
