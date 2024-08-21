@@ -4,9 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Deck;
 use App\Entity\User;
+use App\Entity\Comment;
+use App\Form\CommentType;
 use App\Repository\DeckRepository;
+use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CompositionRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -45,21 +49,91 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/deck/{id}', name: 'app_deck_consult')]
-    public function deckBuild(Deck $deck, DeckRepository $deckRepository, CompositionRepository $compositionRepository): Response
+    #[Route('/deck/{id}', name: 'app_deck_consult', methods: ['GET', 'POST'])]
+    public function deckBuild(Deck $deck, Comment $comment = null, DeckRepository $deckRepository, CompositionRepository $compositionRepository, CommentRepository $commentRepository, EntityManagerInterface $entityManager, Request $request): Response
     {
         $user = $this->getUser();
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
         $composition = $compositionRepository->findBy(['deck' => $deck]);
-        $comments = [];
+        $comments = $commentRepository->findBy(['deck' => $deck]);
+
+        $comment = new Comment();
+        
+        $form = $this->createForm(CommentType::class);
+
+        // Handle the request
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $this->getUser();
+            $comment->setUser($user);
+            $comment->setCreationDate(new \DateTime()); // Set current date and time
+            $comment->setDeck($deck);
+
+            $formData = $form->getData();
+            $textContent = $formData->getTextContent();
+
+            $comment->setTextContent($textContent);
+
+            $entityManager->persist($user);
+            $entityManager->persist($deck);
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_deck_consult', [
+            'id' => $deck->getId()
+        ]); 
+        }
 
 
-        return $this->render('decks/deckConsult.html.twig', [
+    return $this->render('decks/deckConsult.html.twig', [
+        'deck' => $deck,
+        'composition' => $composition,
+        'user' => $user,
+        'comments' => $comments,
+        'commentForm' => $form,
+        'comment' => $comment
+    ]);
+}
+
+    #[Route('/deck/{deck}/comment/{comment}/edit', name: 'edit_comment')]
+    public function editComment(Request $request, EntityManagerInterface $entityManager, Comment $comment, Deck $deck): Response
+    {
+        $user = $this->getUser();
+        
+        // Check if the logged-in user is the owner of the comment
+        if ($comment->getUser() !== $user) {
+            throw $this->createAccessDeniedException('Vous ne pouvez modifier que vos propres commentaires.');
+        }
+        
+        // Create the form and pre-fill it with the existing comment data
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setUpdateDate(new \DateTime()); // Set the update date
+            $entityManager->persist($comment);
+            $entityManager->flush(); // Save changes to the database
+
+            return $this->redirectToRoute('app_deck_consult', ['id' => $deck->getId()]);
+        }
+
+        return $this->render('home/editComment.html.twig', [
+            'commentForm' => $form->createView(),
             'deck' => $deck,
-            'composition' => $composition,
-            'user' => $user,
-            'comments' => $comments
         ]);
+    }
+
+    #[Route('/deck/{deck}/comment/{comment}/delete', name: 'delete_comment', methods: ['POST'])]
+    public function deleteComment(EntityManagerInterface $entityManager, Comment $comment, Deck $deck): Response
+    {
+        $user = $this->getUser();
+        
+            $entityManager->remove($comment);
+            $entityManager->flush(); // Delete the comment from the database
+        
+
+        return $this->redirectToRoute('app_deck_consult', ['id' => $deck->getId()]);
     }
 
     #[Route('/deck/{id}/liked', name: 'like_deck')]

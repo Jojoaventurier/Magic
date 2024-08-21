@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Constructeur de deck{% endblock %}
+{% block title %}Consulter un deck{% endblock %}
 
 {% block body %}
 
-<div class="space-y-2 block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+<div class="space-y-2 block max-w-sm p-6 m-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
 
     <h1><span class='bold'>{{ deck.deckName }}</span></h2>
 
@@ -24,7 +24,7 @@
     <div class="mb-2">
         <span class="bold">Description du deck :</span><br>
         {% if deck.deckDescription is same as null %}
-            <p class="mb-2 font-normal text-gray-700 dark:text-gray-400">Aucune description pour le moment...</p>
+            <p class="mb-2 font-normal text-gray-700 dark:text-gray-400">Aucune description pour le moment...</p><!--TODO -> lien modifier-->
             {% else %}
             <p class="mb-2 font-normal text-gray-700 dark:text-gray-400">{{ deck.deckDescription }}</p>
         {% endif %}
@@ -49,24 +49,21 @@
         </a>
     {% else %}
         <a href="{{ path('like_deck', {'id': deck.id}) }}">
-            <div class="border border-red-800 rounded inline-flex items-center space-x-2 p-1">
+            <div class="border-2 border-red-800 rounded inline-flex items-center space-x-2 px-4 py-1">
                 <p class="m-0 bold">Ajouter le deck aux favoris</p>
                 <img class="w-4 h-4" src="https://img.icons8.com/material-outlined/24/like--v1.png" alt="like--v1"/>
             </div>
         </a>
     {% endif %}
+{% else %}
+<div>
+    <div class="inline-flex space-x-2">
+        (<img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-rounded/24/like--v1.png" alt="like--v1"/>
+        {{ deck.likes|length }}) 
+    </div>
+    <p class="text-gray-800 mt-4 text-sm italic">Vous devez être connecté pour liker un deck.</p>
+</div>
 {% endif %}
-
-        <div class="border border-red-800 rounded inline-flex items-center space-x-2 p-1">
-            <p class="m-0 bold">Rédiger un commentaire</p>
-            <img class="w-4 h-4" src="https://img.icons8.com/material-outlined/24/comments--v1.png" alt="comments--v1"/>
-        </div>
-        <div>
-            <div class="inline-flex">
-                (<img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-rounded/24/like--v1.png" alt="like--v1"/>
-                {{ deck.likes|length }}) 
-            </div>
-        </div>
 </div>
 
 <div id="displayDeck" class="board">
@@ -84,26 +81,68 @@
 </div>
 
 <section>
-
-    <h3>Commentaires :</h3>
-
-    {% for comment in comments %}
-    
-    <div>
-        <p>textContent</p>
-        {% if comment.updateDate is same as null %}
-        <p>posté par {{ comment.user.userName }} le {{ comment.creationDate|date('d.m.Y H:i') }}</p>
+    <div class="bg-gray-100 flex flex-col items-center justify-center">
+        <!-- Toggle Button -->
+        {% if app.user %}
+            <button id="toggleCommentForm" class="bg-red-800 text-white mt-12 px-4 py-2 rounded-lg hover:bg-red-900 transition duration-300">
+                Ajouter un commentaire 
+            </button>
         {% else %}
-        <p>posté par {{ comment.user.userName }} le {{ comment.updateDate|date('d.m.Y H:i') }}</p>
+            <p class="text-red-600 mt-6 text-sm">Vous devez être connecté pour publier un commentaire.</p>
         {% endif %}
-        
-        {% if app.user is same as comment.user %}
-        <a href="#">Modifier le commentaire</a>
-        <a href="#">Supprimer le commentaire</a>
-        {% endif %}
-    </div>
-    {% endfor %}
 
+        <!-- Comment Form Section -->
+        <div id="commentFormContainer" class="w-full max-w-2xl px-4 mt-10 hidden">
+            <div class="bg-white rounded-2xl px-8 py-4 shadow-lg relative">
+                <!-- Close Button -->
+                <button id="closeCommentForm" class="absolute top-2 right-4 text-gray-600 hover:text-gray-800">
+                    &times;
+                </button>
+                <h3 class="text-xl font-semibold mb-2">Ajouter un commentaire</h3>
+                {{ form_start(commentForm) }}
+                    <div class="mb-4">
+                        {{ form_row(commentForm.textContent, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-red-800'}}) }}
+                    </div>
+                    <div class="flex justify-end">
+                        {{ form_row(commentForm.submit) }}
+                    </div>
+                {{ form_end(commentForm) }}
+            </div>
+        </div>
+    </div>
+</section>
+<section>   
+    <div class="bg-gray-100 p-10 flex flex-col items-center justify-center">
+        <h3 class="text-2xl font-bold mb-4">Commentaires :</h3>
+        <div class="w-full max-w-2xl px-4 mb-6">
+            {% for comment in comments %}
+                <div class="bg-white rounded-2xl px-8 py-6 m-6 shadow-lg hover:shadow-2xl transition duration-500">
+                    <div class="mb-4">
+                        <p class="text-md text-gray-700">{{ comment.textContent }}</p>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div class="text-sm font-semibold">
+                            {{ comment.user.userName }} • 
+                            {% if comment.updateDate is same as null %}
+                                le {{ comment.creationDate|date('d.m.Y H:i') }}
+                            {% else %}
+                                <span class="font-normal">modifié le {{ comment.updateDate|date('d.m.Y H:i') }}</span>
+                            {% endif %}
+                        </div>
+                        {% if app.user is same as comment.user %}
+                            <div class="flex space-x-4">
+                                <a href="{{ path('edit_comment', {'deck': deck.id, 'comment': comment.id}) }}" class="text-black hover:underline">Modifier</a>
+                                <form action="{{ path('delete_comment', {'deck': deck.id, 'comment': comment.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
+                                    <button type="submit" class="text-red-600 hover:underline">Supprimer</button>
+                                </form>
+                                {# <a href="#" class="text-red-600 hover:underline">Supprimer</a> #}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 </section>
 
 {% block javascripts %} 
@@ -197,6 +236,22 @@
             //}
            // console.log(value, text);
         });
+    });
+
+    const toggleButton = document.getElementById('toggleCommentForm');
+    const formContainer = document.getElementById('commentFormContainer');
+    const closeButton = document.getElementById('closeCommentForm');
+
+    // Show the form when the button is clicked
+    toggleButton.addEventListener('click', function() {
+        formContainer.classList.toggle('hidden');
+        toggleButton.classList.toggle('hidden');
+    });
+
+    // Hide the form when the close button is clicked
+    closeButton.addEventListener('click', function() {
+        formContainer.classList.add('hidden');
+        toggleButton.classList.remove('hidden');
     });
 
 </script>
