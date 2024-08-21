@@ -92,9 +92,9 @@
     <div>
         <p>textContent</p>
         {% if comment.updateDate is same as null %}
-        <p>posté par comment.user.userName le comment.creationDate</p>
+        <p>posté par {{ comment.user.userName }} le {{ comment.creationDate|date('d.m.Y H:i') }}</p>
         {% else %}
-        <p>posté par comment.user.userName le comment.creationDate</p>
+        <p>posté par {{ comment.user.userName }} le {{ comment.updateDate|date('d.m.Y H:i') }}</p>
         {% endif %}
         
         {% if app.user is same as comment.user %}
