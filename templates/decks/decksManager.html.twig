@@ -18,6 +18,9 @@
               modifié le {{ deck.updateDate|date('d.m.Y à H:i') }}
               {% endif %}
             </span>
+            <span class="ml-2">
+              Format <span class="bold">{{ deck.format.formatName }}</span>
+            </span>
           </p>
       {% endfor %}
   </div>
