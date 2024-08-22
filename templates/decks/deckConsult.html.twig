@@ -72,7 +72,6 @@
 
 </div>
 
-
 <section>
 
 
@@ -87,7 +86,7 @@
 
     {% set card_types = ["Creature", "Sorcery", "Instant", "Enchantment", "Artifact", "Planeswalker", "Land",] %}
 
-    <div id="listView">
+    <div id="listView" class="grid grid-cols-4 gap-4">
         {% for type in card_types %}
             <div id="{{ type|lower }}Cards" class="category-container">
                 <h3>{{ type }}</h3>
@@ -103,8 +102,8 @@
             </div>
         {% endfor %}
     </div>
-
-    <div id="imageView">
+    
+    <div id="imageView" class="grid grid-cols-4 gap-4">
         {% for type in card_types %}
             <div id="{{ type|lower }}Cards" class="category-container">
                 <h3>{{ type }}</h3>
@@ -224,12 +223,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const imageView = document.getElementById('imageView');
 
     // Initial State: Show List View by Default
-    listView.classList.add('block');
+    listView.classList.add('grid');
     imageView.classList.add('hidden');
 
     listViewBtn.addEventListener('click', function() {
         listView.classList.toggle('hidden', false);
-        listView.classList.toggle('block', true);
+        listView.classList.toggle('grid', true);
         imageView.classList.toggle('board', false);
         imageView.classList.toggle('hidden', true);
     });
@@ -237,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
     imageViewBtn.addEventListener('click', function() {
         imageView.classList.toggle('hidden', false);
         imageView.classList.toggle('board', true);
-        listView.classList.toggle('block', false);
+        listView.classList.toggle('grid', false);
         listView.classList.toggle('hidden', true);
     });
 });

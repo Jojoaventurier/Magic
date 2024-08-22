@@ -6,6 +6,10 @@
 
 <h1 class="flex justify-center">Deck Builder</h1>
 
+{% if deck.format.formatName is same as 'Commander' %}
+<div class="grid grid-cols-2 gap-4">
+{% endif %}
+
 <div class="space-y-2 block max-w-sm p-6 m-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
 
     <h1><span class='bold'>{{ deck.deckName }}</span></h2>
@@ -41,6 +45,14 @@
     <a class="red" href="{{ path('delete_all_cards_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer toutes les cartes du deck</a><br>
 </div>
 
+
+<div><h3>Choisir un commandant</h3></div>
+
+{% if deck.format.formatName is same as 'Commander' %}
+</div>
+{% endif %}
+
+
 <div class="row space-x-4 p-4">
  
         Rechercher une carte :
@@ -59,26 +71,63 @@
     <img id="cardImage">
 </div>
 
-<div id="displayDeck" class="board">
+{# <div id="displayDeck" class="board"> #}
     
-    {% for element in composition %}
-    <div class="card">
-        {% if element.quantity > 1 %}
-            <img class="singleCard" src="{{ element.card.data.image_uris.normal }}"><span>X{{ element.quantity}}</span>
-            {% else %}
-            <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
-        {% endif %}
-
-        <a href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Ajouter +1</a>
-        <a href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supp -1</a>
-        <a class="red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer</a>
+      <!-- Toggle Buttons -->
+      <div class="flex justify-end mb-4 mr-4">
+        <button id="listViewBtn" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-l-lg">List View</button>
+        <button id="imageViewBtn" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-r-lg">Image View</button>
     </div>
-    {% endfor %}
+
+
+    {% set card_types = ["Creature", "Sorcery", "Instant", "Enchantment", "Artifact", "Planeswalker", "Land",] %}
+
+    <div id="listView" class="grid-cols-4 gap-4">
+        {% for type in card_types %}
+            <div id="{{ type|lower }}Cards" class="category-container">
+                <h3>{{ type }}</h3>
+                <ul class="list-none">
+                    {% for element in composition %}
+                        {% if type in element.card.data.type_line %}
+                            <li>
+                                <span>{{ element.quantity }}x </span>{{ element.card.data.name }}
+                                <span class="space-x-2">
+                                    <a href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">+1</a>
+                                    <a href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">-1</a>
+                                    <a class="red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer</a>
+                                </span>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
     
-</div>
+    <div id="imageView" class="grid-cols-4 gap-4">
+        {% for type in card_types %}
+            <div id="{{ type|lower }}Cards" class="category-container">
+                <h3>{{ type }}</h3>
+                <div id="displayDeck" class="board">
+                    {% for element in composition %}
+                        {% if type in element.card.data.type_line %}
+                            <div class="card">
+                                {% if element.quantity > 1 %}
+                                    <img class="singleCard" src="{{ element.card.data.image_uris.normal }}"><span>X{{ element.quantity}}</span>
+                                {% else %}
+                                    <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+{# </div> #}
 
 {% block javascripts %} 
-
 
 <script>
 
@@ -167,6 +216,30 @@
                 cardBoard.appendChild(link)
             //}
            // console.log(value, text);
+        });
+
+
+        const listViewBtn = document.getElementById('listViewBtn');
+        const imageViewBtn = document.getElementById('imageViewBtn');
+        const listView = document.getElementById('listView');
+        const imageView = document.getElementById('imageView');
+    
+        // Initial State: Show List View by Default
+        listView.classList.add('grid');
+        imageView.classList.add('hidden');
+    
+        listViewBtn.addEventListener('click', function() {
+            listView.classList.toggle('hidden', false);
+            listView.classList.toggle('grid', true);
+            imageView.classList.toggle('board', false);
+            imageView.classList.toggle('hidden', true);
+        });
+    
+        imageViewBtn.addEventListener('click', function() {
+            imageView.classList.toggle('hidden', false);
+            imageView.classList.toggle('board', true);
+            listView.classList.toggle('grid', false);
+            listView.classList.toggle('hidden', true);
         });
     });
 
