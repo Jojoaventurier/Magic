@@ -6,33 +6,47 @@
 
 <h1 class="flex justify-center">Tous les decks</h1>
 
-{% for deck in decks %}
-        <p class="flex justify-center space-x-2">
-            <a class="inline-flex justify-center w-prose" href="{{ path('app_deck_consult', {'id': deck.id}) }}"> 
-                <span class="bold">{{ deck.deckName }}</span>
-            </a> 
-            <span class="ml-2">
-            {% if deck.updateDate is same as null %}
-            créé le {{ deck.creationDate|date('d.m.Y à H:i')}}
-            {% else %}
-            modifié le {{ deck.updateDate|date('d.m.Y à H:i') }}
-            {% endif %}
-            </span>
-            <span>
-            par <span class="bold">{{ deck.user.userName }}</span>
-            </span>
-            <span class="bold">
+<div class="flex flex-wrap max-w-full m-4">
+
+    {% for deck in decks %}
+
+    <div class="deck-card m-4 p-4 w-full sm:w-64 md:w-64 lg:w-64 border border-spacing-2 space-y-4">
+        <span class="ml-2 text-xs italic flex justify-end">
+        {% if deck.updateDate is same as null %}
+        créé le {{ deck.creationDate|date('d.m.Y à H:i')}}
+        {% else %}
+        dernière m-a-j le {{ deck.updateDate|date('d.m.Y à H:i') }}
+        {% endif %}
+        </span>
+
+        <div class="border img min-h-36">img</div>
+
+        <div class="flex flex-col m-4 h-auto justify-end">
+            <a class="inline-flex w-prose" href="{{ path('app_deck_consult', {'id': deck.id}) }}"> 
+                <h3 class="bold">{{ deck.deckName }}</h3>
+            </a>
+            <span class="text-gray-600">
                 {{ deck.format.formatName }}
+            </span> 
+            <span class="text-xs mt-3">
+                par {{ deck.user.userName }}
             </span>
-            <span class="inline-flex">
-                (<img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-rounded/24/like--v1.png" alt="like--v1"/>
-                {{ deck.likes|length }}) 
-            </span>
-        </p>
-        <p class="flex justify-center">
-            
-        </p>
-{% endfor %}
+
+
+            <div class="inline-flex justify-end space-x-2 mt-1">
+                <span class="flex text-sm mt-1">
+                    <img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-outlined/24/comments--v1.png" alt="like--v1"/>
+                    {{ deck.comments|length }}</span> 
+                </span>
+                <span class="flex text-sm mt-1">
+                    <img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-outlined/24/like--v1.png" alt="like--v1"/>
+                    {{ deck.likes|length }}</span> 
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 
 
 
