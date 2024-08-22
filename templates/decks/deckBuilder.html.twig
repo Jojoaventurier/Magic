@@ -45,10 +45,16 @@
     <a class="red" href="{{ path('delete_all_cards_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer toutes les cartes du deck</a><br>
 </div>
 
-
-<div><h3>Choisir un commandant</h3></div>
-
 {% if deck.format.formatName is same as 'Commander' %}
+
+<div>
+    <h3>Votre Commandant</h3>
+    <div id="commandZone">
+
+    </div>
+</div>
+
+
 </div>
 {% endif %}
 
@@ -129,8 +135,8 @@
 
 {% block javascripts %} 
 
-<script>
-
+<script> //TODO affichage des decks sous forme de carte
+        //TODO ajouter une fonction saveCommander (sauvegarder data en JSON) et affichage de la carte dans la vue
 
     document.addEventListener('DOMContentLoaded', function() { 
 
@@ -146,8 +152,6 @@
         researchButton.addEventListener('click', function() { 
             const query = searchInput.value; 
     
-            // fetch(`https://api.scryfall.com/cards/search?q=is:commander+name:${query}`)
-            // fetch(`https://api.scryfall.com/cards/search?q=name:${query}+lang:fr`) 
             fetch(`https://api.scryfall.com/cards/search?q=${query}`) //+type:legendary+type:creature
          
                 .then(response => response.json())
