@@ -160,6 +160,14 @@ nav {
 
   /*===========================================     DECK BUILDER     ================================================*/
 
+.hidden {
+  display: none;
+}
+
+.block {
+  display: block;
+}
+
   .board {
     width: 80vw;
     display: flex;
