@@ -30,7 +30,7 @@
 
     {% for deck in decks %}
 
-    <div class="deck-card m-4 p-4 w-full sm:w-64 md:w-64 lg:w-64 border border-spacing-2 space-y-4">
+    <div class="deck-card m-4 p-4 w-full sm:w-64 md:w-64 lg:w-64 border-spacing-2 space-y-4 shadow">
         <span class="ml-2 text-xs italic flex justify-end">
         {% if deck.updateDate is same as null %}
         créé le {{ deck.creationDate|date('d.m.Y à H:i')}}
@@ -39,17 +39,17 @@
         {% endif %}
         </span>
 
-        <div class="border img min-h-36">img</div>
+        <div class="border img min-h-36 max-h-36">img</div>
 
         <div class="flex flex-col m-4 h-auto justify-end">
             <a class="inline-flex w-prose" href="{{ path('app_deck_consult', {'id': deck.id}) }}"> 
                 <h3 class="bold">{{ deck.deckName }}</h3>
             </a>
-            <span class="text-gray-600">
+            <span class="text-gray-500">
                 {{ deck.format.formatName }}
             </span> 
-            <span class="text-xs mt-">
-                par {{ deck.user.userName }}
+            <span class="text-xs text-gray-500 ">
+                par <span class="font-semibold">{{ deck.user.userName }}</span>
             </span>
 
 

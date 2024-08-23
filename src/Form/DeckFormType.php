@@ -24,11 +24,12 @@ class DeckFormType extends AbstractType
                     'Public' => true,
                     'Privé' => false
                 ],
-                'label' => 'Publier en '
+                'label' => 'Visibilité du deck :'
             ])
             ->add('format', EntityType::class, [
                 'class' => Format::class,
-                'choice_label' => 'formatName'
+                'choice_label' => 'formatName',
+                'label' => 'Choix du format :'
             ])
             
             ->add('Valider', SubmitType::class);

@@ -50,8 +50,8 @@
             </a>
         {% else %}
             <a href="{{ path('like_deck', {'id': deck.id}) }}">
-                <div class="border-2 border-red-800 rounded inline-flex items-center space-x-2 px-4 py-1">
-                    <p class="m-0 bold">Ajouter le deck aux favoris</p>
+                <div class="border-2 border-red-800 rounded inline-flex items-center space-x-2 px-4 py-1 hover:bg-red-800 hover:text-white transition duration-300">
+                    <p class="m-0">Ajouter le deck aux favoris</p>
                     <img class="w-4 h-4" src="https://img.icons8.com/material-outlined/24/like--v1.png" alt="like--v1"/>
                 </div>
             </a>
@@ -130,7 +130,7 @@
     <div class="bg-gray-100 flex flex-col items-center justify-center">
         <!-- Toggle Button -->
         {% if app.user %}
-            <button id="toggleCommentForm" class="bg-red-800 text-white mt-12 px-4 py-2 rounded-lg hover:bg-red-800 transition duration-300">
+            <button id="toggleCommentForm" class="bg-red-800 text-white mt-12 px-4 py-2 rounded-lg hover:bg-red-900 transition duration-300">
                 Ajouter un commentaire 
             </button>
         {% else %}

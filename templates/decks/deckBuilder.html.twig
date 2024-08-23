@@ -41,8 +41,8 @@
             {{ deck.likes|length }}) 
         </div>
     </div>
-    <a class="red" href="{{ path('delete_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer le deck</a><br>
-    <a class="red" href="{{ path('delete_all_cards_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer toutes les cartes du deck</a><br>
+    <a class="red hover:underline" href="{{ path('delete_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer le deck</a><br>
+    <a class="red hover:underline" href="{{ path('delete_all_cards_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer toutes les cartes du deck</a><br>
 </div>
 
 {% if deck.format.formatName is same as 'Commander' %}
@@ -98,9 +98,9 @@
                             <li>
                                 <span>{{ element.quantity }}x </span>{{ element.card.data.name }}
                                 <span class="space-x-2">
-                                    <a href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">+1</a>
-                                    <a href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">-1</a>
-                                    <a class="red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer</a>
+                                    <a class="hover:underline" href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">+1</a>
+                                    <a class="hover:underline" href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">-1</a>
+                                    <a class="hover:underline" class="red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer</a>
                                 </span>
                             </li>
                         {% endif %}
