@@ -5,25 +5,36 @@
 {% block body %}
 
   <h1 class="flex justify-center bold my-6">Mes Decks</h1>
-  <div class="flex flex-col">
-      {% for deck in userDecks %}
-          <p class="flex justify-center">
-            <a class="inline-flex justify-center w-prose" href="{{ path('app_deck_builder', {'id': deck.id}) }}"> 
-                <span class="bold">{{ deck.deckName }}</span>
-            </a> 
-            <span class="ml-2">
-              {% if deck.updateDate is same as null %}
-              créé le {{ deck.creationDate|date('d.m.Y à H:i')}}
-              {% else %}
-              modifié le {{ deck.updateDate|date('d.m.Y à H:i') }}
-              {% endif %}
-            </span>
-            <span class="ml-2">
-              Format <span class="bold">{{ deck.format.formatName }}</span>
-            </span>
-          </p>
-      {% endfor %}
-  </div>
+  <table class="table-auto w-full">
+    <thead>
+        <tr>
+            <th class="px-4 py-2 text-left">Nom du deck</th>
+            <th class="px-4 py-2 text-left">Format</th>
+            <th class="px-4 py-2 text-left">Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for deck in userDecks %}
+        <tr>
+            <td class="border px-4 py-2">
+                <a class="inline-flex justify-center w-prose" href="{{ path('app_deck_builder', {'id': deck.id}) }}"> 
+                    <span class="bold">{{ deck.deckName }}</span>
+                </a>
+            </td>
+            <td class="border px-4 py-2">
+                <span class="bold">{{ deck.format.formatName }}</span>
+            </td>
+            <td class="border px-4 py-2">
+                {% if deck.updateDate is same as null %}
+                créé le {{ deck.creationDate|date('d.m.Y à H:i')}}
+                {% else %}
+                modifié le {{ deck.updateDate|date('d.m.Y à H:i') }}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 
   <section class="px-4 py-8 sm:px-6 lg:px-8">

@@ -130,7 +130,7 @@
     <div class="bg-gray-100 flex flex-col items-center justify-center">
         <!-- Toggle Button -->
         {% if app.user %}
-            <button id="toggleCommentForm" class="bg-red-800 text-white mt-12 px-4 py-2 rounded-lg hover:bg-red-900 transition duration-300">
+            <button id="toggleCommentForm" class="bg-red-800 text-white mt-12 px-4 py-2 rounded-lg hover:bg-red-800 transition duration-300">
                 Ajouter un commentaire 
             </button>
         {% else %}
@@ -147,7 +147,7 @@
                 <h3 class="text-xl font-semibold mb-2">Ajouter un commentaire</h3>
                 {{ form_start(commentForm) }}
                     <div class="mb-4">
-                        {{ form_row(commentForm.textContent, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-red-800'}}) }}
+                        {{ form_row(commentForm.textContent, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline focus:outline-red-800'}}) }}
                     </div>
                     <div class="flex justify-end">
                         {{ form_row(commentForm.submit) }}
