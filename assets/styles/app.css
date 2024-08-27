@@ -19,7 +19,14 @@
 
 .light-white {
   background-color: rgba(240, 240, 240, 0.3);
-  min-height: 100vh;
+}
+
+.vh100 {
+  height: 100vh
+}
+
+.vw100 {
+  width: 100vw;
 }
 
 .white {

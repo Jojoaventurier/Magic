@@ -34,9 +34,6 @@ class Deck
     #[ORM\Column(nullable: true)]
     private ?bool $isLegal = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $hasCommander = null;
-
     /**
      * @var Collection<int, Composition>
      */
@@ -61,6 +58,9 @@ class Deck
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'deck')]
     private Collection $comments;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $commander = null;
 
     public function __construct()
     {
@@ -146,17 +146,6 @@ class Deck
         return $this;
     }
 
-    public function hasCommander(): ?bool
-    {
-        return $this->hasCommander;
-    }
-
-    public function setHasCommander(?bool $hasCommander): static
-    {
-        $this->hasCommander = $hasCommander;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Composition>
@@ -262,6 +251,18 @@ class Deck
                 $comment->setDeck(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCommander(): ?array
+    {
+        return $this->commander;
+    }
+
+    public function setCommander(?array $commander): static
+    {
+        $this->commander = $commander;
 
         return $this;
     }
