@@ -139,6 +139,39 @@ class DeckBuilderController extends AbstractController
         return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
     }
 
+    #[Route('/user/{user}/deck/{deck}/commander', name: 'save_commander_deck', methods: ['POST'])]
+    public function saveCommander(Deck $deck, EntityManagerInterface $entityManager, DeckRepository $deckRepository, Request $request): Response 
+    {
+        $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
+        $currentDate = new \DateTime();
+        $deck->setUpdateDate($currentDate);
+    
+
+        $data = $request->get('cardData');
+        $dataJS = json_decode($data, true); // true pour récupérer un tableau
+
+        $deck->setCommander($dataJS);
+        $entityManager->persist($deck);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
+    }
+
+    #[Route('/user/{user}/deck/{deck}/delete-commander', name: 'delete_commander', methods: ['POST', 'GET'])]
+    public function deleteCommander(Deck $deck, EntityManagerInterface $entityManager, DeckRepository $deckRepository): Response 
+    {
+        $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
+        $currentDate = new \DateTime();
+        $deck->setUpdateDate($currentDate);
+        $deck->setCommander(null);
+
+        $entityManager->persist($deck);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
+    }
+
+
+
     #[Route('/user/{user}/deck/{deck}/{card}/plus', name: 'plus_card_deck', methods: ['POST', 'GET'])]
     public function plusOne(Deck $deck, $card, DeckRepository $deckRepository, CardRepository $cardRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager, Request $request, ) {
 

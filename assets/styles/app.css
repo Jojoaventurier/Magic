@@ -17,6 +17,18 @@
   height: 100vh;
 }
 
+.gradient-adapt {
+  background: #200122;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #6f0000, #200122); 
+  background: linear-gradient(to right, #6f0000, #200122); 
+}
+
+.gradient-bg {
+  background-color: #200122;  /* fallback for old browsers */
+  background-color: -webkit-linear-gradient(to right, #6f0000, #200122); 
+  background-color: linear-gradient(to right, #6f0000, #200122); 
+}
+
 .light-white {
   background-color: rgba(240, 240, 240, 0.3);
 }
@@ -191,6 +203,10 @@ nav {
     height: 350px;
   }
 
+  .commanderCard {
+    width: 200px;
+    height: auto;
+  }
 
   /*===========================================     DECK CONSULT     =============================================*/
 

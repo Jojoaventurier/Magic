@@ -28,8 +28,8 @@
 
           <div class="space-x-2 px-4">
             {% if app.user %}
-            <a class="white hover:underline" href="{{ path('app_logout') }}">Se déconnecter</a>
             <a class="white hover:underline" href="{{ path('app_profile') }}">Mon profil</a>
+            <a class="white hover:underline" href="{{ path('app_logout') }}">Se déconnecter</a>
             {# <a href="{{ path('app_deck_manager', {'user': user.id})}}">MES DECKS</a> #}
             {% else %}
             <a class="white hover:underline" href="{{ path('app_login') }}">Se connecter</a>
