@@ -17,6 +17,11 @@
   height: 100vh;
 }
 
+.light-white {
+  background-color: rgba(240, 240, 240, 0.3);
+  min-height: 100vh;
+}
+
 .white {
   color: white;
 }
