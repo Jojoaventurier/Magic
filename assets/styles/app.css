@@ -204,7 +204,7 @@ nav {
   }
 
   .commanderCard {
-    width: 200px;
+    width: 250px;
     height: auto;
   }
 
@@ -244,3 +244,27 @@ nav {
   border-radius: 3px;
   font-size: 14px;
 }
+
+
+.fade {
+/* we don't need to know the border-width */
+  mask:
+    linear-gradient(#000 0 0), 
+    /* fade only the padding area 
+       (in the opposite direction) */
+    linear-gradient(#0000,#000 90%) padding-box;
+  mask-composite: exclude;
+}
+
+/* .container {
+  max-width: 1140px;
+} */
+
+
+
+
+
+
+
+
+

@@ -46,7 +46,7 @@
 {% if deck.format.formatName is same as 'Commander / EDH'%}
             {% if deck.commander is not null %}
             <div class="py-8 opacity-50">
-                <img src="{{ deck.commander.image_uris.art_crop }}">
+                <img class="fade" src="{{ deck.commander.image_uris.art_crop }}">
             </div>
             {% else %}
             <!--Commencez par ajouter un commandant-->
@@ -97,66 +97,104 @@
 </div>
 
 {# <div id="displayDeck" class="board"> #}
-    
-    <!-- Toggle Buttons -->
-    <div class="flex justify-end mb-4 mr-4">
-        <button id="editDeckButton" class="mb-4 bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4">Modifier le deck</button>
-        <button id="listViewBtn" class="mb-4 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-l">List View</button>
-        <button id="imageViewBtn" class="mb-4 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-r">Image View</button>
-    </div>
+    <div class="light-white p-8 flex justify-center">
+      
 
-    <div class="light-white p-8">
-        
-    
-        {% set card_types = ["Creature", "Sorcery", "Instant", "Enchantment", "Artifact", "Planeswalker", "Land",] %}
-    
-        <div id="listView" class="grid-cols-4 gap-4">
-            {% for type in card_types %}
-                <div id="{{ type|lower }}Cards" class="category-container">
-                    <h3>{{ type }}</h3>
-                    <ul class="list-none">
-                        {% for element in composition %}
-                            {% if type in element.card.data.type_line %}
-                                <li>
-                                    <span>{{ element.quantity }}x </span>{{ element.card.data.name }}
-                                    <span class="space-x-2 edit-links hidden">
-                                        <a class="hover:underline" href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">+1</a>
-                                        <a class="hover:underline" href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">-1</a>
-                                        <a class="hover:underline red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer</a>
-                                    </span>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
+        <div class="px-8 mt-3 mb-5 w-full">
+        <!--<div class="container mt-3 mb-5">-->
+            <!-- Toggle View Buttons -->
+            <div class="flex justify-between mb-4 mr-4">
+                <div>
+                    <p>Nombre de cartes dans le deck : 
+                        {{ count }}
+                        {% if deck.format.formatName is same as 'Commander / EDH' %}
+                            / 100</p>
+                        {% else %}
+                            / 60</p>
+                        {% endif %}
                 </div>
-            {% endfor %}
-        </div>
-    
-        <div id="imageView" class="grid-cols-4 gap-4">
-            {% for type in card_types %}
-                <div id="{{ type|lower }}Cards" class="category-container">
-                    <h3>{{ type }}</h3>
-                    <div id="displayDeck" class="board">
-                        {% for element in composition %}
-                            {% if type in element.card.data.type_line %}
-                                <div class="card">
-                                    {% if element.quantity > 1 %}
-                                        <img class="singleCard" src="{{ element.card.data.image_uris.normal }}"><span>X{{ element.quantity}}</span>
-                                    {% else %}
-                                        <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
+                <div>
+                    <button id="editDeckButton" class="mb-4 bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4">Modifier le deck</button>
+                    <button id="listViewBtn" class="mb-4 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-l">List View</button>
+                    <button id="imageViewBtn" class="mb-4 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-r">Image View</button>
+                </div>
+            </div>
+
+
+            <article class="deckView flex flex-grow justify-center min-w-fit">
+                <div class=" w-72 pr-6">
+                    <img id="placeholder" class="singleCard" src=""><p>Placeholder</p>
+                </div>
+
+                {% set card_types = ["Creature", "Sorcery", "Instant", "Enchantment", "Artifact", "Planeswalker", "Land",] %}
+                {% if deck.format.formatName == 'Commander / EDH' %}
+                    {% set format = "commander" %}
+                {% else %}
+                    {% set format = deck.format.formatName|lower %}
+                {% endif %}
+
+
+                <div id="listView" class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 w-full">
+                    {% for type in card_types %}
+                        <div id="{{ type|lower }}Cards" class="category-container w-full">
+                            <h3>{{ type }}</h3>
+                            <ul class="list-none">
+                                {% for element in composition %}
+                                    {% if type in element.card.data.type_line %}
+                                             <li>
+                                                <div class="flex items-center space-x-2">
+                                                    {% if element.card.data.legalities[format] is defined and element.card.data.legalities[format] == 'legal' %}
+                                                        <span>{{ element.quantity }}x </span>
+                                                        <span>{{ element.card.data.name }}</span>
+                                                    {% else %}
+                                                        <span class="text-grey-400 italic">{{ element.quantity }}x </span>
+                                                        <span class="text-grey-400 italic">{{ element.card.data.name }}</span>
+                                                        <img class="w-4 ml-2" src="https://img.icons8.com/color/48/spam.png" alt="warning"/>
+                                                    {% endif %}
+                                                </div>
+                                                <span class="space-x-2 edit-links hidden">
+                                                    <a class="hover:underline" href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">+1</a>
+                                                    <a class="hover:underline" href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">-1</a>
+                                                    <a class="hover:underline red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer</a>
+                                                </span>
+                                            </li>
                                     {% endif %}
-                                    <span class="edit-links hidden">
-                                        <a class="hover:underline" href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">+1</a>
-                                        <a class="hover:underline" href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">-1</a>
-                                        <a class="hover:underline red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer</a>
-                                    </span>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
+            
+                <div id="imageView" class="grid-cols-4 gap-4 w-full">
+                    {% for type in card_types %}
+                        <div id="{{ type|lower }}Cards" class="category-container">
+                            <h3>{{ type }}</h3>
+                            <div id="displayDeck" class="board">
+                                {% for element in composition %}
+                                    {% if type in element.card.data.type_line %}
+                                        <div class="card">
+                                            {% if element.quantity > 1 %}
+                                                <img class="singleCard" src="{{ element.card.data.image_uris.normal }}"><span>X{{ element.quantity}}</span>
+                                            {% else %}
+                                                <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
+                                            {% endif %}
+                                            <span class="edit-links hidden">
+                                                <a class="hover:underline" href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">+1</a>
+                                                <a class="hover:underline" href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">-1</a>
+                                                <a class="hover:underline red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer</a>
+                                            </span>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </article>
         </div>
+
+
+
     </div>
     
 {# </div> #}

@@ -60,11 +60,17 @@ class DeckBuilderController extends AbstractController
 
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
         $composition = $compositionRepository->findBy(['deck' => $deck]);
+        $count = 0;
 
+        foreach ($composition as $el) {
+
+            $count += 1 * $el->getQuantity();
+        }
 
         return $this->render('decks/deckBuilder.html.twig', [
             'deck' => $deck,
-            'composition' => $composition 
+            'composition' => $composition,
+            'count' => $count
         ]);
     }
  
