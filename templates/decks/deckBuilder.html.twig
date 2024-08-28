@@ -122,52 +122,68 @@
 
 
             <article class="deckView flex justify-center">
-                <div class=" w-72 mr-6">
-                    <img id="placeholder" class="singleCard" src=""><p>Placeholder</p>
+                <div class="w-72 mr-6">
+                    <img id="placeholder" class="singleCard" src="{{ asset('img/Magic_the_gathering-card_back.jpg') }}">
                 </div>
-
-                {% set card_types = ["Creature", "Sorcery", "Instant", "Enchantment", "Artifact", "Planeswalker", "Land",] %}
+            
+                {% set card_types = ["Creature", "Sorcery", "Instant", "Enchantment", "Artifact", "Planeswalker", "Land"] %}
                 {% if deck.format.formatName == 'Commander / EDH' %}
                     {% set format = "commander" %}
                 {% else %}
                     {% set format = deck.format.formatName|lower %}
                 {% endif %}
-
-
-                    <div id="listView" class="flex-wrap w-full">
-                        {% for type in card_types %}
+            
+                <div id="listView" class="flex-wrap w-full">
+                    {% for type in card_types %}
+                        {% set type_count = 0 %}
+                        {% for element in composition %}
+                            {% if type in element.card.data.type_line %}
+                                {% set type_count = type_count + 1 %}
+                            {% endif %}
+                        {% endfor %}
+            
+                        {% if type_count > 0 %}
                             <div id="{{ type|lower }}Cards" class="category-container">
                                 <h3>{{ type }}</h3>
                                 <ul class="list-none">
                                     {% for element in composition %}
                                         {% if type in element.card.data.type_line %}
-                                                <li>
-                                                    <div class="flex items-center space-x-2 text-sm">
-                                                        {% if element.card.data.legalities[format] is defined and element.card.data.legalities[format] == 'legal' %}
-                                                            <span>{{ element.quantity }}x </span>
-                                                            <span>{{ element.card.data.name }}</span>
-                                                        {% else %}
-                                                            <span class="text-grey-400 italic">{{ element.quantity }}x </span>
-                                                            <span class="text-grey-400 italic">{{ element.card.data.name }}</span>
-                                                            <img class="w-4 ml-2" src="https://img.icons8.com/color/48/spam.png" alt="warning"/>
-                                                        {% endif %}
-                                                    </div>
-                                                    <span class="space-x-2 edit-links hidden">
-                                                        <a class="hover:underline" href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">+1</a>
-                                                        <a class="hover:underline" href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">-1</a>
-                                                        <a class="hover:underline red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer</a>
-                                                    </span>
-                                                </li>
+                                            <li>
+                                                <div class="flex items-center space-x-2 text-sm">
+                                                    {% if element.card.data.legalities[format] is defined and element.card.data.legalities[format] == 'legal' %}
+                                                        <span class="card-name" data-image="{{ element.card.data.image_uris.normal }}">{{ element.quantity }}x {{ element.card.data.name }}</span>
+                                                    {% else %}
+                                                        <span class="card-name text-grey-400 italic" data-image="{{ element.card.data.image_uris.normal }}">
+                                                            {{ element.quantity }}x {{ element.card.data.name }}
+                                                        </span>
+                                                        <img class="w-4 ml-2" src="https://img.icons8.com/color/48/spam.png" alt="warning"/>
+                                                    {% endif %}
+                                                </div>
+                                                <span class="space-x-2 edit-links hidden">
+                                                    <a class="hover:underline" href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">+1</a>
+                                                    <a class="hover:underline" href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">-1</a>
+                                                    <a class="hover:underline red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer</a>
+                                                </span>
+                                            </li>
                                         {% endif %}
                                     {% endfor %}
                                 </ul>
                             </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            
+            
+                <div id="imageView" class="grid grid-cols-1 gap-4 w-full">
+                    {% for type in card_types %}
+                        {% set type_count = 0 %}
+                        {% for element in composition %}
+                            {% if type in element.card.data.type_line %}
+                                {% set type_count = type_count + 1 %}
+                            {% endif %}
                         {% endfor %}
-                    </div>
-
-
-                    <div id="imageView" class="grid gris-cols-1 gap-4 w-full">
-                        {% for type in card_types %}
+                
+                        {% if type_count > 0 %}
                             <div id="{{ type|lower }}Cards" class="category-container-image w-full">
                                 <h3>{{ type }}</h3>
                                 <div id="displayDeck" class="flex flex-wrap">
@@ -175,7 +191,8 @@
                                         {% if type in element.card.data.type_line %}
                                             <div class="card">
                                                 {% if element.quantity > 1 %}
-                                                    <img class="singleCard" src="{{ element.card.data.image_uris.normal }}"><span>X{{ element.quantity}}</span>
+                                                    <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
+                                                    <span>X{{ element.quantity }}</span>
                                                 {% else %}
                                                     <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
                                                 {% endif %}
@@ -189,10 +206,11 @@
                                     {% endfor %}
                                 </div>
                             </div>
-                        {% endfor %}
-                    </div>
-                </article>
-            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </article>
+        </div>
 
     </div>
     
@@ -206,6 +224,33 @@
         //TODO max number of cards
 
         document.addEventListener('DOMContentLoaded', function() { 
+
+            const placeholder = document.getElementById('placeholder');
+            const cardImages = document.querySelectorAll('.singleCard');
+            const cardNames = document.querySelectorAll('.card-name');
+            const placeholderDefault = placeholder.src
+
+            // Change placeholder image on card image hover
+            cardImages.forEach(image => {
+                image.addEventListener('mouseover', function () {
+                    placeholder.src = this.src;
+                });
+
+                image.addEventListener('mouseout', function () {
+                    placeholder.src = placeholderDefault; // or reset to a default image: 'placeholder.src = "default_image.jpg";'
+                });
+            });
+
+            // Change placeholder image on card name hover
+            cardNames.forEach(name => {
+                name.addEventListener('mouseover', function () {
+                    placeholder.src = this.dataset.image;
+                });
+
+                name.addEventListener('mouseout', function () {
+                    placeholder.src = placeholderDefault; // or reset to a default image
+                });
+            });
 
             const searchInput = document.getElementById('searchId'); 
             const cardSelect = document.getElementById('cardSelect'); 
@@ -305,7 +350,7 @@
         
             listViewBtn.addEventListener('click', function() {
                 listView.classList.toggle('hidden', false);
-                listView.classList.toggle('grid', true);
+                listView.classList.toggle('flex', true);
                 imageView.classList.toggle('board', false);
                 imageView.classList.toggle('hidden', true);
             });
@@ -313,7 +358,7 @@
             imageViewBtn.addEventListener('click', function() {
                 imageView.classList.toggle('hidden', false);
                 imageView.classList.toggle('board', true);
-                listView.classList.toggle('grid', false);
+                listView.classList.toggle('flex', false);
                 listView.classList.toggle('hidden', true);
             });
         });
