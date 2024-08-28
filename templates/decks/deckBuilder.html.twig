@@ -97,7 +97,7 @@
 </div>
 
 {# <div id="displayDeck" class="board"> #}
-    <div class="light-white p-8 flex justify-center">
+    <div class="light-white p-8 flex flex-wrap justify-center">
       
 
         <div class="px-8 mt-3 mb-5 w-full">
@@ -113,15 +113,15 @@
                             / 60</p>
                         {% endif %}
                 </div>
-                <div>
+                <div class="flex flex-end">
                     <button id="editDeckButton" class="mb-4 bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4">Modifier le deck</button>
-                    <button id="listViewBtn" class="mb-4 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-l">List View</button>
+                    <button id="listViewBtn" class="mb-4 px-6 py-2 bg-gray-300 hover:bg-gray-400 rounded-l">List View</button>
                     <button id="imageViewBtn" class="mb-4 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-r">Image View</button>
                 </div>
             </div>
 
 
-            <article class="deckView flex flex-grow justify-center min-w-fit">
+            <article class="deckView flex justify-center min-w-fit">
                 <div class=" w-72 pr-6">
                     <img id="placeholder" class="singleCard" src=""><p>Placeholder</p>
                 </div>
@@ -134,66 +134,65 @@
                 {% endif %}
 
 
-                <div id="listView" class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 w-full">
-                    {% for type in card_types %}
-                        <div id="{{ type|lower }}Cards" class="category-container w-full">
-                            <h3>{{ type }}</h3>
-                            <ul class="list-none">
-                                {% for element in composition %}
-                                    {% if type in element.card.data.type_line %}
-                                             <li>
-                                                <div class="flex items-center space-x-2">
-                                                    {% if element.card.data.legalities[format] is defined and element.card.data.legalities[format] == 'legal' %}
-                                                        <span>{{ element.quantity }}x </span>
-                                                        <span>{{ element.card.data.name }}</span>
-                                                    {% else %}
-                                                        <span class="text-grey-400 italic">{{ element.quantity }}x </span>
-                                                        <span class="text-grey-400 italic">{{ element.card.data.name }}</span>
-                                                        <img class="w-4 ml-2" src="https://img.icons8.com/color/48/spam.png" alt="warning"/>
-                                                    {% endif %}
-                                                </div>
-                                                <span class="space-x-2 edit-links hidden">
+                    <div id="listView" class="flex flex-wrap w-full">
+                        {% for type in card_types %}
+                            <div id="{{ type|lower }}Cards" class="category-container">
+                                <h3>{{ type }}</h3>
+                                <ul class="list-none">
+                                    {% for element in composition %}
+                                        {% if type in element.card.data.type_line %}
+                                                <li>
+                                                    <div class="flex items-center space-x-2 text-sm">
+                                                        {% if element.card.data.legalities[format] is defined and element.card.data.legalities[format] == 'legal' %}
+                                                            <span>{{ element.quantity }}x </span>
+                                                            <span>{{ element.card.data.name }}</span>
+                                                        {% else %}
+                                                            <span class="text-grey-400 italic">{{ element.quantity }}x </span>
+                                                            <span class="text-grey-400 italic">{{ element.card.data.name }}</span>
+                                                            <img class="w-4 ml-2" src="https://img.icons8.com/color/48/spam.png" alt="warning"/>
+                                                        {% endif %}
+                                                    </div>
+                                                    <span class="space-x-2 edit-links hidden">
+                                                        <a class="hover:underline" href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">+1</a>
+                                                        <a class="hover:underline" href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">-1</a>
+                                                        <a class="hover:underline red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer</a>
+                                                    </span>
+                                                </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+
+                    <div id="imageView" class="grid gris-cols-1 gap-4 w-full">
+                        {% for type in card_types %}
+                            <div id="{{ type|lower }}Cards" class="category-container w-full">
+                                <h3>{{ type }}</h3>
+                                <div id="displayDeck" class="flex flex-wrap">
+                                    {% for element in composition %}
+                                        {% if type in element.card.data.type_line %}
+                                            <div class="card">
+                                                {% if element.quantity > 1 %}
+                                                    <img class="singleCard" src="{{ element.card.data.image_uris.normal }}"><span>X{{ element.quantity}}</span>
+                                                {% else %}
+                                                    <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
+                                                {% endif %}
+                                                <span class="edit-links hidden">
                                                     <a class="hover:underline" href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">+1</a>
                                                     <a class="hover:underline" href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">-1</a>
                                                     <a class="hover:underline red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer</a>
                                                 </span>
-                                            </li>
-                                    {% endif %}
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% endfor %}
-                </div>
-            
-                <div id="imageView" class="grid-cols-4 gap-4 w-full">
-                    {% for type in card_types %}
-                        <div id="{{ type|lower }}Cards" class="category-container">
-                            <h3>{{ type }}</h3>
-                            <div id="displayDeck" class="board">
-                                {% for element in composition %}
-                                    {% if type in element.card.data.type_line %}
-                                        <div class="card">
-                                            {% if element.quantity > 1 %}
-                                                <img class="singleCard" src="{{ element.card.data.image_uris.normal }}"><span>X{{ element.quantity}}</span>
-                                            {% else %}
-                                                <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
-                                            {% endif %}
-                                            <span class="edit-links hidden">
-                                                <a class="hover:underline" href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">+1</a>
-                                                <a class="hover:underline" href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">-1</a>
-                                                <a class="hover:underline red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer</a>
-                                            </span>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
                             </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </article>
-        </div>
-
-
+                        {% endfor %}
+                    </div>
+                </article>
+            </div>
 
     </div>
     

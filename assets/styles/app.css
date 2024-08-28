@@ -192,11 +192,6 @@ nav {
   display: block;
 }
 
-  .board {
-    width: 100vw;
-    display: flex;
-    flex-wrap: wrap;
-  }
 
   .singleCard {
     width: 250px;
@@ -217,6 +212,8 @@ nav {
 }
 .category-container {
   margin-bottom: 30px;
+  min-width: 250px;
+  max-width: 250px;
 }
 
 .category-container h3 {
