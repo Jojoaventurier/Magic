@@ -80,7 +80,22 @@
             <input type="hidden" id="cardData" name="cardData">
             <button type="submit">Ajouter en tant que commandant</button>
         </form>
-    {% elseif deck.commander is not null or deck.format.formatName is not same as 'Commander / EDH' %}
+
+    {% elseif deck.format.formatName is same as 'Commander / EDH' and deck.commander is not null %}
+        Rechercher une carte :
+        <input type="hidden" id="colors" value="{{ deck.commander.color_identity|join('') }}">
+        <input type="text" class="search" name="search" id="searchId" placeholder="Cherchez une carte...">
+        <select class="card" name="cardName" id="cardSelect"></select>
+        <button type="button" id="researchStart">Rechercher</button><br>
+
+        <form id="saveCardWithColorsForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id}) }}">
+            <input type="hidden" id="cardIdInput" name="cardId">
+            <input type="hidden" id="cardData" name="cardData">
+            <button type="submit">Ajouter la carte</button>
+        </form>
+
+    {% elseif deck.format.formatName is not same as 'Commander / EDH' %}
+
         Rechercher une carte :
         <input type="text" class="search" name="search" id="searchId" placeholder="Cherchez une carte...">
         <select class="card" name="cardName" id="cardSelect"></select>
@@ -153,23 +168,25 @@
                                             <li>
                                                     <div class="flex items-center text-sm">
                                                         {% if element.card.data.legalities[format] is defined %}
-                                                        <a href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
-                                                            <span class="card-name pr-2  
-                                                            {% if element.card.data.legalities[format] is not same as 'legal' %}text-grey-400 italic{% endif %}" 
-                                                                data-image="{{ element.card.data.image_uris.normal }}"
-                                                            >
-                                                                {{ element.quantity }}x {{ element.card.data.name }}
-                                                            </span>
-                                                        </a>
+                                                            <a href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
+                                                                <span class="card-name pr-2  
+                                                                    {% if element.card.data.legalities[format] is not same as 'legal' %}
+                                                                    text-grey-400 italic
+                                                                    {% endif %}" 
+                                                                    data-image="{{ element.card.data.image_uris.normal }}"
+                                                                >
+                                                                    {{ element.quantity }}x {{ element.card.data.name }}
+                                                                </span>
+                                                            </a>
                                                         {% if element.card.data.legalities[format] is not same as 'legal' %}
-                                                        <div class="hover-warning" title="La carte n'est pas légale dans ce format">
-                                                            <img class="w-4" src="https://img.icons8.com/color/48/spam.png" alt="red warning - not legal"/>
-                                                        </div>
-                                                            {% endif %}
+                                                            <div class="hover-warning" title="La carte n'est pas légale dans ce format">
+                                                                <img class="w-4" src="https://img.icons8.com/color/48/spam.png" alt="red warning - not legal"/>
+                                                            </div>
+                                                        {% endif %}
                                                         {% if element.quantity > deck.format.maxQuantity %}
-                                                        <div class="hover-warning" title="Quantité supérieure à la limite autorisée par le format">
-                                                            <img class="w-4" src="https://img.icons8.com/color/48/error--v1.png" alt="yellow warning - quantity error"/>
-                                                        </div>
+                                                            <div class="hover-warning" title="Quantité supérieure à la limite autorisée par le format">
+                                                                <img class="w-4" src="https://img.icons8.com/color/48/error--v1.png" alt="yellow warning - quantity error"/>
+                                                            </div>
                                                         {% endif %}
                                                     {% endif %}
                                                     </div>
@@ -319,15 +336,21 @@
             });
         
             researchButton.addEventListener('click', function() { 
+
                 const query = searchInput.value; 
                 let url;
+                let colors = document.getElementById('colors').value
+                console.log(colors)
         
                 // Check if the deck has a commander by checking if the "saveCommanderForm" exists
                 if (document.getElementById('saveCommanderForm')) {
                     // If the commander is not saved, search only for commander-eligible cards
                     url = `https://api.scryfall.com/cards/search?q=is:commander+name:${query}`;
+                } else if (document.getElementById('saveCardWithColorsForm')) {
+                    // If a commander is saved, search for any card within its color identity
+                    url = `https://api.scryfall.com/cards/search?q=identity<=${colors}+name:${query}`;
                 } else {
-                    // If a commander is saved, search for any card
+                    
                     url = `https://api.scryfall.com/cards/search?q=name:${query}`;
                 }
         
