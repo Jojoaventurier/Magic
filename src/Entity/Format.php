@@ -30,6 +30,9 @@ class Format
     #[ORM\Column(length: 20)]
     private ?string $formatName = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $maxQuantity = null;
+
     public function __construct()
     {
         $this->decks = new ArrayCollection();
@@ -102,6 +105,18 @@ class Format
     public function setFormatName(string $formatName): static
     {
         $this->formatName = $formatName;
+
+        return $this;
+    }
+
+    public function getMaxQuantity(): ?int
+    {
+        return $this->maxQuantity;
+    }
+
+    public function setMaxQuantity(int $maxQuantity): static
+    {
+        $this->maxQuantity = $maxQuantity;
 
         return $this;
     }
