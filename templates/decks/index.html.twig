@@ -43,7 +43,7 @@
             {% for deck in decks %}
 
             <div class="deck-card mx-2 mb-8 p-4 w-full sm:w-64 md:w-64 lg:w-64 border-spacing-2 space-y-4 border bg-white">
-                <span class="ml-2 pr-3 text-xs italic flex justify-end">
+                <span class="ml-2 pr-2 text-xs italic flex justify-end">
                 {% if deck.updateDate is same as null %}
                 créé le {{ deck.creationDate|date('d.m.Y à H:i')}}
                 {% else %}
@@ -52,13 +52,25 @@
                 </span>
 
                 {% if deck.commander is not null %}
-                <div class="flex justify-center border min-h-36 max-h-36 w-full">
-                    <img class="p-2" src="{{ deck.commander.image_uris.art_crop }}">
-                </div>
-                {% elseif deck.commander is null %}
-                <div class="flex justify-center border min-h-36 max-h-36 w-full">
-                    <img class="p-2" src="">
-                </div>
+                    <div class="flex justify-center border px-2 py-2 w-full h-36">
+                        <img class="w-36 h-36 object-cover" src="{{ deck.commander.image_uris.art_crop }}">
+                    </div>
+                {% else %}
+                    {% if deck.format.formatName is same as "Legacy" %}
+                        <div class="flex justify-center border px-2 py-2 w-full h-36">
+                            <img class="w-36 h-36 object-cover" src='{{ asset('img/placeholder-legacy.png')}}'>
+                        </div>
+                    {% endif %}
+                    {% if deck.format.formatName is same as "Standard" %}
+                        <div class="flex justify-center border px-2 py-2 w-full h-36">
+                            <img class="w-36 h-36 object-cover" src='{{ asset('img/placeholder-standard.png')}}'>
+                        </div>
+                    {% endif %}
+                    {% if deck.format.formatName is same as "Commander / EDH" %}
+                        <div class="flex justify-center border px-2 py-2 w-full h-36">
+                            <img class="w-36 h-36 object-cover" src='{{ asset('img/placeholder-edh.png')}}'>
+                        </div>
+                    {% endif %}
                 {% endif %}
 
                 <div class="flex flex-col m-4 h-auto justify-end">

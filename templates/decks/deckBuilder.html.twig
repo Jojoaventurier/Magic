@@ -145,25 +145,31 @@
                         {% endfor %}
             
                         {% if type_count > 0 %}
-                            <div id="{{ type|lower }}Cards" class="category-container">
+                            <div id="{{ type|lower }}Cards" class="category-container mr-3">
                                 <h3>{{ type }} ({{ type_count }})</h3>
                                 <ul class="list-none">
                                     {% for element in composition %}
                                         {% if type in element.card.data.type_line %}
                                             <li>
-                                                    <div class="flex items-center space-x-2 text-sm">
+                                                    <div class="flex items-center text-sm">
                                                         {% if element.card.data.legalities[format] is defined %}
                                                         <a href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
-                                                            <span class="card-name {% if element.card.data.legalities[format] is not same as 'legal' %}text-grey-400 italic{% endif %}" 
-                                                                data-image="{{ element.card.data.image_uris.normal }}">
+                                                            <span class="card-name pr-2  
+                                                            {% if element.card.data.legalities[format] is not same as 'legal' %}text-grey-400 italic{% endif %}" 
+                                                                data-image="{{ element.card.data.image_uris.normal }}"
+                                                            >
                                                                 {{ element.quantity }}x {{ element.card.data.name }}
                                                             </span>
                                                         </a>
                                                         {% if element.card.data.legalities[format] is not same as 'legal' %}
-                                                            <img class="w-4 ml-2" src="https://img.icons8.com/color/48/spam.png" alt="warning"/>
-                                                        {% endif %}
+                                                        <div class="hover-warning" title="La carte n'est pas légale dans ce format">
+                                                            <img class="w-4" src="https://img.icons8.com/color/48/spam.png" alt="red warning - not legal"/>
+                                                        </div>
+                                                            {% endif %}
                                                         {% if element.quantity > deck.format.maxQuantity %}
-                                                            <img class="w-4 ml-2" src="https://img.icons8.com/color/48/error--v1.png" alt="error-quantity"/>
+                                                        <div class="hover-warning" title="Quantité supérieure à la limite autorisée par le format">
+                                                            <img class="w-4" src="https://img.icons8.com/color/48/error--v1.png" alt="yellow warning - quantity error"/>
+                                                        </div>
                                                         {% endif %}
                                                     {% endif %}
                                                     </div>
@@ -198,16 +204,47 @@
                                     {% for element in composition %}
                                         {% if type in element.card.data.type_line %}
                                             <div class="card">
-                                                {% if element.quantity > 1 %}
+                                                {% if element.card.data.legalities[format] is defined %}
+                                                    {% if element.quantity > 1 %}
+                                                        {% if element.quantity > deck.format.maxQuantity %}
+                                                        <a href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
+                                                            <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
+                                                            <span class="card-span red-span">X{{ element.quantity }}</span>
+                                                        </a>
+                                                        {% else %}
+                                                        <a href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
+                                                            <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
+                                                            <span class="card-span white-span">X{{ element.quantity }}</span>
+                                                        </a>
+                                                        {% endif %}
+                                                    {% else %}
                                                     <a href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
                                                         <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
-                                                        <span>X{{ element.quantity }}</span>
                                                     </a>
-                                                {% else %}
-                                                    <a href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">                                                
-                                                        <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
-                                                    </a>
+                                                    {% endif %}
+                                                    
+                                                    {% if element.card.data.legalities[format] is not same as 'legal' %}
+                                                        
+                                                        <div class="warning-illegal w-full">
+                                                            <div class="flex flex-col items-center justify-center">
+                                                                <img class="w-10" src="https://img.icons8.com/color/48/spam.png" alt="red warning - not legal"/>
+                                                                <p>Non-légale dans le format</p>
+                                                            </div>
+                                                        </div>
+                                                            
+                                                    {% endif %}
+                                                    {% if element.quantity > deck.format.maxQuantity %}
+                                                        
+                                                        <div class="warning-quantity w-full">
+                                                            <div class="flex flex-col items-center justify-center">
+                                                                <img class="w-10" src="https://img.icons8.com/color/48/error--v1.png" alt="yellow warning - quantity error"/>
+                                                                <p>Quantité autorisée dépassée</p>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+
                                                 {% endif %}
+
                                                 <span class="edit-links hidden">
                                                     <a class="hover:underline" href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">+1</a>
                                                     <a class="hover:underline" href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">-1</a>

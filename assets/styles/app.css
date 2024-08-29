@@ -247,15 +247,22 @@ nav {
   margin: 5px;
 }
 
-.card span {
+.card-span {
   position: absolute;
-  bottom: 5px;
-  right: 10px;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
+  top: 2.4rem;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.8);
   padding: 2px 6px;
   border-radius: 3px;
   font-size: 14px;
+}
+
+.red-span {
+  color: red;
+}
+
+.white-span {
+  color: white;
 }
 
 
@@ -268,6 +275,41 @@ nav {
     linear-gradient(#0000,#000 90%) padding-box;
   mask-composite: exclude;
 }
+
+.hover-warning {
+  position: relative;
+}
+  
+.hover-warning:hover:after {
+  position: absolute;
+  content: attr(title);
+  display: inline-block;
+  left: 0px;
+  top: 0px;
+  padding: 5px;
+  background-color: black;
+  color: white;
+}
+
+.warning-illegal {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  top: 10rem;
+  padding: 2px 6px;
+  font-size: 1rem;
+}
+
+.warning-quantity {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  top: 5rem;
+  padding: 2px 6px;
+  font-size: 1rem;
+}
+
+
 
 
 
