@@ -116,7 +116,6 @@
 {# <div id="displayDeck" class="board"> #}
     <div class="light-white p-8 flex flex-wrap justify-center">
       
-
         <div class="px-8 mt-3 mb-5 w-full">
         <!--<div class="container mt-3 mb-5">-->
             <!-- Toggle View Buttons -->
@@ -347,12 +346,11 @@
                     // If the commander is not saved, search only for commander-eligible cards
                     url = `https://api.scryfall.com/cards/search?q=is:commander+name:${query}`;
                 } else if (document.getElementById('saveCardWithColorsForm')) {
-                    // If a commander is saved, search for any card within its color identity
-                    url = `https://api.scryfall.com/cards/search?q=identity<=${colors}+name:${query}`;
+                    url = `https://api.scryfall.com/cards/search?q=identity<=${colors}+legal:commander+name:${query}`
                 } else {
-                    
                     url = `https://api.scryfall.com/cards/search?q=name:${query}`;
-                }
+                } 
+                //TODO gérer la requête dynamiquement en fonction du format ! 
         
                 fetch(url)
                     .then(response => response.json())
