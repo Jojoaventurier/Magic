@@ -5,11 +5,13 @@ namespace App\Controller;
 use App\Entity\Card;
 use App\Entity\Deck;
 use App\Entity\User;
+use App\Entity\State;
 use App\Form\DeckFormType;
 use App\Entity\Composition;
 use App\Repository\CardRepository;
 use App\Repository\DeckRepository;
 use App\Repository\UserRepository;
+use App\Repository\StateRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CompositionRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,22 +57,35 @@ class DeckBuilderController extends AbstractController
 }
 
     #[Route('/build/deck/{id}', name: 'app_deck_builder')]
-    public function deckBuild(Deck $deck, DeckRepository $deckRepository, CompositionRepository $compositionRepository): Response
+    public function deckBuild(Deck $deck, DeckRepository $deckRepository, CompositionRepository $compositionRepository, StateRepository $stateRepository): Response
     {
 
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
-        $composition = $compositionRepository->findBy(['deck' => $deck]);
+
+        //$composition = $compositionRepository->findBy(['deck' => $deck]);
+
+        $stateMain = $stateRepository->findOneBy(['stateName' => "Mainboard"]);
+        $stateSide = $stateRepository->findOneBy(['stateName' => "Sideboard"]);
+        $stateMaybe = $stateRepository->findOneBy(['stateName' => "Maybeboard"]);
+
+
+        $compositionMain = $compositionRepository->findByState($deck, $stateMain);
+        $compositionSide = $compositionRepository->findByState($deck, $stateSide);
+        $compositionMaybe = $compositionRepository->findByState($deck, $stateMaybe);
+
         $count = 0;
 
-        foreach ($composition as $el) {
+        foreach ($compositionMain as $el) {
 
             $count += 1 * $el->getQuantity();
         }
 
         return $this->render('decks/deckBuilder.html.twig', [
             'deck' => $deck,
-            'composition' => $composition,
-            'count' => $count
+            'composition' => $compositionMain,
+            'compositionSide' => $compositionSide,
+            'compositionMaybe' => $compositionMaybe,
+            'count' => $count,
         ]);
     }
  
@@ -98,8 +113,8 @@ class DeckBuilderController extends AbstractController
         ]);
     }
 
-    #[Route('/user/{user}/deck/{deck}/card', name: 'save_card_deck', methods: ['POST'])]
-    public function saveCard(Deck $deck, Card $card = null, Composition $composition = null, EntityManagerInterface $entityManager, DeckRepository $deckRepository, CardRepository $cardRepository, CompositionRepository $compositionRepository, Request $request): Response 
+    #[Route('/user/{user}/deck/{deck}/{state}/card', name: 'save_card_deck', methods: ['POST'])]
+    public function saveCard(Deck $deck, Card $card = null, Composition $composition = null, String $state, StateRepository $stateRepository, EntityManagerInterface $entityManager, DeckRepository $deckRepository, CardRepository $cardRepository, CompositionRepository $compositionRepository, Request $request): Response 
     {
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
         $currentDate = new \DateTime();
@@ -108,6 +123,7 @@ class DeckBuilderController extends AbstractController
         $cardId = $request->get('cardId');
         $card = $cardRepository->findOneBy(['scryfallId' => $cardId]);
         $composition = $compositionRepository->findOneBy(['deck' => $deck, 'card' => $card]);
+        $compositionState = $stateRepository->findOneBy(['stateName' => $state]);
     
         if(!$card) {
             $card = new Card();
@@ -123,6 +139,7 @@ class DeckBuilderController extends AbstractController
             $composition->setDeck($deck);
             $composition->setCard($card);
             $composition->setQuantity(1);
+            $composition->setState($compositionState);
             $entityManager->persist($composition);
 
             } else if($card && !$composition) {
@@ -131,18 +148,24 @@ class DeckBuilderController extends AbstractController
                     $composition->setQuantity(1);
                     $composition->setDeck($deck);
                     $composition->setCard($card);
+                    $composition->setState($compositionState);
                     $entityManager->persist($composition);
                     
                 } else {
                     $quantity = $composition->getQuantity();
                     $quantity += 1;
                     $composition->setQuantity($quantity);
+                    $composition->setState($compositionState);
                     $entityManager->persist($composition);
             }     
  
         // $card->addDeck($deck);
         $entityManager->flush();
         return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
+    }
+
+    public function changeState() {
+
     }
 
     #[Route('/user/{user}/deck/{deck}/commander', name: 'save_commander_deck', methods: ['POST'])]
@@ -152,7 +175,6 @@ class DeckBuilderController extends AbstractController
         $currentDate = new \DateTime();
         $deck->setUpdateDate($currentDate);
     
-
         $data = $request->get('cardData');
         $dataJS = json_decode($data, true); // true pour récupérer un tableau
 
@@ -165,6 +187,8 @@ class DeckBuilderController extends AbstractController
     #[Route('/user/{user}/deck/{deck}/delete-commander', name: 'delete_commander', methods: ['POST', 'GET'])]
     public function deleteCommander(Deck $deck, EntityManagerInterface $entityManager, DeckRepository $deckRepository): Response 
     {
+
+        //ajouter une condition si le user en session est le même que le user du deck
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
         $currentDate = new \DateTime();
         $deck->setUpdateDate($currentDate);
