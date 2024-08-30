@@ -122,8 +122,8 @@ class DeckBuilderController extends AbstractController
 
         $cardId = $request->get('cardId');
         $card = $cardRepository->findOneBy(['scryfallId' => $cardId]);
-        $composition = $compositionRepository->findOneBy(['deck' => $deck, 'card' => $card]);
         $compositionState = $stateRepository->findOneBy(['stateName' => $state]);
+        $composition = $compositionRepository->findOneBy(['deck' => $deck, 'card' => $card, 'state' => $compositionState]);
     
         if(!$card) {
             $card = new Card();
@@ -202,8 +202,8 @@ class DeckBuilderController extends AbstractController
 
 
 
-    #[Route('/user/{user}/deck/{deck}/{card}/plus', name: 'plus_card_deck', methods: ['POST', 'GET'])]
-    public function plusOne(Deck $deck, $card, DeckRepository $deckRepository, CardRepository $cardRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager, Request $request, ) {
+    #[Route('/user/{user}/deck/{deck}/{card}/{state}/plus', name: 'plus_card_deck', methods: ['POST', 'GET'])]
+    public function plusOne(Deck $deck, $card, String $state, DeckRepository $deckRepository, CardRepository $cardRepository, CompositionRepository $compositionRepository, StateRepository $stateRepository, EntityManagerInterface $entityManager, Request $request, ) {
 
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
         $currentDate = new \DateTime();
@@ -211,7 +211,8 @@ class DeckBuilderController extends AbstractController
 
         $card = $cardRepository->findOneBy(['scryfallId' => $card]);
 
-        $composition = $compositionRepository->findOneBy(['deck' => $deck, 'card' => $card]);
+        $compositionState = $stateRepository->findOneBy(['stateName' => $state]);
+        $composition = $compositionRepository->findOneBy(['deck' => $deck, 'card' => $card, 'state' => $compositionState]);
 
         $quantity = $composition->getQuantity();
         $quantity += 1;
@@ -222,8 +223,8 @@ class DeckBuilderController extends AbstractController
         return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
     }
 
-    #[Route('/user/{user}/deck/{deck}/{card}/minus', name: 'minus_card_deck', methods: ['POST', 'GET'])]
-    public function minusOne(Deck $deck, $card, DeckRepository $deckRepository, CardRepository $cardRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager) {
+    #[Route('/user/{user}/deck/{deck}/{card}/{state}/minus', name: 'minus_card_deck', methods: ['POST', 'GET'])]
+    public function minusOne(Deck $deck, $card, String $state, StateRepository $stateRepository, DeckRepository $deckRepository, CardRepository $cardRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager) {
 
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
         $currentDate = new \DateTime();
@@ -232,7 +233,8 @@ class DeckBuilderController extends AbstractController
 
         $card = $cardRepository->findOneBy(['scryfallId' => $card]);
 
-        $composition = $compositionRepository->findOneBy(['deck' => $deck, 'card' => $card]);
+        $compositionState = $stateRepository->findOneBy(['stateName' => $state]);
+        $composition = $compositionRepository->findOneBy(['deck' => $deck, 'card' => $card, 'state' => $compositionState]);
 
         $quantity = $composition->getQuantity();
 
@@ -251,13 +253,14 @@ class DeckBuilderController extends AbstractController
     }
 
 
-    #[Route('/user/{user}/deck/{deck}/{card}/delete', name: 'delete_card_deck', methods: ['GET'])]
-    public function deleteCardFromDeck(Deck $deck, $card, DeckRepository $deckRepository, CardRepository $cardRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager) {
+    #[Route('/user/{user}/deck/{deck}/{card}/{state}/delete', name: 'delete_card_deck', methods: ['GET'])]
+    public function deleteCardFromDeck(Deck $deck, $card, String $state, StateRepository $stateRepository, DeckRepository $deckRepository, CardRepository $cardRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager) {
         
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
         $card = $cardRepository->findOneBy(['scryfallId' => $card]);
 
-        $composition = $compositionRepository->findOneBy(['deck' => $deck, 'card' => $card]);
+        $compositionState = $stateRepository->findOneBy(['stateName' => $state]);
+        $composition = $compositionRepository->findOneBy(['deck' => $deck, 'card' => $card, 'state' => $compositionState]);
 
         $entityManager->remove($composition);
         $entityManager->flush();
@@ -268,6 +271,7 @@ class DeckBuilderController extends AbstractController
     #[Route('/user/{user}/deck/{deck}/deleteAllCards', name: 'delete_all_cards_deck', methods: ['GET'])]
     public function deleteAllCards(Deck $deck, DeckRepository $deckRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager) {
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
+
         $compositions = $compositionRepository->findBy(['deck' => $deck]);
 
         foreach($compositions as $composition) {
@@ -297,6 +301,56 @@ class DeckBuilderController extends AbstractController
         return $this->redirectToRoute('app_deck_manager', ['id' => $userId]);
 
     }
+
+    #[Route('/user/{user}/deck/{deck}/export.csv', name: 'export_deck_csv', methods: ['GET'])]
+    public function exportDeckAsCsv(Deck $deck, DeckRepository $deckRepository, StateRepository $stateRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager) {
+
+        $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
+        $state = $stateRepository->findOneBy(['stateName' => "Mainboard"]);
+        $compositions = $compositionRepository->findBy(['deck' => $deck, 'state' => $state]);
+
+        $rows = [];
+        foreach($compositions as $composition) {
+            $card = $composition->getCard()->getData();
+            $cardName = $card['name'];
+ 
+            $data = [$composition->getQuantity(), $cardName];
+
+            $rows[] = implode('x ', $data);
+        }
+
+        $content = implode("\n", $rows);
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'text/csv');
+
+        return $response;
+    }
+
+    #[Route('/user/{user}/deck/{deck}/export.txt', name: 'export_deck_txt', methods: ['GET'])]
+    public function exportDeckAsTxt(Deck $deck, DeckRepository $deckRepository, StateRepository $stateRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager) {
+
+        $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
+        $state = $stateRepository->findOneBy(['stateName' => "Mainboard"]);
+        $compositions = $compositionRepository->findBy(['deck' => $deck, 'state' => $state]);
+
+        $rows = [];
+        foreach($compositions as $composition) {
+            $card = $composition->getCard()->getData();
+            $cardName = $card['name'];
+ 
+            $data = [$composition->getQuantity(), $cardName];
+
+            $rows[] = implode('x ', $data);
+        }
+
+        $content = implode("\n", $rows);
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'text/plain');
+        $response->headers->set('Content-Disposition', 'attachment; filename="export.txt"');
+
+        return $response;
+    }
+
 
 }
 

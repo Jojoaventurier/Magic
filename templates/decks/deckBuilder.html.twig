@@ -41,6 +41,16 @@
         </div>
         <a class="red hover:underline" href="{{ path('delete_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer le deck</a><br>
         <a class="red hover:underline" href="{{ path('delete_all_cards_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer toutes les cartes du deck</a><br>
+        <button id="downloadButton" class="my-4 bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4">
+           Exporter le deck
+        </button>
+        <div id="downloadLinks" class="hidden w-full mt-4">
+            <button id="closeButton" class="absolute top-0 right-0 mt-2 mr-2 text-gray-600 hover:text-gray-900">
+                &times;
+            </button>
+            <a class="mb-4 bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4" href="{{ path('export_deck_txt', {'user': deck.user.id, 'deck': deck.id}) }}">.txt</a><br>
+            <a class="mb-4 bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4" href="{{ path('export_deck_csv', {'user': deck.user.id, 'deck': deck.id}) }}">.csv</a><br>
+        </div>
     </div>
 
 {% if deck.format.formatName is same as 'Commander / EDH'%}
@@ -74,8 +84,13 @@
     {% set format = deck.format.formatName|lower %}
 {% endif %}
 
-{% set stateName = "Mainboard" %}
 
+<label for="stateSelector">Ajouter à</label>
+<select name="stateSelector" id="stateSelector" >
+    <option value="Mainboard" selected >Mainboard</option>
+    <option value="Sideboard">Sideboard</option>
+    <option value="Maybeboard">Maybeboard</option>
+</select>
 
 <div class="row space-x-4 p-4">
 
@@ -98,7 +113,7 @@
         <select class="card" name="cardName" id="cardSelect"></select>
         <button type="button" id="researchStart">Rechercher</button><br>
 
-        <form id="saveCardWithColorsForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': stateName}) }}">
+        <form id="saveCardWithColorsForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'PLACEHOLDER_STATE'}) }}">
             <input type="hidden" id="cardIdInput" name="cardId">
             <input type="hidden" id="cardData" name="cardData">
             <button type="submit">Ajouter la carte</button>
@@ -114,7 +129,7 @@
         <select class="card" name="cardName" id="cardSelect"></select>
         <button type="button" id="researchStart">Rechercher</button><br>
 
-        <form id="saveCardFormatForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': stateName}) }}">
+        <form id="saveCardFormatForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'PLACEHOLDER_STATE'}) }}">
             <input type="hidden" id="cardIdInput" name="cardId">
             <input type="hidden" id="cardData" name="cardData">
             <button type="submit">Ajouter la carte</button>
@@ -129,7 +144,7 @@
         <select class="card" name="cardName" id="cardSelect"></select>
         <button type="button" id="researchStart">Rechercher</button><br>
 
-        <form id="saveCardForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': stateName}) }}">
+        <form id="saveCardForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'PLACEHOLDER_STATE'}) }}">
             <input type="hidden" id="cardIdInput" name="cardId">
             <input type="hidden" id="cardData" name="cardData">
             <button type="submit">Ajouter la carte</button>
@@ -172,88 +187,82 @@
             
 
                 {% set card_types = ["Creature", "Sorcery", "Instant", "Enchantment", "Artifact", "Planeswalker", "Land"] %}
-            
-                <div id="listView" class="flex-wrap w-full">
-                    {% for type in card_types %}
-                        {% set type_count = 0 %}
-                        {% for element in composition %}
-                            {% if type in element.card.data.type_line %}
-                                {% set type_count = type_count + 1 %}
-                            {% endif %}
-                        {% endfor %}
-            
-                        {% if type_count > 0 %}
-                            <div id="{{ type|lower }}Cards" class="category-container mr-3">
-                                <h3>{{ type }} ({{ type_count }})</h3>
-                                <ul class="list-none">
-                                    {% for element in composition %}
-                                        {% if type in element.card.data.type_line %}
-                                            <li>
-                                                    <div class="flex items-center text-sm">
-                                                        {% if element.card.data.legalities[format] is defined %}
-                                                            <a href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
-                                                                <span class="card-name pr-2  
-                                                                    {% if element.card.data.legalities[format] is not same as 'legal' %}
-                                                                    text-grey-400 italic
-                                                                    {% endif %}" 
-                                                                    data-image="{{ element.card.data.image_uris.normal }}"
-                                                                >
-                                                                    {{ element.quantity }}x {{ element.card.data.name }}
-                                                                </span>
-                                                            </a>
 
-                                                        {% if element.card.data.legalities[format] is not same as 'legal' %}
-                                                            <div class="hover-warning" title="La carte n'est pas légale dans ce format">
-                                                                <img class="w-4" src="https://img.icons8.com/color/48/spam.png" alt="red warning - not legal"/>
-                                                            </div>
-                                                        {% endif %}
+<div id="listView" class="flex-wrap w-full">
+    {% for type in card_types %}
+        {% set type_count = 0 %}
+        {% for element in composition %}
+            {% if type in element.card.data.type_line %}
+                {% set type_count = type_count + 1 %}
+            {% endif %}
+        {% endfor %}
 
-                                                        {% if element.quantity > deck.format.maxQuantity %}
-                                                            <div class="hover-warning" title="Quantité supérieure à la limite autorisée par le format">
-                                                                <img class="w-4" src="https://img.icons8.com/color/48/error--v1.png" alt="yellow warning - quantity error"/>
-                                                            </div>
-                                                        {% endif %}
+        {% if type_count > 0 %}
+            <div id="{{ type|lower }}Cards" class="category-container mr-3">
+                <h3>{{ type }} ({{ type_count }})</h3>
+                <ul class="list-none">
+                    {% for element in composition %}
+                        {% if type in element.card.data.type_line %}
+                            <li>
+                                <div class="flex items-center text-sm">
+                                    {% if element.card.data.legalities[format] is defined %}
+                                        <a href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
+                                            <span class="card-name pr-2
+                                                {% if element.card.data.legalities[format] is not same as 'legal' %}
+                                                text-grey-400 italic
+                                                {% endif %}"
+                                                data-image="{{ element.card.data.image_uris.normal }}">
+                                                {{ element.quantity }}x {{ element.card.data.name }}
+                                            </span>
+                                        </a>
 
-                                                    {% if format is same as('commander') and deck.commander is not null %}
-                                                        {% set colorIdentity = deck.commander.colors %}
-                                                        {% set allColorsMatch = true %} {# Assume all colors match initially #}
-                                                        
-                                                        {% for color in element.card.data.colors %}
-                                                            {% if color not in colorIdentity %}
-                                                                {% set allColorsMatch = false %} {# If any color doesn't match, set to false #}
-                                                            {% endif %}
-                                                        {% endfor %}
-
-                                                        <!--A CORRIGER PEUT ETRE SUREMENT ECRIT EN MOINS DE LIGNES-->
-                                                        <!--A CORRIGER PEUT ETRE SUREMENT ECRIT EN MOINS DE LIGNES-->
-                                                        {% if allColorsMatch %}
-                                                        {% else %}
-                                                        <div class="hover-warning" title="La ou les couleurs de cette carte rendent le deck illégal">
-                                                            <img class="w-4" src="https://img.icons8.com/color/48/spam.png" alt="red warning - not legal"/>
-                                                        </div>
-                                                        {% endif %}
-                                                        <!--A CORRIGER PEUT ETRE SUREMENT ECRIT EN MOINS DE LIGNES-->
-                                                        <!--A CORRIGER PEUT ETRE SUREMENT ECRIT EN MOINS DE LIGNES-->
-                                                        
-                                                    {% endif %}
-
-                                                    {% endif %}
-                                                    </div>
-                                                <span class="space-x-2 edit-links hidden">
-                                                    <a class="hover:underline" href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">+1</a>
-                                                    <a class="hover:underline" href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">-1</a>
-                                                    <a class="hover:underline red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer</a>
-                                                </span>
-                                            </li>
+                                        {% if element.card.data.legalities[format] is not same as 'legal' %}
+                                            <div class="hover-warning" title="La carte n'est pas légale dans ce format">
+                                                <img class="w-4" src="https://img.icons8.com/color/48/spam.png" alt="red warning - not legal"/>
+                                            </div>
                                         {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </div>
+
+                                        {% if element.quantity > deck.format.maxQuantity %}
+                                            <div class="hover-warning" title="Quantité supérieure à la limite autorisée par le format">
+                                                <img class="w-4" src="https://img.icons8.com/color/48/error--v1.png" alt="yellow warning - quantity error"/>
+                                            </div>
+                                        {% endif %}
+
+                                        {% if format is same as('commander') and deck.commander is not null %}
+                                            {% set colorIdentity = deck.commander.colors %}
+                                            {% set allColorsMatch = true %} {# Assume all colors match initially #}
+
+                                            {% for color in element.card.data.colors %}
+                                                {% if color not in colorIdentity %}
+                                                    {% set allColorsMatch = false %} {# If any color doesn't match, set to false #}
+                                                {% endif %}
+                                            {% endfor %}
+
+                                            {% if allColorsMatch %}
+                                            {% else %}
+                                                <div class="hover-warning" title="La ou les couleurs de cette carte rendent le deck illégal">
+                                                    <img class="w-4" src="https://img.icons8.com/color/48/spam.png" alt="red warning - not legal"/>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                                <span class="space-x-2 edit-links hidden">
+                                    <a class="hover:underline" href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id, 'state': 'Mainboard'}) }}">+1</a>
+                                    <a class="hover:underline" href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id, 'state': 'Mainboard'}) }}">-1</a>
+                                    <a class="hover:underline red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id, 'state': 'Mainboard'}) }}">Supprimer</a>
+                                </span>
+                            </li>
                         {% endif %}
                     {% endfor %}
-                </div>
-            
-            
+                </ul>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+
+
+        
                 <div id="imageView" class="grid grid-cols-1 gap-4 w-full">
                     {% for type in card_types %}
                         {% set type_count = 0 %}
@@ -331,9 +340,9 @@
                                                 {% endif %}
 
                                                 <span class="edit-links hidden">
-                                                    <a class="hover:underline" href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">+1</a>
-                                                    <a class="hover:underline" href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">-1</a>
-                                                    <a class="hover:underline red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id}) }}">Supprimer</a>
+                                                    <a class="hover:underline" href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id, 'state': 'Mainboard'}) }}">+1</a>
+                                                    <a class="hover:underline" href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id, 'state': 'Mainboard'}) }}">-1</a>
+                                                    <a class="hover:underline red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id, 'state': 'Mainboard'}) }}">Supprimer</a>
                                                 </span>
                                             </div>
                                         {% endif %}
@@ -346,16 +355,120 @@
             </article>
         </div>
 
+        <div id="sideboard board">
+            <h3>Sideboard</h3>
+            <ul class="list-none">
+                {% for element in compositionSide %}
+                        <li>
+                            <div class="flex items-center text-sm">
+                                {% if element.card.data.legalities[format] is defined %}
+                                    <a href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
+                                        <span class="card-name pr-2
+                                            {% if element.card.data.legalities[format] is not same as 'legal' %}
+                                            text-grey-400 italic
+                                            {% endif %}"
+                                            data-image="{{ element.card.data.image_uris.normal }}">
+                                            {{ element.quantity }}x {{ element.card.data.name }}
+                                        </span>
+                                    </a>
+        
+                                    {% if element.card.data.legalities[format] is not same as 'legal' %}
+                                        <div class="hover-warning" title="La carte n'est pas légale dans ce format">
+                                            <img class="w-4" src="https://img.icons8.com/color/48/spam.png" alt="red warning - not legal"/>
+                                        </div>
+                                    {% endif %}
+        
+        
+                                    {% if format is same as('commander') and deck.commander is not null %}
+                                        {% set colorIdentity = deck.commander.colors %}
+                                        {% set allColorsMatch = true %} {# Assume all colors match initially #}
+        
+                                        {% for color in element.card.data.colors %}
+                                            {% if color not in colorIdentity %}
+                                                {% set allColorsMatch = false %} {# If any color doesn't match, set to false #}
+                                            {% endif %}
+                                        {% endfor %}
+        
+                                        {% if allColorsMatch %}
+                                        {% else %}
+                                            <div class="hover-warning" title="La ou les couleurs de cette carte rendent le deck illégal">
+                                                <img class="w-4" src="https://img.icons8.com/color/48/spam.png" alt="red warning - not legal"/>
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            <span class="space-x-2 edit-links hidden">
+                                <a class="hover:underline" href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id, 'state': 'Sideboard'}) }}">+1</a>
+                                <a class="hover:underline" href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id, 'state': 'Sideboard'}) }}">-1</a>
+                                <a class="hover:underline red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id, 'state': 'Sideboard'}) }}">Supprimer</a>
+                            </span>
+                        </li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div id="maybeboard board">
+            <h3>Maybeboard</h3>
+            <ul class="list-none">
+                {% for element in compositionMaybe %}
+                        <li>
+                            <div class="flex items-center text-sm">
+                                {% if element.card.data.legalities[format] is defined %}
+                                    <a href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
+                                        <span class="card-name pr-2
+                                            {% if element.card.data.legalities[format] is not same as 'legal' %}
+                                            text-grey-400 italic
+                                            {% endif %}"
+                                            data-image="{{ element.card.data.image_uris.normal }}">
+                                            {{ element.quantity }}x {{ element.card.data.name }}
+                                        </span>
+                                    </a>
+        
+                                    {% if element.card.data.legalities[format] is not same as 'legal' %}
+                                        <div class="hover-warning" title="La carte n'est pas légale dans ce format">
+                                            <img class="w-4" src="https://img.icons8.com/color/48/spam.png" alt="red warning - not legal"/>
+                                        </div>
+                                    {% endif %}
+        
+                                    {% if format is same as('commander') and deck.commander is not null %}
+                                        {% set colorIdentity = deck.commander.colors %}
+                                        {% set allColorsMatch = true %} {# Assume all colors match initially #}
+        
+                                        {% for color in element.card.data.colors %}
+                                            {% if color not in colorIdentity %}
+                                                {% set allColorsMatch = false %} {# If any color doesn't match, set to false #}
+                                            {% endif %}
+                                        {% endfor %}
+        
+                                        {% if allColorsMatch %}
+                                        {% else %}
+                                            <div class="hover-warning" title="La ou les couleurs de cette carte rendent le deck illégal">
+                                                <img class="w-4" src="https://img.icons8.com/color/48/spam.png" alt="red warning - not legal"/>
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            <span class="space-x-2 edit-links hidden">
+                                <a class="hover:underline" href="{{ path('plus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id, 'state': 'Maybeboard'}) }}">+1</a>
+                                <a class="hover:underline" href="{{ path('minus_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id, 'state': 'Maybeboard'}) }}">-1</a>
+                                <a class="hover:underline red" href="{{ path('delete_card_deck', {'user': deck.user.id, 'deck': deck.id, 'card': element.card.data.id, 'state': 'Maybeboard'}) }}">Supprimer</a>
+                            </span>
+                        </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+
+
     </div>
     
 {# </div> #}
 
 {% block javascripts %} 
 
-<script> //TODO affichage des decks sous forme de carte
-        //TODO ajouter une fonction saveCommander (sauvegarder data en JSON) et affichage de la carte dans la vue
-        //TODO ajouter un attribut location dans composition
-        //TODO max number of cards
+<script>  //TODO max number of cards
 
         document.addEventListener('DOMContentLoaded', function() { 
 
@@ -390,7 +503,7 @@
             const cardSelect = document.getElementById('cardSelect'); 
             const researchButton = document.getElementById('researchStart'); 
             const cardBoard = document.getElementById('cardBoard'); 
-            const saveCardForm = document.getElementById('saveCardForm');
+            let saveCardForm = document.getElementById('saveCardForm');
             const cardIdInput = document.getElementById('cardIdInput');
             const cardData = document.getElementById('cardData');
 
@@ -483,7 +596,54 @@
                     cardBoard.appendChild(link);
                 }
             });
-        
+
+            const stateSelector = document.getElementById('stateSelector');
+
+            if(document.getElementById('saveCardWithColorsForm')) {
+                saveCardForm = document.getElementById('saveCardWithColorsForm');
+            }
+            if(document.getElementById('saveCardFormatForm')) {
+                saveCardForm = document.getElementById('saveCardFormatForm');
+            }
+            if(document.getElementById('saveCardForm')) {
+                saveCardForm = document.getElementById('saveCardForm');
+            }
+
+            stateSelector.addEventListener('change', function() {
+                const selectedState = stateSelector.value;
+                const newAction = "{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'PLACEHOLDER_STATE'}) }}";
+                saveCardForm.action = newAction.replace('PLACEHOLDER_STATE', selectedState);
+            });
+
+            
+
+            document.getElementById('downloadButton').addEventListener('click', function() {
+                var linksDiv = document.getElementById('downloadLinks');
+                if (linksDiv.classList.contains('hidden')) {
+                    linksDiv.classList.remove('hidden');
+                    linksDiv.classList.add('inline-flex');
+                } else {
+                    linksDiv.classList.add('hidden');
+
+                    if(linksDiv.classList.contains('inline-flex')) {
+                        linksDiv.classList.remove('inline-flex');
+                    }
+                }
+            });
+            
+            document.getElementById('closeButton').addEventListener('click', function() {
+                document.getElementById('downloadLinks').classList.add('hidden');
+            });
+            
+            // Close the links when any download link is clicked
+            var downloadLinks = document.querySelectorAll('#downloadLinks a');
+            downloadLinks.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    document.getElementById('downloadLinks').classList.add('hidden');
+                });
+            });
+
+
             // Switch between list view and image view
             const listViewBtn = document.getElementById('listViewBtn');
             const imageViewBtn = document.getElementById('imageViewBtn');
