@@ -67,6 +67,12 @@
     {% endif %}
 </div>
 
+{% if deck.format.formatName == 'Commander / EDH' %}
+    {% set format = "commander" %}
+{% else %}
+    {% set format = deck.format.formatName|lower %}
+{% endif %}
+
 <div class="row space-x-4 p-4">
 
     {% if deck.format.formatName is same as 'Commander / EDH' and deck.commander is same as null %}
@@ -93,8 +99,26 @@
             <input type="hidden" id="cardData" name="cardData">
             <button type="submit">Ajouter la carte</button>
         </form>
+        <input type="checkbox" id="noRestrictions" name="noRestrictions">
+        <label for="noRestrictions">Ignorer les restrictions du format pour la recherche</label>
 
     {% elseif deck.format.formatName is not same as 'Commander / EDH' %}
+
+        Rechercher une carte :
+        <input type="hidden" id="format" value="{{ format }}">
+        <input type="text" class="search" name="search" id="searchId" placeholder="Cherchez une carte...">
+        <select class="card" name="cardName" id="cardSelect"></select>
+        <button type="button" id="researchStart">Rechercher</button><br>
+
+        <form id="saveCardFormatForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id}) }}">
+            <input type="hidden" id="cardIdInput" name="cardId">
+            <input type="hidden" id="cardData" name="cardData">
+            <button type="submit">Ajouter la carte</button>
+        </form>
+        <input type="checkbox" id="noRestrictions" name="noRestrictions">
+        <label for="noRestrictions">Ignorer les restrictions du format pour la recherche</label>
+
+    {% elseif 'ignore format and colors' %}
 
         Rechercher une carte :
         <input type="text" class="search" name="search" id="searchId" placeholder="Cherchez une carte...">
@@ -142,12 +166,8 @@
                     <img id="placeholder" class="singleCard" src="{{ asset('img/Magic_the_gathering-card_back.jpg') }}">
                 </div>
             
+
                 {% set card_types = ["Creature", "Sorcery", "Instant", "Enchantment", "Artifact", "Planeswalker", "Land"] %}
-                {% if deck.format.formatName == 'Commander / EDH' %}
-                    {% set format = "commander" %}
-                {% else %}
-                    {% set format = deck.format.formatName|lower %}
-                {% endif %}
             
                 <div id="listView" class="flex-wrap w-full">
                     {% for type in card_types %}
@@ -177,16 +197,37 @@
                                                                     {{ element.quantity }}x {{ element.card.data.name }}
                                                                 </span>
                                                             </a>
+
                                                         {% if element.card.data.legalities[format] is not same as 'legal' %}
                                                             <div class="hover-warning" title="La carte n'est pas légale dans ce format">
                                                                 <img class="w-4" src="https://img.icons8.com/color/48/spam.png" alt="red warning - not legal"/>
                                                             </div>
                                                         {% endif %}
+
                                                         {% if element.quantity > deck.format.maxQuantity %}
                                                             <div class="hover-warning" title="Quantité supérieure à la limite autorisée par le format">
                                                                 <img class="w-4" src="https://img.icons8.com/color/48/error--v1.png" alt="yellow warning - quantity error"/>
                                                             </div>
                                                         {% endif %}
+
+                                                    {% if format is same as('commander') and deck.commander is not null %}
+                                                        {% set colorIdentity = deck.commander.colors %}
+                                                        {% set allColorsMatch = true %} {# Assume all colors match initially #}
+                                                        
+                                                        {% for color in element.card.data.colors %}
+                                                            {% if color not in colorIdentity %}
+                                                                {% set allColorsMatch = false %} {# If any color doesn't match, set to false #}
+                                                            {% endif %}
+                                                        {% endfor %}
+
+                                                        {% if allColorsMatch %}
+                                                        {% else %}
+                                                        <div class="hover-warning" title="La ou les couleurs de cette carte rendent le deck illégal">
+                                                            <img class="w-4" src="https://img.icons8.com/color/48/spam.png" alt="red warning - not legal"/>
+                                                        </div>
+                                                        {% endif %}
+                                                    {% endif %}
+
                                                     {% endif %}
                                                     </div>
                                                 <span class="space-x-2 edit-links hidden">
@@ -257,6 +298,23 @@
                                                                 <p>Quantité autorisée dépassée</p>
                                                             </div>
                                                         </div>
+                                                    {% endif %}
+                                                    {% if format is same as('commander') and deck.commander is not null %}
+                                                        {% set colorIdentity = deck.commander.colors %}
+                                                        {% set allColorsMatch = true %} {# Assume all colors match initially #}
+                                                        
+                                                        {% for color in element.card.data.colors %}
+                                                            {% if color not in colorIdentity %}
+                                                                {% set allColorsMatch = false %} {# If any color doesn't match, set to false #}
+                                                            {% endif %}
+                                                        {% endfor %}
+
+                                                        {% if allColorsMatch %}
+                                                        {% else %}
+                                                        <div class="hover-warning" title="La ou les couleurs de cette carte rendent le deck illégal">
+                                                            <img class="w-4" src="https://img.icons8.com/color/48/spam.png" alt="red warning - not legal"/>
+                                                        </div>
+                                                        {% endif %}
                                                     {% endif %}
 
                                                 {% endif %}
@@ -338,20 +396,26 @@
 
                 const query = searchInput.value; 
                 let url;
-                let colors = document.getElementById('colors').value
-                console.log(colors)
-        
-                // Check if the deck has a commander by checking if the "saveCommanderForm" exists
-                if (document.getElementById('saveCommanderForm')) {
-                    // If the commander is not saved, search only for commander-eligible cards
+
+                let noRestrictions = document.getElementById('noRestrictions')
+
+                if(noRestrictions.checked) {
+                    url = `https://api.scryfall.com/cards/search?q=name:${query}`;
+               
+                } else if (document.getElementById('saveCommanderForm')) {
                     url = `https://api.scryfall.com/cards/search?q=is:commander+name:${query}`;
+
                 } else if (document.getElementById('saveCardWithColorsForm')) {
-                    url = `https://api.scryfall.com/cards/search?q=identity<=${colors}+legal:commander+name:${query}`
+                    url = `https://api.scryfall.com/cards/search?q=identity<=${document.getElementById('colors').value}+legal:commander+name:${query}`
+
+                } else if (document.getElementById('saveCardFormatForm')) {
+                    url = `https://api.scryfall.com/cards/search?q=legal:${document.getElementById('format').value}+name:${query}`
+
                 } else {
                     url = `https://api.scryfall.com/cards/search?q=name:${query}`;
                 } 
                 //TODO gérer la requête dynamiquement en fonction du format ! 
-        
+                console.log(url);
                 fetch(url)
                     .then(response => response.json())
                     .then(data => {

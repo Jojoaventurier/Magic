@@ -52,23 +52,23 @@
                 </span>
 
                 {% if deck.commander is not null %}
-                    <div class="flex justify-center border px-2 py-2 w-full h-36">
-                        <img class="w-36 h-36 object-cover" src="{{ deck.commander.image_uris.art_crop }}">
+                    <div class="flex justify-center border px-2 py-2 w-full">
+                        <img class="h-36 object-cover" src="{{ deck.commander.image_uris.art_crop }}">
                     </div>
                 {% else %}
                     {% if deck.format.formatName is same as "Legacy" %}
-                        <div class="flex justify-center border px-2 py-2 w-full h-36">
-                            <img class="w-36 h-36 object-cover" src='{{ asset('img/placeholder-legacy.png')}}'>
+                        <div class="flex justify-center border px-2 py-2 w-full">
+                            <img class="h-36 object-cover" src='{{ asset('img/placeholder-legacy.png')}}'>
                         </div>
                     {% endif %}
                     {% if deck.format.formatName is same as "Standard" %}
-                        <div class="flex justify-center border px-2 py-2 w-full h-36">
-                            <img class="w-36 h-36 object-cover" src='{{ asset('img/placeholder-standard.png')}}'>
+                        <div class="flex justify-center border px-2 py-2 w-full">
+                            <img class="h-36 object-cover" src='{{ asset('img/placeholder-standard.png')}}'>
                         </div>
                     {% endif %}
                     {% if deck.format.formatName is same as "Commander / EDH" %}
-                        <div class="flex justify-center border px-2 py-2 w-full h-36">
-                            <img class="w-36 h-36 object-cover" src='{{ asset('img/placeholder-edh.png')}}'>
+                        <div class="flex justify-center border px-2 py-2 w-full">
+                            <img class="h-36 object-cover" src='{{ asset('img/placeholder-edh.png')}}'>
                         </div>
                     {% endif %}
                 {% endif %}
