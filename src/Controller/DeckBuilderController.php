@@ -123,6 +123,7 @@ class DeckBuilderController extends AbstractController
         $cardId = $request->get('cardId');
         $card = $cardRepository->findOneBy(['scryfallId' => $cardId]);
         $compositionState = $stateRepository->findOneBy(['stateName' => $state]);
+
         $composition = $compositionRepository->findOneBy(['deck' => $deck, 'card' => $card, 'state' => $compositionState]);
     
         if(!$card) {

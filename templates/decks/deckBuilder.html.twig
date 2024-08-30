@@ -113,7 +113,7 @@
         <select class="card" name="cardName" id="cardSelect"></select>
         <button type="button" id="researchStart">Rechercher</button><br>
 
-        <form id="saveCardWithColorsForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'PLACEHOLDER_STATE'}) }}">
+        <form id="saveCardWithColorsForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
             <input type="hidden" id="cardIdInput" name="cardId">
             <input type="hidden" id="cardData" name="cardData">
             <button type="submit">Ajouter la carte</button>
@@ -129,7 +129,7 @@
         <select class="card" name="cardName" id="cardSelect"></select>
         <button type="button" id="researchStart">Rechercher</button><br>
 
-        <form id="saveCardFormatForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'PLACEHOLDER_STATE'}) }}">
+        <form id="saveCardFormatForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
             <input type="hidden" id="cardIdInput" name="cardId">
             <input type="hidden" id="cardData" name="cardData">
             <button type="submit">Ajouter la carte</button>
@@ -144,7 +144,7 @@
         <select class="card" name="cardName" id="cardSelect"></select>
         <button type="button" id="researchStart">Rechercher</button><br>
 
-        <form id="saveCardForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'PLACEHOLDER_STATE'}) }}">
+        <form id="saveCardForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
             <input type="hidden" id="cardIdInput" name="cardId">
             <input type="hidden" id="cardData" name="cardData">
             <button type="submit">Ajouter la carte</button>
@@ -515,6 +515,24 @@
                     link.classList.toggle('hidden');
                 });
             });
+
+            const stateSelector = document.getElementById('stateSelector');
+
+            if(document.getElementById('saveCardWithColorsForm')) {
+                saveCardForm = document.getElementById('saveCardWithColorsForm');
+            }
+            if(document.getElementById('saveCardFormatForm')) {
+                saveCardForm = document.getElementById('saveCardFormatForm');
+            }
+            if(document.getElementById('saveCardForm')) {
+                saveCardForm = document.getElementById('saveCardForm');
+            }
+
+            stateSelector.addEventListener('change', function() {
+                const selectedState = stateSelector.value;
+                const newAction = "{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'PLACEHOLDER_STATE'}) }}";
+                saveCardForm.action = newAction.replace('PLACEHOLDER_STATE', selectedState);
+            });
         
             researchButton.addEventListener('click', function() { 
 
@@ -523,9 +541,10 @@
 
                 let noRestrictions = document.getElementById('noRestrictions')
 
-                if(noRestrictions.checked) {
-                    url = `https://api.scryfall.com/cards/search?q=name:${query}`;
-               
+                if(noRestrictions) {
+                    if(noRestrictions.checked) {
+                        url = `https://api.scryfall.com/cards/search?q=name:${query}`;
+                    }
                 } else if (document.getElementById('saveCommanderForm')) {
                     url = `https://api.scryfall.com/cards/search?q=is:commander+name:${query}`;
 
@@ -596,26 +615,6 @@
                     cardBoard.appendChild(link);
                 }
             });
-
-            const stateSelector = document.getElementById('stateSelector');
-
-            if(document.getElementById('saveCardWithColorsForm')) {
-                saveCardForm = document.getElementById('saveCardWithColorsForm');
-            }
-            if(document.getElementById('saveCardFormatForm')) {
-                saveCardForm = document.getElementById('saveCardFormatForm');
-            }
-            if(document.getElementById('saveCardForm')) {
-                saveCardForm = document.getElementById('saveCardForm');
-            }
-
-            stateSelector.addEventListener('change', function() {
-                const selectedState = stateSelector.value;
-                const newAction = "{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'PLACEHOLDER_STATE'}) }}";
-                saveCardForm.action = newAction.replace('PLACEHOLDER_STATE', selectedState);
-            });
-
-            
 
             document.getElementById('downloadButton').addEventListener('click', function() {
                 var linksDiv = document.getElementById('downloadLinks');
