@@ -23,6 +23,9 @@ class Composition
     #[ORM\ManyToOne(inversedBy: 'compositions')]
     private ?Deck $deck = null;
 
+    #[ORM\ManyToOne(inversedBy: 'composition')]
+    private ?State $state = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +63,18 @@ class Composition
     public function setDeck(?Deck $deck): static
     {
         $this->deck = $deck;
+
+        return $this;
+    }
+
+    public function getState(): ?State
+    {
+        return $this->state;
+    }
+
+    public function setState(?State $state): static
+    {
+        $this->state = $state;
 
         return $this;
     }
