@@ -21,7 +21,7 @@
             {% for deck in userDecks %}
             <tr class="border-b hover:bg-gray-50">
                 <td class="px-4 py-3 text-center">
-                    <a class="text-red-700 hover:text-red-900 hover:underline text-sm" href="{{ path('app_deck_builder', {'id': deck.id}) }}"> 
+                    <a class="text-red-700 hover:text-red-900 hover:underline text-sm" href="{{ path('app_deck_builder', {'id': deck.id, 'state': "Mainboard"}) }}"> 
                         <span class=" font-normal">{{ deck.deckName }}</span>
                     </a>
                 </td>

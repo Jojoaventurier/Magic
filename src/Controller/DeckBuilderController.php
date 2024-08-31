@@ -47,7 +47,7 @@ class DeckBuilderController extends AbstractController
             $entityManager->persist($deck); // on prépare la requête d'ajout à la BDD
             $entityManager->flush(); // on exécute la requête
 
-            return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
+            return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
         }
 
         return $this->render('decks/decksManager.html.twig', [
@@ -56,8 +56,8 @@ class DeckBuilderController extends AbstractController
         ]);
 }
 
-    #[Route('/build/deck/{id}', name: 'app_deck_builder')]
-    public function deckBuild(Deck $deck, DeckRepository $deckRepository, CompositionRepository $compositionRepository, StateRepository $stateRepository): Response
+    #[Route('/build/deck/{id}/{state}', name: 'app_deck_builder')]
+    public function deckBuild(Deck $deck, String $state, DeckRepository $deckRepository, CompositionRepository $compositionRepository, StateRepository $stateRepository): Response
     {
 
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
@@ -67,7 +67,7 @@ class DeckBuilderController extends AbstractController
         $stateMain = $stateRepository->findOneBy(['stateName' => "Mainboard"]);
         $stateSide = $stateRepository->findOneBy(['stateName' => "Sideboard"]);
         $stateMaybe = $stateRepository->findOneBy(['stateName' => "Maybeboard"]);
-
+        $stateToken = 'Main';
 
         $compositionMain = $compositionRepository->findByState($deck, $stateMain);
         $compositionSide = $compositionRepository->findByState($deck, $stateSide);
@@ -80,15 +80,57 @@ class DeckBuilderController extends AbstractController
             $count += 1 * $el->getQuantity();
         }
 
+        if($state == 'Mainboard') {
+
+            return $this->render('decks/deckBuilder.html.twig', [
+                'deck' => $deck,
+                'composition' => $compositionMain,
+                'compositionSide' => $compositionSide,
+                'compositionMaybe' => $compositionMaybe,
+                'count' => $count,
+                'stateToken' => $stateToken
+            ]);
+        }
+
+        else if ($state == 'Sideboard') {
+
+            $stateToken = 'Side';
+
+            return $this->render('decks/deckBuilder.html.twig', [
+                'deck' => $deck,
+                'composition' => $compositionSide,
+                'compositionSide' => $compositionMain,
+                'compositionMaybe' => $compositionMaybe,
+                'count' => $count,
+                'stateToken' => $stateToken
+            ]);
+        }
+
+        else if ($state == 'Maybeboard') {
+
+            $stateToken = 'Maybe';
+
+            return $this->render('decks/deckBuilder.html.twig', [
+                'deck' => $deck,
+                'composition' => $compositionMaybe,
+                'compositionSide' => $compositionMain,
+                'compositionMaybe' => $compositionSide,
+                'count' => $count,
+                'stateToken' => $stateToken
+            ]);
+        } else {
+
         return $this->render('decks/deckBuilder.html.twig', [
             'deck' => $deck,
             'composition' => $compositionMain,
             'compositionSide' => $compositionSide,
             'compositionMaybe' => $compositionMaybe,
             'count' => $count,
+            'stateToken' => $stateToken
         ]);
     }
- 
+    }
+
     
     #[Route('/search', name: 'app_search')]
     public function advancedSearch(): Response
@@ -101,8 +143,6 @@ class DeckBuilderController extends AbstractController
     }
 
     
-
-
     #[Route('/card/{cardId}', name: 'app_card_detail')]
     public function cardDetail(Request $request): Response
     {
@@ -162,10 +202,10 @@ class DeckBuilderController extends AbstractController
  
         // $card->addDeck($deck);
         $entityManager->flush();
-        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
+        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
     }
 
-    public function changeState() {
+    public function changeCardState() {
 
     }
 
@@ -182,7 +222,7 @@ class DeckBuilderController extends AbstractController
         $deck->setCommander($dataJS);
         $entityManager->persist($deck);
         $entityManager->flush();
-        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
+        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
     }
 
     #[Route('/user/{user}/deck/{deck}/delete-commander', name: 'delete_commander', methods: ['POST', 'GET'])]
@@ -198,7 +238,7 @@ class DeckBuilderController extends AbstractController
         $entityManager->persist($deck);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
+        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
     }
 
 
@@ -221,7 +261,7 @@ class DeckBuilderController extends AbstractController
         $entityManager->persist($composition);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
+        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
     }
 
     #[Route('/user/{user}/deck/{deck}/{card}/{state}/minus', name: 'minus_card_deck', methods: ['POST', 'GET'])]
@@ -250,7 +290,7 @@ class DeckBuilderController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
+        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
     }
 
 
@@ -266,7 +306,7 @@ class DeckBuilderController extends AbstractController
         $entityManager->remove($composition);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
+        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
     }
 
     #[Route('/user/{user}/deck/{deck}/deleteAllCards', name: 'delete_all_cards_deck', methods: ['GET'])]
@@ -281,7 +321,7 @@ class DeckBuilderController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId()]);
+        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
     }
 
     #[Route('/user/{user}/deck/{deck}/delete', name: 'delete_deck', methods: ['GET'])]
