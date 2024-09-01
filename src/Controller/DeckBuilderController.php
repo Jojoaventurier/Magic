@@ -69,6 +69,8 @@ class DeckBuilderController extends AbstractController
         $stateMaybe = $stateRepository->findOneBy(['stateName' => "Maybeboard"]);
         $stateToken = 'Main';
 
+        
+
         $compositionMain = $compositionRepository->findByState($deck, $stateMain);
         $compositionSide = $compositionRepository->findByState($deck, $stateSide);
         $compositionMaybe = $compositionRepository->findByState($deck, $stateMaybe);

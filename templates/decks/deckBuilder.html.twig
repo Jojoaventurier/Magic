@@ -87,20 +87,15 @@
 <div class="flex flex-wrap justify-center items-center space-x-4 p-2">
 
     {% if deck.format.formatName is same as 'Commander / EDH' and deck.commander is same as null %}
-        Rechercher un commandant :
-        <input type="text" class="search" name="search" id="searchId" placeholder="Cherchez une carte...">
-        <select class="card" name="cardName" id="cardSelect"></select>
-        <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md" type="button" id="researchStart">Rechercher</button><br>
+    
         <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
             <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
                 <label for="searchId" class="sr-only">Rechercher un commandant</label>
                 <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64" name="search" id="searchId" placeholder="Cherchez une carte...">
-                
                 <label for="cardSelect" class="sr-only">Choisir une carte</label>
-                <select class="card bg-white border border-red-700 focus:border-red-900 text-red-900 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-48" name="cardName" id="cardSelect"></select>
             </div>
-        
-            <button class="border border-red-700 bg-white text-red-700 text-sm font-semibold px-4 py-2 rounded-md hover:bg-red-800 hover:text-white transition-colors shadow-sm w-full md:w-auto" type="button" id="researchStart">Rechercher</button>
+            <select class="card" name="cardName" id="cardSelect"></select>
+            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md" type="button" id="researchStart">Rechercher</button><br>
         </div>
 
         <form id="saveCommanderForm" method="post" action="{{ path('save_commander_deck', {'user': deck.user.id, 'deck': deck.id}) }}">
@@ -110,11 +105,15 @@
         </form>
 
     {% elseif deck.format.formatName is same as 'Commander / EDH' and deck.commander is not null %}
-        Rechercher une carte :
-        <input type="hidden" id="colors" value="{{ deck.commander.color_identity|join('') }}">
-        <input type="text" class="search" name="search" id="searchId" placeholder="Cherchez une carte...">
-        <select class="card" name="cardName" id="cardSelect"></select>
-        <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md" type="button" id="researchStart">Rechercher</button><br>
+        <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
+            <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
+                <label for="searchId" class="sr-only">Rechercher une carte</label>
+                <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64" name="search" id="searchId" placeholder="Cherchez une carte...">
+                <label for="cardSelect" class="sr-only">Choisir une carte</label>
+            </div>
+            <select class="card" name="cardName" id="cardSelect"></select>
+            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md" type="button" id="researchStart">Rechercher</button><br>
+        </div>
 
         <form id="saveCardWithColorsForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
             <input type="hidden" id="cardIdInput" name="cardId">
@@ -127,11 +126,15 @@
         </div>
     {% elseif deck.format.formatName is not same as 'Commander / EDH' %}
 
-        Rechercher une carte :
-        <input type="hidden" id="format" value="{{ format }}">
-        <input type="text" class="search" name="search" id="searchId" placeholder="Cherchez une carte...">
-        <select class="card" name="cardName" id="cardSelect"></select>
-        <button class="border border-red-700  bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md" type="button" id="researchStart">Rechercher</button><br>
+        <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
+            <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
+                <label for="searchId" class="sr-only">Rechercher une carte</label>
+                <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64" name="search" id="searchId" placeholder="Cherchez une carte...">
+                <label for="cardSelect" class="sr-only">Choisir une carte</label>
+            </div>
+            <select class="card" name="cardName" id="cardSelect"></select>
+            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md" type="button" id="researchStart">Rechercher</button><br>
+        </div>
 
         <form id="saveCardFormatForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
             <input type="hidden" id="cardIdInput" name="cardId">
@@ -144,10 +147,15 @@
         </div>
     {% else %}
 
-        Rechercher une carte :
-        <input type="text" class="search" name="search" id="searchId" placeholder="Cherchez une carte...">
-        <select class="card" name="cardName" id="cardSelect"></select>
-        <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md" type="button" id="researchStart">Rechercher</button><br>
+        <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
+            <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
+                <label for="searchId" class="sr-only">Rechercher une carte</label>
+                <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64" name="search" id="searchId" placeholder="Cherchez une carte...">
+                <label for="cardSelect" class="sr-only">Choisir une carte</label>
+            </div>
+            <select class="card" name="cardName" id="cardSelect"></select>
+            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md" type="button" id="researchStart">Rechercher</button><br>
+        </div>
 
         <form id="saveCardForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
             <input type="hidden" id="cardIdInput" name="cardId">
@@ -157,7 +165,7 @@
     {% endif %}
 </div>
 <div class="flex justify-center m-4">
-    <div class="flex items-center space-x-2 bg-red-800 text-white text-sm py-2 px-4 rounded-lg shadow-md">
+    <div class="flex items-center space-x-2 bg-red-800 text-white text-sm py-1 px-2 rounded-lg shadow-md">
         <label for="stateSelector" class="text-white text-sm font-medium">Ajouter au</label>
         <select name="stateSelector" id="stateSelector" class="bg-red-700 text-white text-sm font-semibold py-1 px-3 rounded-md  focus:outline-none focus:ring-2 focus:ring-white">
             <option value="Mainboard" selected>Mainboard</option>
@@ -167,7 +175,7 @@
     </div>
 </div>
 
-<div id="cardBoard" class="board">
+<div id="cardBoard" class="flex justify-center w-full mb-4">
     <img id="cardImage">
 </div>
 
