@@ -6,63 +6,106 @@
 
 <input id="cardInput" type="hidden" value="{{ cardId }}">
 
-<div id="detailBoard" class="detailBoard">
-    Détails de la carte {{ cardId }}
+<div class="flex justify-center w-screen">
+    <div id="detailBoard" class="flex flex-wrap justify-center m-8 p-4 space-x-8 w-full">
+        <div id="placeholder" class="max-w-fit">
+        </div>
+
+        <div id="cardDetails" class="space-y-2">
+            <div class="space-x-8 mb-6">
+                <h1 id="name" class=""></h1>
+                <span id="manaCost" class="pb-4"></span>
+            </div>
+            <span id="typeLine" class="py-4"></span>
+            <div id="oracleText" class="whitespace-pre-line w-96 pt-2">
+                <!-- Oracle text will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="flex justify-center w-screen">
+    <div class="ml-8 flex flex-col">
+        <div>
+            <p id="cardSet">
+                <!-- Card set and artist details will be inserted here -->
+            </p>
+        </div>
+        <div>
+            <p id="artistName" class="mt-2">
+                <!-- Artist name will be inserted here -->
+             </p>
+        </div>
+        
+        <div id="purchaseLink" class="mt-4">
+           <a id="cardMarketLink" href="#" target="_blank">Acheter la carte sur Cardmarket</a>
+        </div>
+    </div>
 </div>
 
 {% block javascripts %}
 <script>
 
-    //TODO prendre en charge l'affichage des cartes doubles faces !!!!--TODO prendre en charge l'affichage des cartes doubles faces !!!!--TODO prendre en charge l'affichage des cartes doubles faces !!!!--TODO prendre en charge l'affichage des cartes doubles faces !!!!--
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page chargée et script exécuté!');
 
-        console.log('Page chargée et script exécuté!');
-    
-        const detailBoard = document.querySelector("#detailBoard");
-        let card = document.querySelector("#cardInput");
-    
-        console.log(card)
-    
-            if(card && detailBoard) {
-    
-                let cardId = card.value;
-    
-                console.log(cardId);
-                fetch('https://api.scryfall.com/cards/' + cardId)
-                            
-                            // Convertit la réponse en format JSON
-                            .then((response) => response.json())
-                            
-                            // Une fois que les données JSON sont disponibles
-                            .then((data) => {
-                                // console.log(data.name);
-                                
-                                let attributeName = document.createElement("div"); // ajoute les résultats à la barre Select
-                                let attributeOracleText = document.createElement("div");
-                                let attributeManaCost = document.createElement("div");
-                                let attributeCMC = document.createElement("div");
-                                let displayCard = new Image(287.5,402.5); // affiche les cartes reçues en résultat de la recherche 
-                                if (data.image_uris && data.image_uris.normal) {
-                                    displayCard.src = data.image_uris.normal;
-                                }
-    
-                                attributeName.innerHTML = data.name;
-                                attributeOracleText.innerHTML = data.oracle_text
-                                attributeManaCost.innerHTML = data.mana_cost
-                                attributeCMC.innerHTML = data.cmc
-    
-                                detailBoard.appendChild(attributeName);
-                                detailBoard.appendChild(displayCard);
-                                detailBoard.appendChild(attributeOracleText);
-                                detailBoard.appendChild(attributeManaCost);
-                                detailBoard.appendChild(attributeCMC);
-                            })
-                            // .catch((error) => {
-                            //     console.error('Erreur lors de la récupération des données de carte:', error);
-                            // })
-        }
-    });
-    
-</script>>
+    const detailBoard = document.querySelector("#detailBoard");
+    let card = document.querySelector("#cardInput");
+
+    if (card && detailBoard) {
+        let cardId = card.value;
+
+        fetch('https://api.scryfall.com/cards/' + cardId)
+            .then((response) => response.json())
+            .then((data) => {
+                // Select elements for updating with card data
+                let attributeName = document.getElementById("name");
+                let attributeOracleText = document.getElementById("oracleText");
+                let attributeManaCost = document.getElementById("manaCost");
+                let attributeTypeLine = document.getElementById("typeLine");
+                let attributeCardSet = document.getElementById("cardSet");
+                let attributeArtistName = document.getElementById("artistName");
+                let cardMarketLink = document.getElementById("cardMarketLink");
+                let placeholder = document.getElementById("placeholder");
+
+                // Display card image
+                let displayCard = new Image(287.5, 402.5);
+                if (data.image_uris && data.image_uris.normal) {
+                    displayCard.src = data.image_uris.normal;
+                }
+                placeholder.appendChild(displayCard);
+
+                // Set the card name
+                attributeName.innerHTML = data.name;
+
+                // Format and display Oracle text
+                let formattedOracleText = data.oracle_text
+                    .split('\n')
+                    .map(paragraph => `<p>${paragraph}</p>`)
+                    .join('');
+                attributeOracleText.innerHTML = formattedOracleText;
+
+                // Display mana cost
+                attributeManaCost.innerHTML = data.mana_cost;
+
+                // Display type line
+                attributeTypeLine.innerHTML = data.type_line;
+
+                // Display card set name with a link to the set's Scryfall page
+                attributeCardSet.innerHTML = `Extension : <a href="${data.set_uri}" target="_blank">${data.set_name}</a>`;
+
+                // Display artist name
+                attributeArtistName.innerHTML = `Illustration par : ${data.artist}`;
+
+                // Set Cardmarket link
+                cardMarketLink.href = `https://www.cardmarket.com/en/Magic/Products/Search?searchString=${encodeURIComponent(data.name)}`;
+            })
+            .catch((error) => {
+                console.error('Erreur lors de la récupération des données de carte:', error);
+            });
+    }
+});
+
+</script>
 {% endblock %}
 {% endblock %}
