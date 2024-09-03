@@ -57,19 +57,19 @@
                         // Replace placeholder with actual set code
                         const setUrl = baseUrl.replace('PLACEHOLDER', encodeURIComponent(set.code));
                         setNameCell.innerHTML = `<a href="${setUrl}">${set.name}</a>`;
-                        setNameCell.classList.add('px-6', 'py-1', 'whitespace-no-wrap', 'border-b', 'border-gray-300');
+                        setNameCell.classList.add('px-6', 'py-1', 'whitespace-no-wrap', 'border-b', 'border-gray-300', 'text-sm');
 
                         let setCodeCell = document.createElement('td');
                         setCodeCell.textContent = set.code;
-                        setCodeCell.classList.add('px-6', 'py-1', 'whitespace-no-wrap', 'border-b', 'border-gray-300');
+                        setCodeCell.classList.add('px-6', 'py-1', 'whitespace-no-wrap', 'border-b', 'border-gray-300', 'text-sm');
 
                         let totalCardsCell = document.createElement('td');
                         totalCardsCell.textContent = set.card_count;
-                        totalCardsCell.classList.add('px-6', 'py-1', 'whitespace-no-wrap', 'border-b', 'border-gray-300');
+                        totalCardsCell.classList.add('px-6', 'py-1', 'whitespace-no-wrap', 'border-b', 'border-gray-300', 'text-sm');
 
                         let releaseDateCell = document.createElement('td');
                         releaseDateCell.textContent = set.released_at;
-                        releaseDateCell.classList.add('px-6', 'py-1', 'whitespace-no-wrap', 'border-b', 'border-gray-300');
+                        releaseDateCell.classList.add('px-6', 'py-1', 'whitespace-no-wrap', 'border-b', 'border-gray-300', 'text-sm');
 
                         // Append the cells to the row.
                         row.appendChild(setNameCell);
