@@ -12,18 +12,18 @@
         </div>
 
         <div id="cardDetails" class="space-y-2">
-            <div class="space-x-8 mb-6">
-                <h1 id="name" class=""></h1>
-                <span id="manaCost" class="pb-4"></span>
+            <div class=" mb-6">
+                <h1 id="name" class="font-bold p-1 text-lg"></h1>
+                <span id="manaCost" class="pb-4 w-full inline-flex"></span>
             </div>
-            <span id="typeLine" class="py-4"></span>
+            <span id="typeLine" class="py-4 font-semibold"></span>
             <div id="oracleText" class="whitespace-pre-line w-96 pt-2">
                 <!-- Oracle text will be inserted here -->
             </div>
         </div>
     </div>
-
 </div>
+
 <div class="flex justify-center w-screen">
     <div class="ml-8 flex flex-col">
         <div>
@@ -38,9 +38,14 @@
         </div>
         
         <div id="purchaseLink" class="mt-4">
-           <a id="cardMarketLink" href="#" target="_blank">Acheter la carte sur Cardmarket</a>
+           <a id="cardmarketLink" class="my-4 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800 mr-4" href="#" target="_blank">Acheter la carte sur Cardmarket</a>
         </div>
     </div>
+</div>
+
+<div class="w-full flex justify-center">
+
+
 </div>
 
 {% block javascripts %}
@@ -49,61 +54,158 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Page chargée et script exécuté!');
 
-    const detailBoard = document.querySelector("#detailBoard");
-    let card = document.querySelector("#cardInput");
+    const detailBoard = document.querySelector("#detailBoard");  
+    // Find the element with the ID 'detailBoard' and store it in a variable for future use.
+    
+    let card = document.querySelector("#cardInput");  
+    // Find the element where the card ID is input (with ID 'cardInput').
 
-    if (card && detailBoard) {
-        let cardId = card.value;
+    if (card && detailBoard) {  
+        // Check if both the card input element and the detail board exist in the DOM.
+        let cardId = card.value;  
+        // Get the value of the card input element (this is the card ID).
 
-        fetch('https://api.scryfall.com/cards/' + cardId)
-            .then((response) => response.json())
-            .then((data) => {
-                // Select elements for updating with card data
-                let attributeName = document.getElementById("name");
-                let attributeOracleText = document.getElementById("oracleText");
-                let attributeManaCost = document.getElementById("manaCost");
-                let attributeTypeLine = document.getElementById("typeLine");
-                let attributeCardSet = document.getElementById("cardSet");
-                let attributeArtistName = document.getElementById("artistName");
-                let cardMarketLink = document.getElementById("cardMarketLink");
-                let placeholder = document.getElementById("placeholder");
+        // Function to fetch symbology data and create a map of symbol codes to SVG image elements
+        function fetchSymbology() {
+            return fetch('https://api.scryfall.com/symbology')  
+            // Make a request to the Scryfall API to get the symbology data.
+                .then((response) => response.json())  
+                // Parse the API response as JSON.
+                .then((data) => {  
+                    // Once the data is parsed, execute this function.
+                    const symbolMap = {};  
+                    // Initialize an empty object that will map symbol codes to their corresponding SVG image elements.
+                    
+                    data.data.forEach((symbol) => {  
+                        // Loop through each symbol object in the response data.
+                        symbolMap[symbol.symbol] = `<img src="${symbol.svg_uri}" alt="${symbol.symbol}" class="w-6 inline-block px-1">`;  
+                        // For each symbol, add a new entry to the symbolMap object.
+                        // The key is the symbol code (like {W}, {U}), and the value is an HTML string that creates an <img> element
+                        // The <img> element uses the SVG URI from the API as the source and includes relevant classes and alt text.
+                    });
+                    return symbolMap;  
+                    // Return the filled symbolMap object so it can be used later in the code.
+                })
+                .catch((error) => {  
+                    // If there is an error during the fetch or processing of data, this block will handle it.
+                    console.error('Erreur lors de la récupération des symboles:', error);  
+                    // Log the error to the console for debugging purposes.
+                    return {};  
+                    // Return an empty object if there's an error, so the script doesn't break.
+                });
+        }
 
-                // Display card image
-                let displayCard = new Image(287.5, 402.5);
-                if (data.image_uris && data.image_uris.normal) {
-                    displayCard.src = data.image_uris.normal;
-                }
-                placeholder.appendChild(displayCard);
+        // Function to replace all symbols in a given text with corresponding image elements using the symbolMap
+        function replaceSymbols(text, symbolMap) {
+            return text.replace(/{[^}]+}/g, (match) => symbolMap[match] || match);  
+            // This function takes a string 'text' and a 'symbolMap' object.
+            // It uses a regular expression to find all instances of symbols in the text (e.g., {W}, {R}).
+            // For each match, it looks up the corresponding image element in the symbolMap.
+            // If a match is found, it replaces the symbol with the image element.
+            // If no match is found (the symbol is not in the map), it leaves the symbol unchanged.
+        }
 
-                // Set the card name
-                attributeName.innerHTML = data.name;
+        // Fetch the symbology data first, then use it to replace symbols in the card data
+        fetchSymbology().then((symbolMap) => {  
+            // Call the fetchSymbology function, which returns a promise that resolves to the symbolMap object.
+            // Once the promise is resolved, the symbolMap is passed to the next function.
 
-                // Format and display Oracle text
-                let formattedOracleText = data.oracle_text
-                    .split('\n')
-                    .map(paragraph => `<p>${paragraph}</p>`)
-                    .join('');
-                attributeOracleText.innerHTML = formattedOracleText;
+            /* symbolMap: This is an object where the keys are the symbols (like {W}, {U}) and the values are HTML strings that create <img> elements with the appropriate SVG URIs. This map allows for quick replacement of any symbol found in the card text.
 
-                // Display mana cost
-                attributeManaCost.innerHTML = data.mana_cost;
+            replaceSymbols(): This function takes a string of text and the symbolMap object. It searches the text for any symbols enclosed in curly braces {} and replaces them with the corresponding image HTML from symbolMap.
 
-                // Display type line
-                attributeTypeLine.innerHTML = data.type_line;
+            Process Flow:
 
-                // Display card set name with a link to the set's Scryfall page
-                attributeCardSet.innerHTML = `Extension : <a href="${data.set_uri}" target="_blank">${data.set_name}</a>`;
+            The script first fetches the symbology data from Scryfall and constructs the symbolMap.
+            Then, it fetches the card data.
+            The card's text fields (like Oracle text and mana cost) are processed by replaceSymbols() to replace any symbols with their respective images before being inserted into the DOM.
+            This structure makes the code both efficient and dynamic, as it retrieves the most up-to-date symbols directly from the Scryfall API.    */
 
-                // Display artist name
-                attributeArtistName.innerHTML = `Illustration par : ${data.artist}`;
+            fetch('https://api.scryfall.com/cards/' + cardId)  
+            // Fetch the card data from the Scryfall API using the card ID.
+                .then((response) => response.json())  
+                // Parse the API response as JSON.
+                .then((data) => {  
+                    // Once the card data is parsed, execute this function to update the UI.
 
-                // Set Cardmarket link
-                cardMarketLink.href = `https://www.cardmarket.com/en/Magic/Products/Search?searchString=${encodeURIComponent(data.name)}`;
-            })
-            .catch((error) => {
-                console.error('Erreur lors de la récupération des données de carte:', error);
-            });
+                    // Select elements in the DOM to update with card data
+                    let attributeName = document.getElementById("name");  
+                    // Find the element with ID 'name' to update the card's name.
+                    let attributeOracleText = document.getElementById("oracleText");  
+                    // Find the element with ID 'oracleText' to update the card's Oracle text.
+                    let attributeManaCost = document.getElementById("manaCost");  
+                    // Find the element with ID 'manaCost' to update the card's mana cost.
+                    let attributeTypeLine = document.getElementById("typeLine");  
+                    // Find the element with ID 'typeLine' to update the card's type line.
+                    let attributeCardSet = document.getElementById("cardSet");  
+                    // Find the element with ID 'cardSet' to update the card's set information.
+                    let attributeArtistName = document.getElementById("artistName");  
+                    // Find the element with ID 'artistName' to update the card's artist information.
+                    let cardmarketLink = document.getElementById("cardmarketLink");  
+                    // Find the element with ID 'cardMarketLink' to update the card's market link.
+                    let placeholder = document.getElementById("placeholder");  
+                    // Find the element with ID 'placeholder' where the card image will be displayed.
+
+                    // Display card image
+                    let displayCard = new Image(287.5, 402.5);  
+                    // Create a new Image element with specific dimensions for the card.
+                    if (data.image_uris && data.image_uris.normal) {  
+                        // Check if the card data includes an image URI for the normal resolution.
+                        displayCard.src = data.image_uris.normal;  
+                        // Set the source of the image to the normal image URI.
+                    }
+                    placeholder.appendChild(displayCard);  
+                    // Append the image element to the placeholder in the DOM.
+
+                    // Set the card name
+                    attributeName.innerHTML = data.name;  
+                    // Update the inner HTML of the 'name' element with the card's name.
+
+                    // Format and display Oracle text with symbol replacements
+                    let formattedOracleText = replaceSymbols(data.oracle_text, symbolMap)
+                        // Use the replaceSymbols function to replace symbols in the Oracle text with images.
+                        .split('\n')  
+                        // Split the formatted text into paragraphs based on newline characters.
+                        .map(paragraph => `<p class="py-2">${paragraph}</p>`)  
+                        // Wrap each paragraph in <p> tags with padding for styling.
+                        .join('');  
+                        // Join the paragraphs back into a single string.
+
+                    attributeOracleText.innerHTML = formattedOracleText;  
+                    // Update the inner HTML of the 'oracleText' element with the formatted text.
+
+                    // Display mana cost with symbol replacements
+                    attributeManaCost.innerHTML = replaceSymbols(data.mana_cost, symbolMap);  
+                    // Update the inner HTML of the 'manaCost' element with the mana cost, replacing symbols with images.
+
+                    // Display type line
+                    attributeTypeLine.innerHTML = data.type_line;  
+                    // Update the inner HTML of the 'typeLine' element with the card's type line.
+
+                    // Display card set name with a link to the set's Scryfall page
+                    attributeCardSet.innerHTML = `Extension : <a href="${data.set_uri}" target="_blank"><span class="font-semibold hover:underline">${data.set_name}</span></a>`;  
+                    // Update the 'cardSet' element with the card's set name, making it a clickable link to the set's page on Scryfall.
+
+                    // Display artist name
+                    attributeArtistName.innerHTML = `Illustration par : <span class="font-semibold hover:underline"><a href="https://www.google.fr/search?q=${data.artist}+mtg+artist" target="_blank">${data.artist}</a></span>`;  //AMELIORATION : rediriger vers liste de cartes dessinées par lui via une requete fetch (fetch par nom d'artistes possibles)
+                    // Update the 'artistName' element with the card's artist name, making the name bold.
+
+                    // Set Cardmarket link
+                    cardmarketLink.href = `https://www.cardmarket.com/en/Magic/Products/Search?searchString=${encodeURIComponent(data.name)}`;  
+                    // Update the href attribute of the 'cardMarketLink' element to link to the card's page on Cardmarket.
+
+                    // Call function to display extensions
+                    displayOtherPrintings(data.prints_search_uri); // Display the list of extensions
+                })
+                .catch((error) => {  
+                    // If there is an error during the fetch or processing of the card data, this block will handle it.
+                    console.error('Erreur lors de la récupération des données de carte:', error);  
+                    // Log the error to the console for debugging purposes.
+                });
+        });
     }
+
+
 });
 
 </script>
