@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cards from Set{% endblock %}
+
+{% block body %}
+
+<div id="setDetailBoard" class="setDetailBoard w-8/12">
+    <h1 class="text-xl font-bold mb-4">Cards from Set</h1>
+    <table id="cardTable" class="min-w-full bg-white">
+        <thead>
+            <tr>
+                <th class="px-6 py-2 border-b-2 border-gray-300 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                    Card Name
+                </th>
+                <th class="px-6 py-2 border-b-2 border-gray-300 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                    Mana Cost
+                </th>
+                <th class="px-6 py-2 border-b-2 border-gray-300 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                    Type
+                </th>
+                <th class="px-6 py-2 border-b-2 border-gray-300 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                    Rarity
+                </th>
+                <th class="px-6 py-2 border-b-2 border-gray-300 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                    Image
+                </th>
+            </tr>
+        </thead>
+        <tbody id="cardList">
+            <!-- The cards will be populated here -->
+        </tbody>
+    </table>
+</div>
+
+<input type="hidden" value="{{ setCode }}" id="setCode">
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page chargée et script exécuté!');
+
+    const cardList = document.querySelector("#cardList");
+
+    if (cardList) {
+        // Replace 'SET_CODE' with the actual set code you want to fetch
+        const setCode = document.getElementById('setCode').value; 
+
+        fetch(`https://api.scryfall.com/cards/search?q=set:${setCode}`)
+            .then((response) => response.json())
+            .then((data) => {
+                // Iterate over each card and create a row with the relevant information.
+                data.data.forEach(card => {
+                    let row = document.createElement('tr');
+
+                    // Create a cell for each piece of information and add it to the row.
+                    let cardNameCell = document.createElement('td');
+                    cardNameCell.textContent = card.name;
+                    cardNameCell.classList.add('px-6', 'py-4', 'whitespace-no-wrap', 'border-b', 'border-gray-300');
+
+                    let manaCostCell = document.createElement('td');
+                    manaCostCell.textContent = card.mana_cost || 'N/A';
+                    manaCostCell.classList.add('px-6', 'py-4', 'whitespace-no-wrap', 'border-b', 'border-gray-300');
+
+                    let typeCell = document.createElement('td');
+                    typeCell.textContent = card.type_line;
+                    typeCell.classList.add('px-6', 'py-4', 'whitespace-no-wrap', 'border-b', 'border-gray-300');
+
+                    let rarityCell = document.createElement('td');
+                    rarityCell.textContent = card.rarity;
+                    rarityCell.classList.add('px-6', 'py-4', 'whitespace-no-wrap', 'border-b', 'border-gray-300');
+
+                    let imageCell = document.createElement('td');
+                    if (card.image_uris && card.image_uris.normal) {
+                        imageCell.innerHTML = `<img src="${card.image_uris.normal}" alt="${card.name}" class="w-16 h-24">`;
+                    } else {
+                        imageCell.textContent = 'No Image';
+                    }
+                    imageCell.classList.add('px-6', 'py-4', 'whitespace-no-wrap', 'border-b', 'border-gray-300');
+
+                    // Append the cells to the row.
+                    row.appendChild(cardNameCell);
+                    row.appendChild(manaCostCell);
+                    row.appendChild(typeCell);
+                    row.appendChild(rarityCell);
+                    row.appendChild(imageCell);
+
+                    // Append the row to the cardList table body.
+                    cardList.appendChild(row);
+                });
+            })
+            .catch((error) => {
+                console.error('Erreur lors de la récupération des cartes:', error);
+            });
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}

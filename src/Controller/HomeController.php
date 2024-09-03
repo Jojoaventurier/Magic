@@ -10,6 +10,7 @@ use App\Repository\DeckRepository;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CompositionRepository;
+use PhpParser\JsonDecoder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -27,6 +28,26 @@ class HomeController extends AbstractController
 
         return $this->render('home/index.html.twig', [
             'user' => $user,
+        ]);
+    }
+
+    #[Route('/allsets', name: 'all_sets')]
+    public function allSets(): Response
+    {
+        $user = $this->getUser();
+
+        return $this->render('cardSearch/allSets.html.twig', [
+            'user' => $user,
+        ]);
+    }
+
+    #[Route('/set/{setCode}', name: 'show_set')]
+    public function showSet(String $setCode): Response
+    {
+        
+        return $this->render('cardSearch/showSet.html.twig', [
+
+            'setCode' => $setCode
         ]);
     }
 

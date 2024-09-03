@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Toutes les extensions{% endblock %}
+
+{% block body %}
+
+<div id="detailBoard" class="detailBoard w-8/12">
+    <table id="setTable" class="min-w-full bg-white">
+        <thead>
+            <tr>
+                <th class="px-6 py-2 border-b-2 border-gray-300 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                    Set Name
+                </th>
+                <th class="px-6 py-2 border-b-2 border-gray-300 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                    Set Code
+                </th>
+                <th class="px-6 py-2 border-b-2 border-gray-300 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                    Total Cards
+                </th>
+                <th class="px-6 py-2 border-b-2 border-gray-300 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                    Release Date
+                </th>
+            </tr>
+        </thead>
+        <tbody id="setList">
+            <!-- The sets will be populated here -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Page chargée et script exécuté!');
+
+        const setList = document.querySelector("#setList");
+        const baseUrl = "{{ path('show_set', {'setCode': 'PLACEHOLDER'}) }}";
+
+        if (setList) {
+            fetch('https://api.scryfall.com/sets')
+                .then((response) => response.json())
+                .then((data) => {
+                    // Filter sets to include only those with set_type 'core', 'expansion', or 'masters'.
+                    const filteredSets = data.data.filter(set => 
+                        set.set_type === 'core' || 
+                        set.set_type === 'expansion' || 
+                        set.set_type === 'commander' || 
+                        set.set_type === 'draft_innovation' || 
+                        set.set_type === 'masters'
+                    );
+
+                    // Iterate over each filtered set and create a row with the relevant information.
+                    filteredSets.forEach(set => {
+                        let row = document.createElement('tr');
+
+                        // Create a cell for each piece of information and add it to the row.
+                        let setNameCell = document.createElement('td');
+                        // Replace placeholder with actual set code
+                        const setUrl = baseUrl.replace('PLACEHOLDER', encodeURIComponent(set.code));
+                        setNameCell.innerHTML = `<a href="${setUrl}">${set.name}</a>`;
+                        setNameCell.classList.add('px-6', 'py-1', 'whitespace-no-wrap', 'border-b', 'border-gray-300');
+
+                        let setCodeCell = document.createElement('td');
+                        setCodeCell.textContent = set.code;
+                        setCodeCell.classList.add('px-6', 'py-1', 'whitespace-no-wrap', 'border-b', 'border-gray-300');
+
+                        let totalCardsCell = document.createElement('td');
+                        totalCardsCell.textContent = set.card_count;
+                        totalCardsCell.classList.add('px-6', 'py-1', 'whitespace-no-wrap', 'border-b', 'border-gray-300');
+
+                        let releaseDateCell = document.createElement('td');
+                        releaseDateCell.textContent = set.released_at;
+                        releaseDateCell.classList.add('px-6', 'py-1', 'whitespace-no-wrap', 'border-b', 'border-gray-300');
+
+                        // Append the cells to the row.
+                        row.appendChild(setNameCell);
+                        row.appendChild(setCodeCell);
+                        row.appendChild(totalCardsCell);
+                        row.appendChild(releaseDateCell);
+
+                        // Append the row to the setList table body.
+                        setList.appendChild(row);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Erreur lors de la récupération des extensions:', error);
+                });
+        }
+    });
+</script>
+
+{% endblock %}
