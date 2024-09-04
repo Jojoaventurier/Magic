@@ -9,7 +9,8 @@
 <div class="gradient-adapt flex flex-wrap justify-center items-center space-x-8 w-full pb-8" > <!--style="background: url(' deck.commander.image_uris.art_crop ') no-repeat center center;"-->
 
     <div class="space-y-2 block max-w-sm p-6 m-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-        <h1><span class='bold'>{{ deck.deckName }}</span></h2>
+        <h2><span class='bold'>{{ deck.deckName }}</span></h2>
+        <h2 class="text-sm hover:underline">par <a href="#profil">{{ deck.user.username }}</a></h2>
         <span class="pl-4">
             <p class="font-normal text-sm italic text-gray-700 dark:text-gray-400">
                 créé le <span class="font-semibold">{{ deck.creationDate|date('d.m.Y à H:i') }}</span>
@@ -34,13 +35,51 @@
             {% endif %}
         </p>
         <div>
-            <div class="inline-flex">
+            {% if app.user %}
+            {% set isLiked = false %}
+
+            {% if app.user.decksLiked is not null %}
+                {% for likedDeck in app.user.decksLiked %}
+                    {% if deck.deckName == likedDeck.deckName %}
+                        {% set isLiked = true %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            {% if isLiked %}
+                <!-- Link to remove the deck from favorites -->
+                <a href="{{ path('remove_like_deck', {'id': deck.id}) }}" class="inline-flex items-center space-x-1">
+                    <img class="w-4 h-4 mt-1 mx-1" src="https://img.icons8.com/material-rounded/24/like--v1.png" alt="like--v1"/>
+                    <p class="m-0 text-red-600">Retirer des favoris</p>      
+                </a>
+            {% else %}
+                <a href="{{ path('like_deck', {'id': deck.id}) }}">
+                    <div class="border-2 border-red-800 rounded inline-flex items-center space-x-2 px-4 py-1 hover:bg-red-800 hover:text-white transition duration-300">
+                        <p class="m-0">Ajouter le deck aux favoris</p>
+                        <img class="w-4 h-4" src="https://img.icons8.com/material-outlined/24/like--v1.png" alt="like--v1"/>
+                    </div>
+                </a>
+            {% endif %}
+            <div class="flex space-x-2">
                 (<img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-rounded/24/like--v1.png" alt="like--v1"/>
                 {{ deck.likes|length }}) 
             </div>
-        </div
-        <a class="red hover:underline" href="{{ path('delete_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer le deck</a><br>
-        <a class="red hover:underline" href="{{ path('delete_all_cards_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer toutes les cartes du deck</a><br>
+            {% else %}
+            <div>
+                <div class="flex space-x-2">
+                    (<img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-rounded/24/like--v1.png" alt="like--v1"/>
+                    {{ deck.likes|length }}) 
+                </div>
+                <p class="text-gray-800 mt-4 text-sm italic">Vous devez être connecté pour liker un deck.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if app.user and app.user.id is same as deck.id %}   
+            <a class="red hover:underline" href="{{ path('delete_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer le deck</a><br>
+            <a class="red hover:underline" href="{{ path('delete_all_cards_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer toutes les cartes du deck</a><br>
+        {% endif %}
+
         <button id="downloadButton" class="my-4 bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4">
            Exporter le deck
         </button>
@@ -69,7 +108,11 @@
                 <div id="commandZone" class="w-fit">
                     {% if deck.commander is not null %}
                     <img class="commanderCard" src="{{ deck.commander.image_uris.normal }}">
-                    <a class="flex justify-center text-red-500 text-sm hover:underline mt-4" href="{{ path('delete_commander', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer le commandant</a>
+
+                    {% if app.user and app.user.id is same as deck.id %}
+                        <a class="flex justify-center text-red-500 text-sm hover:underline mt-4" href="{{ path('delete_commander', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer le commandant</a>
+                    {% endif %}
+
                     {% endif %}
                 </div>
             </div>
@@ -84,6 +127,7 @@
     {% set format = deck.format.formatName|lower %}
 {% endif %}
 
+{% if app.user and app.user.id is same as deck.id %}
 <div class="flex flex-wrap justify-center items-center space-x-4 p-2">
 
     {% if deck.format.formatName is same as 'Commander / EDH' and deck.commander is same as null %}
@@ -101,7 +145,7 @@
         <form id="saveCommanderForm" method="post" action="{{ path('save_commander_deck', {'user': deck.user.id, 'deck': deck.id}) }}">
             <input type="hidden" id="cardIdInput" name="cardId">
             <input type="hidden" id="cardData" name="cardData">
-            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md" type="submit">Ajouter en tant que commandant</button>
+            <button id="save" class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter en tant que commandant</button>
         </form>
 
     {% elseif deck.format.formatName is same as 'Commander / EDH' and deck.commander is not null %}
@@ -119,7 +163,7 @@
             <input type="hidden" id="cardIdInput" name="cardId">
             <input type="hidden" id="cardData" name="cardData">
             <input type="hidden" id="colors" value="{{ deck.commander.color_identity|join('') }}">
-            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md" type="submit">Ajouter la carte</button>
+            <button id="save" class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter la carte</button>
         </form>
         <div class="p-1 m-4">
             <input type="checkbox" id="noRestrictions" name="noRestrictions">
@@ -141,7 +185,7 @@
             <input type="hidden" id="format" value="{{ format }}">
             <input type="hidden" id="cardIdInput" name="cardId">
             <input type="hidden" id="cardData" name="cardData">
-            <button class="border border-red-700  bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md" type="submit">Ajouter la carte</button>
+            <button id="save" class="border border-red-700  bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter la carte</button>
         </form>
         <div class="border p-1 m-4 border-red-700 rounded">
             <input type="checkbox" id="noRestrictions" name="noRestrictions">
@@ -162,7 +206,7 @@
         <form id="saveCardForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
             <input type="hidden" id="cardIdInput" name="cardId">
             <input type="hidden" id="cardData" name="cardData">
-            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md" type="submit">Ajouter la carte</button>
+            <button id="save" class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter la carte</button>
         </form>
     {% endif %}
 </div>
@@ -178,7 +222,7 @@
         </select>
     </div>
 </div>
-
+{% endif %}
 
 
 <div id="cardBoard" class="flex justify-center w-full mb-4">
@@ -233,7 +277,9 @@
                         {% endif %}
                 </div>
                 <div class="flex flex-end">
-                    <button id="editDeckButton" class="mb-4 bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4">Modifier le deck</button>
+                    {% if app.user and app.user.id is same as deck.user.id %}                        
+                        <button id="editDeckButton" class="mb-4 bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4">Modifier le deck</button>
+                    {% endif %}
                     <button id="listViewBtn" class="mb-4 px-6 py-2 bg-gray-300 hover:bg-gray-400 rounded-l">List View</button>
                     <button id="imageViewBtn" class="mb-4 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-r">Image View</button>
                 </div>
@@ -246,7 +292,7 @@
                 </div>
             
 
-                {% set card_types = ["Creature", "Sorcery", "Instant", "Enchantment", "Artifact", "Planeswalker", "Land"] %} 
+                {% set card_types = ["Creature", "Sorcery", "Instant", "Enchantment", "Artifact", "Planeswalker", "Land", "Battle"] %} 
                 {# TODO ajouter les batailles/saga -->voir lesqueles manquent #}
                 {# TODO ajouter les cartes doubles faces #}
 
@@ -524,11 +570,73 @@
             </ul>
         </div>
 
-        <section id="graphSection"></section>
+    </div>
+    <section id="graphSection"></section>
 
-
-
-</div>
+    <section>
+        <div class="bg-gray-100 flex flex-col items-center justify-center">
+            <!-- Toggle Button -->
+            {% if app.user %}
+                <button id="toggleCommentForm" class="bg-red-800 text-white mt-12 px-4 py-2 rounded-lg hover:bg-red-900 transition duration-300">
+                    Ajouter un commentaire 
+                </button>
+            {% else %}
+                <p class="text-red-600 mt-6 text-sm">Vous devez être connecté pour publier un commentaire.</p>
+            {% endif %}
+    
+            <!-- Comment Form Section -->
+            <div id="commentFormContainer" class="w-full max-w-2xl px-4 mt-10 hidden">
+                <div class="bg-white rounded-2xl px-8 py-4 shadow-lg relative">
+                    <!-- Close Button -->
+                    <button id="closeCommentForm" class="absolute top-2 right-4 text-gray-600 hover:text-gray-800">
+                        &times;
+                    </button>
+                    <h3 class="text-xl font-semibold mb-2">Ajouter un commentaire</h3>
+                    {{ form_start(commentForm) }}
+                        <div class="mb-4">
+                            {{ form_row(commentForm.textContent, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline focus:outline-red-800'}}) }}
+                        </div>
+                        <div class="flex justify-end">
+                            {{ form_row(commentForm.submit) }}
+                        </div>
+                    {{ form_end(commentForm) }}
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>   
+        <div class="bg-gray-100 p-10 flex flex-col items-center justify-center">
+            <h3 class="text-2xl font-bold mb-4">Commentaires :</h3>
+            <div class="w-full max-w-2xl px-4 mb-6">
+                {% for comment in comments %}
+                    <div class="bg-white rounded-2xl px-8 py-6 m-6 shadow-lg hover:shadow-2xl transition duration-500">
+                        <div class="mb-4">
+                            <p class="text-md text-gray-700">{{ comment.textContent }}</p>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-sm font-semibold">
+                                {{ comment.user.userName }} • 
+                                {% if comment.updateDate is same as null %}
+                                    le {{ comment.creationDate|date('d.m.Y H:i') }}
+                                {% else %}
+                                    <span class="font-normal">modifié le {{ comment.updateDate|date('d.m.Y H:i') }}</span>
+                                {% endif %}
+                            </div>
+                            {% if app.user is same as comment.user %}
+                                <div class="flex space-x-4">
+                                    <a href="{{ path('edit_comment', {'deck': deck.id, 'comment': comment.id}) }}" class="text-black hover:underline">Modifier</a>
+                                    <form action="{{ path('delete_comment', {'deck': deck.id, 'comment': comment.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
+                                        <button type="submit" class="text-red-600 hover:underline">Supprimer</button>
+                                    </form>
+                                    {# <a href="#" class="text-red-600 hover:underline">Supprimer</a> #}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
     
 {# </div> #}
 
@@ -541,7 +649,8 @@
             const placeholder = document.getElementById('placeholder');
             const cardImages = document.querySelectorAll('.singleCard');
             const cardNames = document.querySelectorAll('.card-name');
-            const placeholderDefault = placeholder.src
+            const placeholderDefault = placeholder.src;
+            const saveButton = document.getElementById('save');
 
             // Change placeholder image on card image hover
             cardImages.forEach(image => {
@@ -575,11 +684,13 @@
             const editDeckButton = document.getElementById('editDeckButton');
             const editLinks = document.querySelectorAll('.edit-links');
 
-            editDeckButton.addEventListener('click', function() {
-                editLinks.forEach(function(link) {
-                    link.classList.toggle('hidden');
+            if(editDeckButton) {
+                editDeckButton.addEventListener('click', function() {
+                    editLinks.forEach(function(link) {
+                        link.classList.toggle('hidden');
+                    });
                 });
-            });
+            }
 
             const stateSelector = document.getElementById('stateSelector');
 
@@ -597,86 +708,91 @@
             let url;
             let noRestrictions = document.getElementById('noRestrictions')
 
-            researchButton.addEventListener('click', function() { 
+            if(researchButton) {
 
-                const query = searchInput.value; 
+                researchButton.addEventListener('click', function() { 
 
-                if(noRestrictions) {
-                    if(noRestrictions.checked) {
-                        url = `https://api.scryfall.com/cards/search?q=name:${query}`;
-                    }
-                }
-                if (document.getElementById('saveCommanderForm')) {
-                    url = `https://api.scryfall.com/cards/search?q=is:commander+name:${query}`;
-                } 
-                if (document.getElementById('saveCardWithColorsForm')) {
-                    url = `https://api.scryfall.com/cards/search?q=identity<=${document.getElementById('colors').value}+legal:commander+name:${query}`
-                } 
-                if (document.getElementById('saveCardFormatForm')) {
-                    url = `https://api.scryfall.com/cards/search?q=legal:${document.getElementById('format').value}+name:${query}`
-                } 
-                if (document.getElementById('saveCardForm')) {
-                    url = `https://api.scryfall.com/cards/search?q=name:${query}`;
-                } 
-                //TODO gérer la requête dynamiquement en fonction du format ! 
-                console.log(url);
-                fetch(url)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.data && Array.isArray(data.data)) { 
-                            cardSelect.innerHTML = ''; // Clear previous entries
-                            const emptySpace = document.createElement('option');
-                            emptySpace.innerHTML = 'Veuillez choisir une carte';
-                            cardSelect.appendChild(emptySpace);
-        
-                            data.data.forEach(card => {
-                                const option = document.createElement('option'); // Add an option for each card retrieved from the API
-                                const cardJS = JSON.stringify(card);
-                                option.value = JSON.stringify([card.id, cardJS, card.image_uris?.normal || '']);
-        
-                                option.textContent = card.name;
-                                cardSelect.appendChild(option);
-                            });
-                        } else {
-                            console.error('Erreur: la réponse de l\'API ne contient pas un tableau de cartes dans "data"');
+                    const query = searchInput.value; 
+
+                    if(noRestrictions) {
+                        if(noRestrictions.checked) {
+                            url = `https://api.scryfall.com/cards/search?q=name:${query}`;
                         }
-                    })
-                    .catch(error => console.error('Erreur:', error));
-            });
-
-        
-            // Dynamic modification based on the user's selection in the select element
-            cardSelect.addEventListener('change', function() {
-                const cardValue = JSON.parse(cardSelect.value); // Parse the JSON string back into an array
-                const cardId = cardValue[0]; // First element is the card ID
-                const cardDataJS = cardValue[1]; // Second element is the card data as JSON
-                const imageUrl = cardValue[2];
-                
-                cardIdInput.value = cardId;
-                cardData.value = cardDataJS;
-        
-                const myNode = document.getElementById("cardBoard"); // Reset the card display if a new search is made
-                if (myNode) {
-                    while (myNode.firstChild) { // Clear previously displayed cards
-                        myNode.removeChild(myNode.lastChild);
                     }
-                }
-        
-                if (imageUrl) {
-                    const displayCard = new Image(250, 350); // Create an image to preview the selected commander
-                    displayCard.src = imageUrl; 
-        
-                    displayCard.name = cardSelect.options[cardSelect.selectedIndex].textContent;
-                    displayCard.classList.add('singleCard'); 
-                    let cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}"; 
-                    let link = document.createElement("a"); 
-                    let url = cardDetailUrl.replace('REPLACE_CARD_ID', cardValue[0]);
-        
-                    link.href = url; 
-                    link.appendChild(displayCard);
-                    cardBoard.appendChild(link);
-                }
-            });
+                    if (document.getElementById('saveCommanderForm')) {
+                        url = `https://api.scryfall.com/cards/search?q=is:commander+name:${query}`;
+                    } 
+                    if (document.getElementById('saveCardWithColorsForm')) {
+                        url = `https://api.scryfall.com/cards/search?q=identity<=${document.getElementById('colors').value}+legal:commander+name:${query}`
+                    } 
+                    if (document.getElementById('saveCardFormatForm')) {
+                        url = `https://api.scryfall.com/cards/search?q=legal:${document.getElementById('format').value}+name:${query}`
+                    } 
+                    if (document.getElementById('saveCardForm')) {
+                        url = `https://api.scryfall.com/cards/search?q=name:${query}`;
+                    } 
+                    //TODO gérer la requête dynamiquement en fonction du format ! 
+                    console.log(url);
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.data && Array.isArray(data.data)) { 
+                                cardSelect.innerHTML = ''; // Clear previous entries
+                                const emptySpace = document.createElement('option');
+                                emptySpace.innerHTML = 'Veuillez choisir une carte';
+                                cardSelect.appendChild(emptySpace);
+            
+                                data.data.forEach(card => {
+                                    const option = document.createElement('option'); // Add an option for each card retrieved from the API
+                                    const cardJS = JSON.stringify(card);
+                                    option.value = JSON.stringify([card.id, cardJS, card.image_uris?.normal || '']);
+            
+                                    option.textContent = card.name;
+                                    cardSelect.appendChild(option);
+                                });
+                            } else {
+                                console.error('Erreur: la réponse de l\'API ne contient pas un tableau de cartes dans "data"');
+                            }
+                        })
+                        .catch(error => console.error('Erreur:', error));
+                });
+            }
+
+            if(cardSelect) {
+                // Dynamic modification based on the user's selection in the select element
+                cardSelect.addEventListener('change', function() {
+                    const cardValue = JSON.parse(cardSelect.value); // Parse the JSON string back into an array
+                    const cardId = cardValue[0]; // First element is the card ID
+                    const cardDataJS = cardValue[1]; // Second element is the card data as JSON
+                    const imageUrl = cardValue[2];
+                    saveButton.classList.remove('hidden')
+                    
+                    cardIdInput.value = cardId;
+                    cardData.value = cardDataJS;
+            
+                    const myNode = document.getElementById("cardBoard"); // Reset the card display if a new search is made
+                    if (myNode) {
+                        while (myNode.firstChild) { // Clear previously displayed cards
+                            myNode.removeChild(myNode.lastChild);
+                        }
+                    }
+            
+                    if (imageUrl) {
+                        const displayCard = new Image(250, 350); // Create an image to preview the selected commander
+                        displayCard.src = imageUrl; 
+            
+                        displayCard.name = cardSelect.options[cardSelect.selectedIndex].textContent;
+                        displayCard.classList.add('singleCard'); 
+                        let cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}"; 
+                        let link = document.createElement("a"); 
+                        let url = cardDetailUrl.replace('REPLACE_CARD_ID', cardValue[0]);
+            
+                        link.href = url; 
+                        link.appendChild(displayCard);
+                        cardBoard.appendChild(link);
+                    }
+                });
+            }
 
             document.getElementById('downloadButton').addEventListener('click', function() {
                 var linksDiv = document.getElementById('downloadLinks');
@@ -727,6 +843,26 @@
                 listView.classList.toggle('flex', false);
                 listView.classList.toggle('hidden', true);
             });
+
+
+
+            const toggleButton = document.getElementById('toggleCommentForm');
+            const formContainer = document.getElementById('commentFormContainer');
+            const closeButton = document.getElementById('closeCommentForm');
+
+            // Show the form when the button is clicked
+            toggleButton.addEventListener('click', function() {
+                formContainer.classList.toggle('hidden');
+                toggleButton.classList.toggle('hidden');
+            });
+
+            // Hide the form when the close button is clicked
+            closeButton.addEventListener('click', function() {
+                formContainer.classList.add('hidden');
+                toggleButton.classList.remove('hidden');
+
+            });
+
         });
 
 </script>

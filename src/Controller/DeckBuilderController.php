@@ -6,12 +6,15 @@ use App\Entity\Card;
 use App\Entity\Deck;
 use App\Entity\User;
 use App\Entity\State;
+use App\Entity\Comment;
+use App\Form\CommentType;
 use App\Form\DeckFormType;
 use App\Entity\Composition;
 use App\Repository\CardRepository;
 use App\Repository\DeckRepository;
 use App\Repository\UserRepository;
 use App\Repository\StateRepository;
+use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CompositionRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,7 +60,7 @@ class DeckBuilderController extends AbstractController
 }
 
     #[Route('/build/deck/{id}/{state}', name: 'app_deck_builder')]
-    public function deckBuild(Deck $deck, String $state, DeckRepository $deckRepository, CompositionRepository $compositionRepository, StateRepository $stateRepository): Response
+    public function deckBuild(Deck $deck, String $state, DeckRepository $deckRepository, CompositionRepository $compositionRepository, StateRepository $stateRepository, CommentRepository $commentRepository, EntityManagerInterface $entityManager, Request $request): Response
     {
 
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
@@ -77,6 +80,36 @@ class DeckBuilderController extends AbstractController
 
         $count = 0;
 
+        $comments = $commentRepository->findBy(['deck' => $deck]);
+
+        $comment = new Comment();
+        
+        $form = $this->createForm(CommentType::class);
+
+        // Handle the request
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $this->getUser();
+            $comment->setUser($user);
+            $comment->setCreationDate(new \DateTime()); // Set current date and time
+            $comment->setDeck($deck);
+
+            $formData = $form->getData();
+            $textContent = $formData->getTextContent();
+
+            $comment->setTextContent($textContent);
+
+            $entityManager->persist($user);
+            $entityManager->persist($deck);
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_deck_consult', [
+            'id' => $deck->getId()
+        ]); 
+        }
+
         foreach ($compositionMain as $el) {
 
             $count += 1 * $el->getQuantity();
@@ -90,7 +123,10 @@ class DeckBuilderController extends AbstractController
                 'compositionSide' => $compositionSide,
                 'compositionMaybe' => $compositionMaybe,
                 'count' => $count,
-                'stateToken' => $stateToken
+                'stateToken' => $stateToken,
+                'comments' => $comments,
+                'commentForm' => $form,
+                'comment' => $comment
             ]);
         }
 
@@ -104,7 +140,10 @@ class DeckBuilderController extends AbstractController
                 'compositionSide' => $compositionMain,
                 'compositionMaybe' => $compositionMaybe,
                 'count' => $count,
-                'stateToken' => $stateToken
+                'stateToken' => $stateToken,
+                'comments' => $comments,
+                'commentForm' => $form,
+                'comment' => $comment
             ]);
         }
 
@@ -118,7 +157,10 @@ class DeckBuilderController extends AbstractController
                 'compositionSide' => $compositionMain,
                 'compositionMaybe' => $compositionSide,
                 'count' => $count,
-                'stateToken' => $stateToken
+                'stateToken' => $stateToken,
+                'comments' => $comments,
+                'commentForm' => $form,
+                'comment' => $comment
             ]);
         } else {
 
@@ -128,7 +170,10 @@ class DeckBuilderController extends AbstractController
             'compositionSide' => $compositionSide,
             'compositionMaybe' => $compositionMaybe,
             'count' => $count,
-            'stateToken' => $stateToken
+            'stateToken' => $stateToken,
+            'comments' => $comments,
+            'commentForm' => $form,
+            'comment' => $comment
         ]);
     }
     }

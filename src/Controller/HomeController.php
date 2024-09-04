@@ -136,7 +136,7 @@ class HomeController extends AbstractController
             $entityManager->persist($comment);
             $entityManager->flush(); // Save changes to the database
 
-            return $this->redirectToRoute('app_deck_consult', ['id' => $deck->getId()]);
+            return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
         }
 
         return $this->render('home/editComment.html.twig', [
@@ -154,7 +154,7 @@ class HomeController extends AbstractController
             $entityManager->flush(); // Delete the comment from the database
         
 
-        return $this->redirectToRoute('app_deck_consult', ['id' => $deck->getId()]);
+            return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
     }
 
     #[Route('/deck/{id}/liked', name: 'like_deck')]
@@ -175,7 +175,7 @@ class HomeController extends AbstractController
             $entityManager->flush();
         }
     
-        return $this->redirectToRoute('app_deck_consult', ['id' => $deck->getId()]);
+        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
     }
 
     #[Route('/deck/{id}/likedremoved', name: 'remove_like_deck')]
@@ -196,7 +196,7 @@ class HomeController extends AbstractController
             $entityManager->flush();
         }
     
-        return $this->redirectToRoute('app_deck_consult', ['id' => $deck->getId()]);
+        return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
     }
 
 }

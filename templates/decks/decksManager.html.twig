@@ -39,7 +39,7 @@
                     {% endif %}
                 </td>
                 <td class="px-4 py-3 text-center">
-                  {% if app.user.id is same as deck.user.id %}
+                  {% if app.user and app.user.id is same as deck.user.id %}
                   <a class="text-red-500 hover:underline text-sm" href="{{ path('delete_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer</a>
                   {% endif %}
                 </td>

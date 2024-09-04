@@ -7,7 +7,7 @@
 <input id="cardInput" type="hidden" value="{{ cardId }}">
 
 <div class="flex justify-center w-screen">
-    <div id="detailBoard" class="flex flex-wrap justify-center m-8 p-4 space-x-8 w-full">
+    <div id="detailBoard" class="border border-red-700 rounded flex flex-wrap justify-center m-8 p-6 space-x-8">
         <div id="placeholder" class="max-w-fit">
         </div>
 
@@ -25,7 +25,7 @@
 </div>
 
 <div class="flex justify-center w-screen">
-    <div class="ml-8 flex flex-col">
+    <div class="ml-8 flex flex-col p-6 border border-red-700 rounded">
         <div>
             <p id="cardSet">
                 <!-- Card set and artist details will be inserted here -->
@@ -37,8 +37,8 @@
              </p>
         </div>
         
-        <div id="purchaseLink" class="mt-4">
-           <a id="cardmarketLink" class="my-4 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800 mr-4" href="#" target="_blank">Acheter la carte sur Cardmarket</a>
+        <div id="purchaseLink" class="mt-4 w-full flex justify-center">
+           <a id="cardmarketLink" class="my-4 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800" href="#" target="_blank">Acheter la carte sur Cardmarket</a>
         </div>
     </div>
 </div>

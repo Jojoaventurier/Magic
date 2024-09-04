@@ -14,17 +14,88 @@
         </div>
     </div>
 
-    <div class="h-48">
-        <select>
-            <option value=""></option>
+    <div class="flex space-x-8 justify-center items-center px-6 py-2">
+
+        <select id="typeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10">
+            <option value="">Tous les types</option>
+            <option value="legendary">Légendaire</option>
+            <option value="creature">Creature</option>
+            <option value="artifact">Artefact</option>
+            <option value="enchantment">Enchantement</option>
+            <option value="battle">Bataille</option>
+            <option value="instant">Instant</option>
+            <option value="sorcery">Rituel</option>
+            <option value="land">Terrain</option>
+            <option value="planeswalker">Planeswalker</option>
+            <option value="saga">Saga</option>
+            <option value="background">Background</option>
         </select>
+
+        <select id="subtypeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10">
+            <option value="">Tous les sous-types</option>
+            <!-- Options will be dynamically populated -->
+        </select>
+
+        <div class="border px-4 py-2 border-red-700 rounded hover:bg-gray-100">
+            <div class="px-2 space-x-2">
+                <label class="text-sm italic text-gray-700">
+                    <input name="color" type="radio" checked value="c:" id="colorOnly">
+                    Incluant au minimum
+                </label>
+                <label class="text-sm italic text-gray-700">
+                    <input name="color" type="radio" value="ci:" id="colorIncluding">
+                    Incluant seulement
+                </label>
+            </div>
+            <div id="colorSelect" class="flex flex-wrap justify-center space-x-4 py-2">
+                <label><input type="checkbox" value="W"><img class="w-5" src="/icons/mana/W.webp"></label>
+                <label><input type="checkbox" value="R"><img class="w-5" src="/icons/mana/R.webp"></label>
+                <label><input type="checkbox" value="G"><img class="w-5" src="/icons/mana/G.webp"></label>
+                <label><input type="checkbox" value="B"><img class="w-5" src="/icons/mana/B.webp"></label>
+                <label><input type="checkbox" value="U"><img class="w-5" src="/icons/mana/U.webp"></label>
+                <label><input id="colorless" type="checkbox" value="C"><img class="w-5" src="https://svgs.scryfall.io/card-symbols/C.svg" alt="Colorless Mana Symbol"></label>               
+            </div>
+        </div>
+        
+        <div class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100">
+            <label for="cmcSelect">Filtrer par coût de mana :</label>
+            <select id="cmcSelect" class="text-sm rounded focus:ring-2 focus:outline-none outline-none text-center px-2 space-y-1">
+                <option class="italic" value="">Aucun filtre</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="20">20</option>
+            </select>
+        </div>
+
+        <button id="resetButton" class="h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900">Reset</button>
     </div>
 
     <div id="cardBoard" class="w-full flex justify-center">
-        <div id="cardList" class="flex flex-wrap max-w-4/5 w-4/5"></div>
+        <div id="cardList" class="flex flex-wrap justify-center max-w-4/5 w-4/5"></div>
+    </div>
+
+    <!-- Placeholder for no cards found message -->
+    <div id="noCardsMessage" class="hidden text-center text-red-500 font-semibold mt-4">
+        Aucune carte trouvée avec les filtres sélectionnés.
     </div>
 </main>
-
 
 <input type="hidden" value="{{ setCode }}" id="setCode">
 
@@ -34,79 +105,172 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Page chargée et script exécuté!');
 
     const cardList = document.querySelector("#cardList");
-    
+    const setName = document.querySelector("#setName");
+    const releaseDate = document.getElementById('releaseDate');
+    const setCode = document.getElementById('setCode').value;
 
-    if (cardList) {
-        // Replace 'SET_CODE' with the actual set code you want to fetch
-        const setCode = document.getElementById('setCode').value; 
-        const setName = document.querySelector("#setName");
-        const releaseDate = document.getElementById('releaseDate')
+    const typeSelect = document.getElementById('typeSelect');
+    const colorCheckboxes = document.querySelectorAll('#colorSelect input[type="checkbox"]');
+    const subtypeSelect = document.getElementById('subtypeSelect');
 
-        fetch(`https://api.scryfall.com/cards/search?q=set:${setCode}`)
-            // Convertit la réponse en format JSON
+    const colorOnly = document.getElementById('colorOnly');
+    const colorIncluding = document.getElementById('colorIncluding');
+    const colorless = document.getElementById('colorless');
+
+    const cmcSelect = document.getElementById('cmcSelect');
+
+    const resetButton = document.getElementById('resetButton');
+    const noCardsMessage = document.getElementById('noCardsMessage');
+
+    function updateFetchUrl() {
+        let type = typeSelect.value;
+        let subtype = subtypeSelect.value;
+
+        let selectedColors = Array.from(colorCheckboxes)
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => checkbox.value)
+            .join(',');
+
+        let selectedCMC = cmcSelect.value;
+
+        let query = `set:${setCode}`;
+
+        if (type) {
+            query += `+type:${type}`;
+        }
+
+        if (selectedColors) {
+            if (colorless.checked) {
+                query += `+-c:W+-c:U+-c:B+-c:R+-c:G`;
+            } else if (colorOnly.checked) {
+                query += `+color:${selectedColors}`;  // Exact color match
+            } else if (colorIncluding.checked) {
+                query += `+ci:${selectedColors}`; // Color inclusive
+            }
+        }
+
+        if (subtype) {
+            query += `+type:${subtype}`; 
+        }
+
+        if (selectedCMC) {
+            query += `+cmc=${selectedCMC}`;
+        }
+
+        console.log(`Fetching URL: https://api.scryfall.com/cards/search?q=${query}`);
+        return `https://api.scryfall.com/cards/search?q=${query}`;
+    }
+
+    function fetchCards() {
+        fetch(updateFetchUrl())
             .then(response => response.json())
-            // Une fois que les données JSON sont disponibles
             .then(data => {
-             //   console.log(data); Vérifie le format des données
+                const myNode = document.getElementById("cardList");
+                if (myNode) {
+                    while (myNode.firstChild) {
+                        myNode.removeChild(myNode.lastChild);
+                    }
+                }
 
-                if (data.data && Array.isArray(data.data)) { // on vérifiqe qu'on récupère bien des données de l'api, et quelle soit sous forme de tableau
-
-                    const myNode = document.getElementById("cardList"); // permet de réinitialiser l'affichage des cartes, si l'utilisateur appuie une nouvelle fois sur le bouton de recherche, les cartes affichées précédemment sont enlevées
-                        if (myNode) {
-                            while (myNode.firstChild) {// tant que cardBoard a des enfants (les cartes que l'on affiche)
-                                myNode.removeChild(myNode.lastChild); // on enlève le dernier enfant de cardBoard jusqu'à ce qu'il n'y en ait plus
-                            }
-                        }
-                     console.log(data)
-                    // Access the set name from the first card in the data array
-                     // Check if the set name is available in the first card's data
-                     if (data.data.length > 0 && data.data[0].set_name) {
+                if (data.data && Array.isArray(data.data)) {
+                    if (data.data.length > 0) {
                         setName.innerHTML = data.data[0].set_name;
                         releaseDate.innerHTML = data.data[0].released_at;
-                    } else {
-                        setName.innerHTML = "Set non trouvé"; // Handle case where no cards are found
-                    }
+                        noCardsMessage.classList.add('hidden');  // Hide the no cards found message
 
-                    data.data.forEach(card => { 
+                        data.data.forEach(card => {
+                            let displayCard;
+                            if (card.image_uris && card.image_uris.normal) {
+                                displayCard = new Image(250, 350);
+                                displayCard.src = card.image_uris.normal;
+                                displayCard.id = card.id;
+                                displayCard.classList.add('singleCard', 'p-1');
+                            } else if (card.card_faces[0]['image_uris'] && card.card_faces[0]['image_uris']['normal']) {
+                                displayCard = new Image(250, 350);
+                                displayCard.src = card.card_faces[0]['image_uris']['normal'];
+                                displayCard.id = card.id;
+                                displayCard.classList.add('singleCard', 'p-1');
+                            }
 
-                        if (card.image_uris && card.image_uris.normal) {
-                            let displayCard = new Image(250,350); // créé un nouvel élément <img> d'une taille fixe
-                            displayCard.src = `${card.image_uris.normal}`; // j'attribue la source de l'image à l'url correspondant à l'image que je souhaite afficher (plusieurs tailles possibles)
-                            displayCard.id = `${card.id}` // attribution de l'id scryfall de la carte à l'id de l'élément html image généré
-                            displayCard.classList.add('singleCard', 'p-1'); // on ajoute une classe singleCard si manipulation en css nécessaire
-    
-                            // Crée un élément <a> pour envelopper l'image
-                            var cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}"; //on attribue le chemin vers le détail de la carte à la variable cardDetailUrl
-                            let link = document.createElement("a"); // on créé un élément <link> que l'on attribue à la variable link
+                            var cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}";
+                            let link = document.createElement("a");
                             let url = cardDetailUrl.replace('REPLACE_CARD_ID', card.id);
-                            link.href = url; // on attribue le lien vers la carte au href du de l'élément HTML créé pour renvoyer vers le détail de la carte
+                            link.href = url;
 
-                            link.appendChild(displayCard);//  l'image est ajoutée au lien créé précédemment
-                            cardList.appendChild(link) // on ajoute le lien à la div qui affiche les carte (le l'image est ajoutée au lien, qui lui même est ajouté à la div cardBoard)
-                       
-                        } else if(card.card_faces[0]['image_uris'] && card.card_faces[0]['image_uris']['normal']) { // les cartes doubles faces ont une architecture JSON différente des cartes "normales" on ne peut pas accéder à à l'id de la meme façon
-                            // exception qui récupère la premiere face de la carte double face sinon ne s'affichent pas
-                        console.log('carte double face')
-                        let displayCard = new Image(250,350); 
-                        displayCard.src = `${card.card_faces[0]['image_uris']['normal']}`;
-                        displayCard.id = `${card.id}` 
-                        displayCard.classList.add('singleCard', 'p-1'); 
-
-                        var cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}"; 
-                        let link = document.createElement("a"); 
-                        let url = cardDetailUrl.replace('REPLACE_CARD_ID', card.id);
-                        link.href = url; 
-
-                        link.appendChild(displayCard);//  l'image est ajoutée au lien créé précédemment
-                        cardList.appendChild(link)
+                            link.appendChild(displayCard);
+                            cardList.appendChild(link);
+                        });
+                    } else {
+                        setName.innerHTML = "Set non trouvé";
+                        noCardsMessage.classList.remove('hidden');  // Show the no cards found message
                     }
-                    });
                 } else {
                     console.error('Erreur: la réponse de l\'API ne contient pas un tableau de cartes dans "data"');
+                    noCardsMessage.classList.remove('hidden');  // Show the no cards found message on error
                 }
             })
-            .catch(error => console.error('Erreur:', error));
+            .catch(error => {
+                console.error('Erreur:', error);
+                noCardsMessage.classList.remove('hidden');  // Show the no cards found message on error
+            });
     }
+
+    function fetchSubtypes() {
+        fetch(`https://api.scryfall.com/cards/search?q=set:${setCode}`)
+            .then(response => response.json())
+            .then(data => {
+                const subtypes = new Set();
+                data.data.forEach(card => {
+                    if (card.type_line.includes('—')) {
+                        const parts = card.type_line.split('—');
+                        const subtypesArray = parts[1].trim().split(' ');
+                        subtypesArray.forEach(subtype => subtypes.add(subtype));
+                    }
+                });
+
+                subtypeSelect.innerHTML = '<option value="">Tous les sous-types</option>';
+                subtypes.forEach(subtype => {
+                    const option = document.createElement('option');
+                    option.value = subtype.toLowerCase();
+                    option.textContent = subtype;
+                    subtypeSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Erreur lors de la récupération des sous-types:', error));
+    }
+
+    function resetFilters() {
+        typeSelect.value = "";
+        colorCheckboxes.forEach(checkbox => checkbox.checked = false);
+        subtypeSelect.value = "";
+        cmcSelect.value = "";
+        colorOnly.checked = false;
+        colorIncluding.checked = false;
+        colorless.checked = false;
+        fetchCards();
+    }
+
+    typeSelect.addEventListener('change', fetchCards);
+    colorCheckboxes.forEach(checkbox => checkbox.addEventListener('change', fetchCards));
+    colorOnly.addEventListener('change', function() {
+        if (colorOnly.checked) {
+            colorIncluding.checked = false;
+        }
+        fetchCards();
+    });
+    colorIncluding.addEventListener('change', function() {
+        if (colorIncluding.checked) {
+            colorOnly.checked = false;
+        }
+        fetchCards();
+    });
+    colorless.addEventListener('change', fetchCards);
+    subtypeSelect.addEventListener('change', fetchCards);
+    cmcSelect.addEventListener('change', fetchCards);
+    resetButton.addEventListener('click', resetFilters);
+
+    fetchSubtypes();  // Load subtypes initially
+    fetchCards();  // Load cards initially based on default values
 });
 </script>
 {% endblock %}
