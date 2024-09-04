@@ -1,0 +1,303 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Search Cards{% endblock %}
+
+{% block body %}
+
+<main>
+    <div class="gradient-adapt flex flex-col h-60 w-full items-center justify-end space-y-6 mb-6 p-10">
+        <div class="space-y-2 border border-white p-4 rounded">
+
+            <h1 class="px-6 text-3xl font-medium text-white w-prose">Recherche de cartes</h1>
+            <p class="px-6 text-white italic text-sm">Utilisez les filtres ci-dessous pour affiner votre recherche.</p>
+        </div>
+    </div>
+
+    <div class="flex space-x-8 justify-center items-center px-4 py-2 m-8">
+
+        {% set active = 'text-sm bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 shadow-md cursor-pointer' %}
+        {% set inactive = 'text-sm bg-white text-red-700 px-4 py-2 rounded hover:bg-red-900 hover:text-white shadow-md cursor-pointer' %}
+
+        <div class="inline-flex items-center space-x-4">
+            <div id="rarityAll" class="{{ active }}">Toutes</div>
+            <div id="rarityMythic" class="{{ inactive }}">Mythiques</div>
+            <div id="rarityRare" class="{{ inactive }}">Rares</div>
+            <div id="rarityUncommon" class="{{ inactive }}">Non communes</div>
+            <div id="rarityCommon" class="{{ inactive }}">Communes</div>
+        </div>
+
+        <select id="typeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10">
+            <option value="">Tous les types</option>
+            <option value="legendary">Légendaire</option>
+            <option value="creature">Creature</option>
+            <option value="artifact">Artefact</option>
+            <option value="enchantment">Enchantement</option>
+            <option value="battle">Bataille</option>
+            <option value="instant">Instant</option>
+            <option value="sorcery">Rituel</option>
+            <option value="land">Terrain</option>
+            <option value="planeswalker">Planeswalker</option>
+            <option value="saga">Saga</option>
+            <option value="background">Background</option>
+        </select>
+
+        <select id="subtypeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10">
+            <option value="">Tous les sous-types</option>
+            <!-- Options will be dynamically populated -->
+        </select>
+
+        <div class="border px-4 py-2 border-red-700 rounded hover:bg-gray-100">
+            <div class="px-2 space-x-2">
+                <label class="text-sm italic text-gray-700">
+                    <input name="color" type="radio" checked value="c:" id="colorOnly">
+                    Incluant au minimum
+                </label>
+                <label class="text-sm italic text-gray-700">
+                    <input name="color" type="radio" value="ci:" id="colorIncluding">
+                    Incluant seulement
+                </label>
+            </div>
+            <div id="colorSelect" class="flex flex-wrap justify-center space-x-4 py-2">
+                <label><input type="checkbox" value="W"><img class="w-5" src="/icons/mana/W.webp"></label>
+                <label><input type="checkbox" value="R"><img class="w-5" src="/icons/mana/R.webp"></label>
+                <label><input type="checkbox" value="G"><img class="w-5" src="/icons/mana/G.webp"></label>
+                <label><input type="checkbox" value="B"><img class="w-5" src="/icons/mana/B.webp"></label>
+                <label><input type="checkbox" value="U"><img class="w-5" src="/icons/mana/U.webp"></label>
+                <label><input id="colorless" type="checkbox" value="C"><img class="w-5" src="https://svgs.scryfall.io/card-symbols/C.svg" alt="Colorless Mana Symbol"></label>               
+            </div>
+        </div>
+        
+        <div class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100">
+            <label for="cmcSelect">Filtrer par coût de mana :</label>
+            <select id="cmcSelect" class="text-sm rounded focus:ring-2 focus:outline-none outline-none text-center px-2 space-y-1">
+                <option class="italic" value="">Aucun filtre</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="20">20</option>
+            </select>
+        </div>
+
+        <button id="resetButton" class="h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900">Réinitialisez les filtres</button>
+    </div>
+
+    <div class="flex justify-center">
+        <input type="text" id="searchInput" class="border border-red-700 text-sm rounded px-4 py-2 w-96 focus:ring-2 focus:outline-none outline-none" placeholder="Entrez un terme de recherche...">
+    </div>
+
+    <div id="count" class="flex justify-center m-4 hidden">
+        <p class="border border-red-700 rounded p-2 text-sm text-red-700"><span id="totalCards"></span> cartes trouvées</p>
+    </div>
+
+    <div id="cardBoard" class="w-full flex justify-center">
+        <div id="cardList" class="flex flex-wrap justify-center max-w-4/5 w-4/5"></div>
+    </div>
+
+    <!-- Placeholder for no cards found message -->
+    <div id="noCardsMessage" class="hidden text-center text-red-500 font-semibold mt-4">
+        Aucune carte trouvée avec les filtres sélectionnés.
+    </div>
+</main>
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page chargée et script exécuté!');
+
+    const cardList = document.querySelector("#cardList");
+    const searchInput = document.getElementById('searchInput');
+    const count = document.getElementById('count');
+
+    const typeSelect = document.getElementById('typeSelect');
+    const colorCheckboxes = document.querySelectorAll('#colorSelect input[type="checkbox"]');
+    const subtypeSelect = document.getElementById('subtypeSelect');
+
+    const colorOnly = document.getElementById('colorOnly');
+    const colorIncluding = document.getElementById('colorIncluding');
+    const colorless = document.getElementById('colorless');
+
+    const cmcSelect = document.getElementById('cmcSelect');
+
+    const resetButton = document.getElementById('resetButton');
+    const noCardsMessage = document.getElementById('noCardsMessage');
+
+    const rarityButtons = {
+        all: document.getElementById('rarityAll'),
+        mythic: document.getElementById('rarityMythic'),
+        rare: document.getElementById('rarityRare'),
+        uncommon: document.getElementById('rarityUncommon'),
+        common: document.getElementById('rarityCommon')
+    };
+
+    let selectedRarity = '';
+
+    function updateFetchUrl() {
+        let searchTerm = searchInput.value.trim();
+        let type = typeSelect.value;
+        let subtype = subtypeSelect.value;
+
+        let selectedColors = Array.from(colorCheckboxes)
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => checkbox.value)
+            .join(',');
+
+        let selectedCMC = cmcSelect.value;
+
+        let query = searchTerm ? `${searchTerm}` : "";
+
+        if (type) {
+            query += `+type:${type}`;
+        }
+
+        if (selectedColors) {
+            if (colorless.checked) {
+                query += `+-c:W+-c:U+-c:B+-c:R+-c:G`;
+            } else if (colorOnly.checked) {
+                query += `+color=${selectedColors}`;  // Exact color match
+            } else if (colorIncluding.checked) {
+                query += `+ci:${selectedColors}`;  // Inclusive color match
+            }
+        }
+
+        if (selectedCMC) {
+            query += `+cmc=${selectedCMC}`;
+        }
+
+        if (subtype) {
+            query += `+type:${subtype}`;
+        }
+
+        if (selectedRarity) {
+            query += `+rarity:${selectedRarity}`;
+        }
+
+        return `https://api.scryfall.com/cards/search?order=dir&q=name:${query}`;
+        //return `https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=dir&unique=prints&q=name:${query}`;
+    }
+
+    function fetchCards() {
+        let url = updateFetchUrl();
+        console.log("Fetching cards with URL:", url);
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                
+                const myNode = document.getElementById("cardList");
+                if (myNode) {
+                    while (myNode.firstChild) {
+                        myNode.removeChild(myNode.lastChild);
+                    }
+                }
+    
+                if (data.data && Array.isArray(data.data)) {
+                    if (data.data.length > 0) {
+
+                        // Set the total number of cards
+                        totalCards.innerHTML = data.total_cards || data.data.length;
+    
+                        noCardsMessage.classList.add('hidden');  // Hide the no cards found message
+    
+                        data.data.forEach(card => {
+                            let displayCard;
+                            if (card.image_uris && card.image_uris.normal) {
+                                displayCard = new Image(250, 350);
+                                displayCard.src = card.image_uris.normal;
+                                displayCard.id = card.id;
+                                displayCard.classList.add('singleCard', 'p-1');
+                            } else if (card.card_faces[0]['image_uris'] && card.card_faces[0]['image_uris']['normal']) {
+                                displayCard = new Image(250, 350);
+                                displayCard.src = card.card_faces[0]['image_uris']['normal'];
+                                displayCard.id = card.id;
+                                displayCard.classList.add('singleCard', 'p-1');
+                            }
+    
+                            var cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}";
+                            let link = document.createElement("a");
+                            let url = cardDetailUrl.replace('REPLACE_CARD_ID', card.id);
+                            link.href = url;
+    
+                            link.appendChild(displayCard);
+                            cardList.appendChild(link);
+                            count.classList.remove('hidden')
+                        });
+                    } else {
+                        setName.innerHTML = "Set non trouvé";
+                        noCardsMessage.classList.remove('hidden');  // Show the no cards found message
+                    }
+                } else {
+                    console.error('Erreur: la réponse de l\'API ne contient pas un tableau de cartes dans "data"');
+                    noCardsMessage.classList.remove('hidden');  // Show the no cards found message on error
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                noCardsMessage.classList.remove('hidden');  // Show the no cards found message on error
+            });
+    }
+
+    searchInput.addEventListener('input', fetchCards);
+
+    Array.from(colorCheckboxes).forEach(checkbox => {
+        checkbox.addEventListener('change', fetchCards);
+    });
+
+    colorOnly.addEventListener('change', fetchCards);
+    colorIncluding.addEventListener('change', fetchCards);
+    colorless.addEventListener('change', fetchCards);
+
+    typeSelect.addEventListener('change', fetchCards);
+    subtypeSelect.addEventListener('change', fetchCards);
+    cmcSelect.addEventListener('change', fetchCards);
+
+    resetButton.addEventListener('click', function() {
+        //searchInput.value = '';
+        typeSelect.selectedIndex = 0;
+        subtypeSelect.selectedIndex = 0;
+        cmcSelect.selectedIndex = 0;
+
+        Array.from(colorCheckboxes).forEach(checkbox => checkbox.checked = false);
+        colorOnly.checked = true;
+
+        selectedRarity = '';
+        rarityButtons.all.className = '{{ active }}';
+        rarityButtons.mythic.className = '{{ inactive }}';
+        rarityButtons.rare.className = '{{ inactive }}';
+        rarityButtons.uncommon.className = '{{ inactive }}';
+        rarityButtons.common.className = '{{ inactive }}';
+
+        noCardsMessage.classList.add('hidden');
+        fetchCards();
+    });
+
+    Object.keys(rarityButtons).forEach(key => {
+        rarityButtons[key].addEventListener('click', function() {
+            selectedRarity = key === 'all' ? '' : key;
+            Object.keys(rarityButtons).forEach(innerKey => {
+                rarityButtons[innerKey].className = key === innerKey ? '{{ active }}' : '{{ inactive }}';
+            });
+            fetchCards();
+        });
+    });
+
+    //fetchCards(); // Initial fetch when page loads
+});
+</script>
+{% endblock %}
+{% endblock %}

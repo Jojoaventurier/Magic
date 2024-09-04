@@ -3,14 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Deck;
-use App\Entity\User;
 use App\Entity\Comment;
 use App\Form\CommentType;
 use App\Repository\DeckRepository;
-use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\CompositionRepository;
-use PhpParser\JsonDecoder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -75,7 +71,7 @@ class HomeController extends AbstractController
     {
        $user =  $this->getUser();
         
-        return $this->render('cardSearch/cardSearch.html.twig', [
+        return $this->render('cardSearch/cardSearchTest.html.twig', [
             'user' => $user
         ]);
     }

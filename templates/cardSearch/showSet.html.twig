@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Cards from Set{% endblock %}
+{% block title %}Cartes du set{% endblock %}
 
 {% block body %}
 
 <main>
     <div class="gradient-adapt flex flex-col h-60 w-full items-center justify-end space-y-6 mb-6 p-10">
-        <div class="space-y-2 border border-white p-4">
+        <div class="space-y-2 border border-white p-4 rounded">
             <a href="{{ path('all_sets') }}" class="text-white hover:underline text-sm">> Revenir à la liste des extensions</a>
 
             <h1 class="px-6 text-3xl font-medium text-white w-prose"> Set > <span id="setName" class="font-medium text-4xl"></span></h1>
@@ -96,7 +96,7 @@
             </select>
         </div>
 
-        <button id="resetButton" class="h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900">Reset</button>
+        <button id="resetButton" class="h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900">Réinitialiser les filtres</button>
     </div>
 
     <div id="cardBoard" class="w-full flex justify-center">
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         console.log(`Fetching URL: https://api.scryfall.com/cards/search?q=${query}`);
-        return `https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3Apip&unique=prints&q=${query}`;
+        return `https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&unique=prints&q=${query}`;
         
     }
 
