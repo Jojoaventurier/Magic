@@ -4,21 +4,21 @@
 
 {% block body %}
 
-<div id="detailBoard" class="detailBoard w-8/12">
-    <table id="setTable" class="min-w-full bg-white">
-        <thead>
+<div id="detailBoard" class="flex justify-center m-4">
+    <table id="setTable" class="w-[1124px] bg-white shadow-md rounded-lg overflow-hidden">
+        <thead class="bg-gray-100 border-b">
             <tr>
-                <th class="px-6 py-2 border-b-2 border-gray-300 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
-                    Set Name
+                <th class="px-4 py-2 text-left text-sm font-medium text-gray-600">
+                    Nom de l'extension
                 </th>
-                <th class="px-6 py-2 border-b-2 border-gray-300 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+                <th class="py-2 text-sm font-medium text-gray-600 w-[60px] w-max-[60px]">
                     Set Code
                 </th>
-                <th class="px-6 py-2 border-b-2 border-gray-300 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
-                    Total Cards
+                <th class="px-10 py-2 text-right text-sm font-medium text-gray-600">
+                    Total cartes
                 </th>
-                <th class="px-6 py-2 border-b-2 border-gray-300 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
-                    Release Date
+                <th class="px-8 py-2 text-right text-sm font-medium text-gray-600">
+                    Date de sortie
                 </th>
             </tr>
         </thead>
@@ -47,36 +47,39 @@
                         set.set_type === 'draft_innovation' || 
                         set.set_type === 'masters'
                     );
-
+    
                     // Iterate over each filtered set and create a row with the relevant information.
                     filteredSets.forEach(set => {
                         let row = document.createElement('tr');
-
+    
                         // Create a cell for each piece of information and add it to the row.
                         let setNameCell = document.createElement('td');
                         // Replace placeholder with actual set code
                         const setUrl = baseUrl.replace('PLACEHOLDER', encodeURIComponent(set.code));
                         setNameCell.innerHTML = `<a href="${setUrl}">${set.name}</a>`;
-                        setNameCell.classList.add('px-6', 'py-1', 'whitespace-no-wrap', 'border-b', 'border-gray-300', 'text-sm');
-
+                        setNameCell.classList.add('px-6', 'py-1', 'whitespace-no-wrap', 'border-b', 'border-gray-300', 'text-sm', 'text-red-700', 'hover:underline', 'text-left');
+    
                         let setCodeCell = document.createElement('td');
                         setCodeCell.textContent = set.code;
-                        setCodeCell.classList.add('px-6', 'py-1', 'whitespace-no-wrap', 'border-b', 'border-gray-300', 'text-sm');
-
+                        setCodeCell.classList.add('px-2', 'py-1', 'border-b', 'border-gray-300', 'text-sm', 'uppercase', 'text-center', 'bg-red-800', 'text-white', 'rounded', 'inline-block', 'text-xs', 'whitespace-nowrap', 'font-semibold');
+                        setCodeCell.style.width = '55px'; // Adjust the width to fit content and make it button-like
+                        setCodeCell.style.maxWidth = '55px'; // Ensure the width doesn't exceed the specified value
+                        setCodeCell.style.margin = 'auto'; // Center it within the cell
+    
                         let totalCardsCell = document.createElement('td');
                         totalCardsCell.textContent = set.card_count;
-                        totalCardsCell.classList.add('px-6', 'py-1', 'whitespace-no-wrap', 'border-b', 'border-gray-300', 'text-sm');
-
+                        totalCardsCell.classList.add('px-16', 'py-1', 'whitespace-no-wrap', 'text-gray-700', 'border-b', 'border-gray-300', 'text-sm', 'text-right');
+    
                         let releaseDateCell = document.createElement('td');
                         releaseDateCell.textContent = set.released_at;
-                        releaseDateCell.classList.add('px-6', 'py-1', 'whitespace-no-wrap', 'border-b', 'border-gray-300', 'text-sm');
-
+                        releaseDateCell.classList.add('px-8', 'py-1', 'whitespace-no-wrap', 'text-gray-700', 'border-b', 'border-gray-300', 'text-sm', 'text-right');
+    
                         // Append the cells to the row.
                         row.appendChild(setNameCell);
                         row.appendChild(setCodeCell);
                         row.appendChild(totalCardsCell);
                         row.appendChild(releaseDateCell);
-
+    
                         // Append the row to the setList table body.
                         setList.appendChild(row);
                     });

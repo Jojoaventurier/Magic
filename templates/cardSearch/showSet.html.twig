@@ -4,33 +4,27 @@
 
 {% block body %}
 
-<div id="setDetailBoard" class="setDetailBoard w-8/12">
-    <h1 class="text-xl font-bold mb-4">Cards from Set</h1>
-    <table id="cardTable" class="min-w-full bg-white">
-        <thead>
-            <tr>
-                <th class="px-6 py-2 border-b-2 border-gray-300 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
-                    Card Name
-                </th>
-                <th class="px-6 py-2 border-b-2 border-gray-300 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
-                    Mana Cost
-                </th>
-                <th class="px-6 py-2 border-b-2 border-gray-300 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
-                    Type
-                </th>
-                <th class="px-6 py-2 border-b-2 border-gray-300 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
-                    Rarity
-                </th>
-                <th class="px-6 py-2 border-b-2 border-gray-300 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
-                    Image
-                </th>
-            </tr>
-        </thead>
-        <tbody id="cardList">
-            <!-- The cards will be populated here -->
-        </tbody>
-    </table>
-</div>
+<main>
+    <div class="gradient-adapt flex flex-col h-60 w-full items-center justify-end space-y-6 mb-6 p-10">
+        <div class="space-y-2 border border-white p-4">
+            <a href="{{ path('all_sets') }}" class="text-white hover:underline">> Revenir à la liste des extensions</a>
+
+            <h1 class="px-6 text-3xl font-medium text-white w-prose"> Set > <span id="setName" class="font-medium text-4xl"></span></h1>
+            <p class="px-6 text-white italic text-sm">Date de sortie le : <span id="releaseDate"></span></p>
+        </div>
+    </div>
+
+    <div class="h-48">
+        <select>
+            <option value=""></option>
+        </select>
+    </div>
+
+    <div id="cardBoard" class="w-full flex justify-center">
+        <div id="cardList" class="flex flex-wrap max-w-4/5 w-4/5"></div>
+    </div>
+</main>
+
 
 <input type="hidden" value="{{ setCode }}" id="setCode">
 
@@ -40,57 +34,78 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Page chargée et script exécuté!');
 
     const cardList = document.querySelector("#cardList");
+    
 
     if (cardList) {
         // Replace 'SET_CODE' with the actual set code you want to fetch
         const setCode = document.getElementById('setCode').value; 
+        const setName = document.querySelector("#setName");
+        const releaseDate = document.getElementById('releaseDate')
 
         fetch(`https://api.scryfall.com/cards/search?q=set:${setCode}`)
-            .then((response) => response.json())
-            .then((data) => {
-                // Iterate over each card and create a row with the relevant information.
-                data.data.forEach(card => {
-                    let row = document.createElement('tr');
+            // Convertit la réponse en format JSON
+            .then(response => response.json())
+            // Une fois que les données JSON sont disponibles
+            .then(data => {
+             //   console.log(data); Vérifie le format des données
 
-                    // Create a cell for each piece of information and add it to the row.
-                    let cardNameCell = document.createElement('td');
-                    cardNameCell.textContent = card.name;
-                    cardNameCell.classList.add('px-6', 'py-4', 'whitespace-no-wrap', 'border-b', 'border-gray-300');
+                if (data.data && Array.isArray(data.data)) { // on vérifiqe qu'on récupère bien des données de l'api, et quelle soit sous forme de tableau
 
-                    let manaCostCell = document.createElement('td');
-                    manaCostCell.textContent = card.mana_cost || 'N/A';
-                    manaCostCell.classList.add('px-6', 'py-4', 'whitespace-no-wrap', 'border-b', 'border-gray-300');
-
-                    let typeCell = document.createElement('td');
-                    typeCell.textContent = card.type_line;
-                    typeCell.classList.add('px-6', 'py-4', 'whitespace-no-wrap', 'border-b', 'border-gray-300');
-
-                    let rarityCell = document.createElement('td');
-                    rarityCell.textContent = card.rarity;
-                    rarityCell.classList.add('px-6', 'py-4', 'whitespace-no-wrap', 'border-b', 'border-gray-300');
-
-                    let imageCell = document.createElement('td');
-                    if (card.image_uris && card.image_uris.normal) {
-                        imageCell.innerHTML = `<img src="${card.image_uris.normal}" alt="${card.name}" class="w-16 h-24">`;
+                    const myNode = document.getElementById("cardList"); // permet de réinitialiser l'affichage des cartes, si l'utilisateur appuie une nouvelle fois sur le bouton de recherche, les cartes affichées précédemment sont enlevées
+                        if (myNode) {
+                            while (myNode.firstChild) {// tant que cardBoard a des enfants (les cartes que l'on affiche)
+                                myNode.removeChild(myNode.lastChild); // on enlève le dernier enfant de cardBoard jusqu'à ce qu'il n'y en ait plus
+                            }
+                        }
+                     console.log(data)
+                    // Access the set name from the first card in the data array
+                     // Check if the set name is available in the first card's data
+                     if (data.data.length > 0 && data.data[0].set_name) {
+                        setName.innerHTML = data.data[0].set_name;
+                        releaseDate.innerHTML = data.data[0].released_at;
                     } else {
-                        imageCell.textContent = 'No Image';
+                        setName.innerHTML = "Set non trouvé"; // Handle case where no cards are found
                     }
-                    imageCell.classList.add('px-6', 'py-4', 'whitespace-no-wrap', 'border-b', 'border-gray-300');
 
-                    // Append the cells to the row.
-                    row.appendChild(cardNameCell);
-                    row.appendChild(manaCostCell);
-                    row.appendChild(typeCell);
-                    row.appendChild(rarityCell);
-                    row.appendChild(imageCell);
+                    data.data.forEach(card => { 
 
-                    // Append the row to the cardList table body.
-                    cardList.appendChild(row);
-                });
+                        if (card.image_uris && card.image_uris.normal) {
+                            let displayCard = new Image(250,350); // créé un nouvel élément <img> d'une taille fixe
+                            displayCard.src = `${card.image_uris.normal}`; // j'attribue la source de l'image à l'url correspondant à l'image que je souhaite afficher (plusieurs tailles possibles)
+                            displayCard.id = `${card.id}` // attribution de l'id scryfall de la carte à l'id de l'élément html image généré
+                            displayCard.classList.add('singleCard', 'p-1'); // on ajoute une classe singleCard si manipulation en css nécessaire
+    
+                            // Crée un élément <a> pour envelopper l'image
+                            var cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}"; //on attribue le chemin vers le détail de la carte à la variable cardDetailUrl
+                            let link = document.createElement("a"); // on créé un élément <link> que l'on attribue à la variable link
+                            let url = cardDetailUrl.replace('REPLACE_CARD_ID', card.id);
+                            link.href = url; // on attribue le lien vers la carte au href du de l'élément HTML créé pour renvoyer vers le détail de la carte
+
+                            link.appendChild(displayCard);//  l'image est ajoutée au lien créé précédemment
+                            cardList.appendChild(link) // on ajoute le lien à la div qui affiche les carte (le l'image est ajoutée au lien, qui lui même est ajouté à la div cardBoard)
+                       
+                        } else if(card.card_faces[0]['image_uris'] && card.card_faces[0]['image_uris']['normal']) { // les cartes doubles faces ont une architecture JSON différente des cartes "normales" on ne peut pas accéder à à l'id de la meme façon
+                            // exception qui récupère la premiere face de la carte double face sinon ne s'affichent pas
+                        console.log('carte double face')
+                        let displayCard = new Image(250,350); 
+                        displayCard.src = `${card.card_faces[0]['image_uris']['normal']}`;
+                        displayCard.id = `${card.id}` 
+                        displayCard.classList.add('singleCard', 'p-1'); 
+
+                        var cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}"; 
+                        let link = document.createElement("a"); 
+                        let url = cardDetailUrl.replace('REPLACE_CARD_ID', card.id);
+                        link.href = url; 
+
+                        link.appendChild(displayCard);//  l'image est ajoutée au lien créé précédemment
+                        cardList.appendChild(link)
+                    }
+                    });
+                } else {
+                    console.error('Erreur: la réponse de l\'API ne contient pas un tableau de cartes dans "data"');
+                }
             })
-            .catch((error) => {
-                console.error('Erreur lors de la récupération des cartes:', error);
-            });
+            .catch(error => console.error('Erreur:', error));
     }
 });
 </script>

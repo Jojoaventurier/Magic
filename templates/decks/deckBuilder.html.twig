@@ -38,7 +38,7 @@
                 (<img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-rounded/24/like--v1.png" alt="like--v1"/>
                 {{ deck.likes|length }}) 
             </div>
-        </div>
+        </div
         <a class="red hover:underline" href="{{ path('delete_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer le deck</a><br>
         <a class="red hover:underline" href="{{ path('delete_all_cards_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer toutes les cartes du deck</a><br>
         <button id="downloadButton" class="my-4 bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4">
