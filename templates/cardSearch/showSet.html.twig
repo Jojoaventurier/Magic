@@ -7,14 +7,26 @@
 <main>
     <div class="gradient-adapt flex flex-col h-60 w-full items-center justify-end space-y-6 mb-6 p-10">
         <div class="space-y-2 border border-white p-4">
-            <a href="{{ path('all_sets') }}" class="text-white hover:underline">> Revenir à la liste des extensions</a>
+            <a href="{{ path('all_sets') }}" class="text-white hover:underline text-sm">> Revenir à la liste des extensions</a>
 
             <h1 class="px-6 text-3xl font-medium text-white w-prose"> Set > <span id="setName" class="font-medium text-4xl"></span></h1>
-            <p class="px-6 text-white italic text-sm">Date de sortie le : <span id="releaseDate"></span></p>
+            <p class="px-6 text-white italic text-sm">Date de sortie : <span id="releaseDate"></span></p>
+            <p class="px-6 text-white italic text-sm"><span id="totalCards"></span> cartes</p>
         </div>
     </div>
 
-    <div class="flex space-x-8 justify-center items-center px-6 py-2">
+    <div class="flex space-x-8 justify-center items-center px-4 py-2 m-8">
+
+        {% set active = 'text-sm bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 shadow-md cursor-pointer' %}
+        {% set inactive = 'text-sm bg-white text-red-700 px-4 py-2 rounded hover:bg-red-900 hover:text-white shadow-md cursor-pointer' %}
+
+        <div class="inline-flex space-x-4">
+            <div id="rarityAll" class="{{ active }}">Toutes</div>
+            <div id="rarityMythic" class="{{ inactive }}">Mythiques</div>
+            <div id="rarityRare" class="{{ inactive }}">Rares</div>
+            <div id="rarityUncommon" class="{{ inactive }}">Non communes</div>
+            <div id="rarityCommon" class="{{ inactive }}">Communes</div>
+        </div>
 
         <select id="typeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10">
             <option value="">Tous les types</option>
@@ -107,6 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const cardList = document.querySelector("#cardList");
     const setName = document.querySelector("#setName");
     const releaseDate = document.getElementById('releaseDate');
+    const totalCards = document.getElementById('totalCards');
     const setCode = document.getElementById('setCode').value;
 
     const typeSelect = document.getElementById('typeSelect');
@@ -121,6 +134,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const resetButton = document.getElementById('resetButton');
     const noCardsMessage = document.getElementById('noCardsMessage');
+
+    const rarityButtons = {
+        all: document.getElementById('rarityAll'),
+        mythic: document.getElementById('rarityMythic'),
+        rare: document.getElementById('rarityRare'),
+        uncommon: document.getElementById('rarityUncommon'),
+        common: document.getElementById('rarityCommon')
+    };
+
+    let selectedRarity = '';
 
     function updateFetchUrl() {
         let type = typeSelect.value;
@@ -143,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (colorless.checked) {
                 query += `+-c:W+-c:U+-c:B+-c:R+-c:G`;
             } else if (colorOnly.checked) {
-                query += `+color:${selectedColors}`;  // Exact color match
+                query += `+color=${selectedColors}`;  // Exact color match
             } else if (colorIncluding.checked) {
                 query += `+ci:${selectedColors}`; // Color inclusive
             }
@@ -157,8 +180,13 @@ document.addEventListener('DOMContentLoaded', function() {
             query += `+cmc=${selectedCMC}`;
         }
 
+        if (selectedRarity) {
+            query += `+r:${selectedRarity}`;
+        }
+
         console.log(`Fetching URL: https://api.scryfall.com/cards/search?q=${query}`);
-        return `https://api.scryfall.com/cards/search?q=${query}`;
+        return `https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3Apip&unique=prints&q=${query}`;
+        
     }
 
     function fetchCards() {
@@ -171,13 +199,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         myNode.removeChild(myNode.lastChild);
                     }
                 }
-
+    
                 if (data.data && Array.isArray(data.data)) {
                     if (data.data.length > 0) {
                         setName.innerHTML = data.data[0].set_name;
                         releaseDate.innerHTML = data.data[0].released_at;
+    
+                        // Set the total number of cards
+                        totalCards.innerHTML = data.total_cards || data.data.length;
+    
                         noCardsMessage.classList.add('hidden');  // Hide the no cards found message
-
+    
                         data.data.forEach(card => {
                             let displayCard;
                             if (card.image_uris && card.image_uris.normal) {
@@ -191,12 +223,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                 displayCard.id = card.id;
                                 displayCard.classList.add('singleCard', 'p-1');
                             }
-
+    
                             var cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}";
                             let link = document.createElement("a");
                             let url = cardDetailUrl.replace('REPLACE_CARD_ID', card.id);
                             link.href = url;
-
+    
                             link.appendChild(displayCard);
                             cardList.appendChild(link);
                         });
@@ -247,8 +279,50 @@ document.addEventListener('DOMContentLoaded', function() {
         colorOnly.checked = false;
         colorIncluding.checked = false;
         colorless.checked = false;
+        selectedRarity = '';
+        updateRarityButtons('all');
         fetchCards();
     }
+
+    function updateRarityButtons(selected) {
+        Object.keys(rarityButtons).forEach(key => {
+            if (key === selected) {
+                rarityButtons[key].className = '{{ active }}';
+            } else {
+                rarityButtons[key].className = '{{ inactive }}';
+            }
+        });
+    }
+
+    rarityButtons.all.addEventListener('click', function() {
+        selectedRarity = '';
+        updateRarityButtons('all');
+        fetchCards();
+    });
+
+    rarityButtons.mythic.addEventListener('click', function() {
+        selectedRarity = 'mythic';
+        updateRarityButtons('mythic');
+        fetchCards();
+    });
+
+    rarityButtons.rare.addEventListener('click', function() {
+        selectedRarity = 'rare';
+        updateRarityButtons('rare');
+        fetchCards();
+    });
+
+    rarityButtons.uncommon.addEventListener('click', function() {
+        selectedRarity = 'uncommon';
+        updateRarityButtons('uncommon');
+        fetchCards();
+    });
+
+    rarityButtons.common.addEventListener('click', function() {
+        selectedRarity = 'common';
+        updateRarityButtons('common');
+        fetchCards();
+    });
 
     typeSelect.addEventListener('change', fetchCards);
     colorCheckboxes.forEach(checkbox => checkbox.addEventListener('change', fetchCards));

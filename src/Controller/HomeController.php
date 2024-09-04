@@ -70,52 +70,26 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/deck/{id}', name: 'app_deck_consult', methods: ['GET', 'POST'])]
-    public function deckBuild(Deck $deck, Comment $comment = null, DeckRepository $deckRepository, CompositionRepository $compositionRepository, CommentRepository $commentRepository, EntityManagerInterface $entityManager, Request $request): Response
+    #[Route('/search', name: 'app_search')]
+    public function advancedSearch(): Response
     {
-        $user = $this->getUser();
-        $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
-        $composition = $compositionRepository->findBy(['deck' => $deck]);
-        $comments = $commentRepository->findBy(['deck' => $deck]);
-
-        $comment = new Comment();
+       $user =  $this->getUser();
         
-        $form = $this->createForm(CommentType::class);
+        return $this->render('cardSearch/cardSearch.html.twig', [
+            'user' => $user
+        ]);
+    }
 
-        // Handle the request
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->getUser();
-            $comment->setUser($user);
-            $comment->setCreationDate(new \DateTime()); // Set current date and time
-            $comment->setDeck($deck);
-
-            $formData = $form->getData();
-            $textContent = $formData->getTextContent();
-
-            $comment->setTextContent($textContent);
-
-            $entityManager->persist($user);
-            $entityManager->persist($deck);
-            $entityManager->persist($comment);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_deck_consult', [
-            'id' => $deck->getId()
-        ]); 
-        }
-
-
-    return $this->render('decks/deckConsult.html.twig', [
-        'deck' => $deck,
-        'composition' => $composition,
-        'user' => $user,
-        'comments' => $comments,
-        'commentForm' => $form,
-        'comment' => $comment
-    ]);
-}
+    
+    #[Route('/card/{cardId}', name: 'app_card_detail')]
+    public function cardDetail(Request $request): Response
+    {
+        $cardId = $request->get('cardId');
+        
+        return $this->render('cardSearch/cardDetail.html.twig', [
+            'cardId' => $cardId
+        ]);
+    }
 
     #[Route('/deck/{deck}/comment/{comment}/edit', name: 'edit_comment')]
     public function editComment(Request $request, EntityManagerInterface $entityManager, Comment $comment, Deck $deck): Response

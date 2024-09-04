@@ -178,28 +178,6 @@ class DeckBuilderController extends AbstractController
     }
     }
 
-    
-    #[Route('/search', name: 'app_search')]
-    public function advancedSearch(): Response
-    {
-       $user =  $this->getUser();
-        
-        return $this->render('cardSearch/cardSearch.html.twig', [
-            'user' => $user
-        ]);
-    }
-
-    
-    #[Route('/card/{cardId}', name: 'app_card_detail')]
-    public function cardDetail(Request $request): Response
-    {
-        $cardId = $request->get('cardId');
-        
-        return $this->render('cardSearch/cardDetail.html.twig', [
-            'cardId' => $cardId
-        ]);
-    }
-
     #[Route('/user/{user}/deck/{deck}/{state}/card', name: 'save_card_deck', methods: ['POST'])]
     public function saveCard(Deck $deck, Card $card = null, Composition $composition = null, String $state, StateRepository $stateRepository, EntityManagerInterface $entityManager, DeckRepository $deckRepository, CardRepository $cardRepository, CompositionRepository $compositionRepository, Request $request): Response 
     {
