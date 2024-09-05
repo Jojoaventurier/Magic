@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Parse the API response as JSON.
                 .then((data) => {  
                     // Once the card data is parsed, execute this function to update the UI.
-
+                    console.log(data)
                     // Select elements in the DOM to update with card data
                     let attributeName = document.getElementById("name");  
                     // Find the element with ID 'name' to update the card's name.
@@ -182,8 +182,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     attributeTypeLine.innerHTML = data.type_line;  
                     // Update the inner HTML of the 'typeLine' element with the card's type line.
 
+                    // Prepare a base URL using Twig without dynamic parts
+                    const baseSetUrl = "{{ path('show_set', {'setCode': 'PLACEHOLDER'}) }}";
+                    /*Explanation:
+                        Twig Part: The Twig path() function generates the base URL, which includes the show_set route, and we use 'PLACEHOLDER' as a dummy value in the setCode part.
+                        JavaScript Part: We replace 'PLACEHOLDER' with the actual value of data.set using JavaScript's replace() method.
+                        This approach ensures that:
+
+                        Twig handles the server-side URL generation.
+                        JavaScript dynamically injects the value from the fetched data. */
+
                     // Display card set name with a link to the set's Scryfall page
-                    attributeCardSet.innerHTML = `Extension : <a href="${data.set_uri}" target="_blank"><span class="font-semibold hover:underline">${data.set_name}</span></a>`;  
+                    attributeCardSet.innerHTML = `Extension : <a href="${baseSetUrl.replace('PLACEHOLDER', encodeURIComponent(data.set))}" target="_blank"><span class="font-semibold hover:underline">${data.set_name}</span></a>`;  
+                    //attributeCardSet.innerHTML = `Extension : <a href="${data.set_uri}" target="_blank"><span class="font-semibold hover:underline">${data.set_name}</span></a>`;  
                     // Update the 'cardSet' element with the card's set name, making it a clickable link to the set's page on Scryfall.
 
                     // Display artist name
@@ -195,7 +206,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Update the href attribute of the 'cardMarketLink' element to link to the card's page on Cardmarket.
 
                     // Call function to display extensions
-                    displayOtherPrintings(data.prints_search_uri); // Display the list of extensions
+                    if (data.prints_search_uri) {
+                        displayOtherPrintings(data.prints_search_uri); // Display the list of extensions
+                    }
                 })
                 .catch((error) => {  
                     // If there is an error during the fetch or processing of the card data, this block will handle it.

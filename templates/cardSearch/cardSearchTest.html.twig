@@ -33,12 +33,11 @@
             <option value="artifact">Artefact</option>
             <option value="enchantment">Enchantement</option>
             <option value="battle">Bataille</option>
-            <option value="instant">Instant</option>
+            <option value="instant">Ephémère</option>
             <option value="sorcery">Rituel</option>
             <option value="land">Terrain</option>
             <option value="planeswalker">Planeswalker</option>
             <option value="saga">Saga</option>
-            <option value="background">Background</option>
         </select>
 
         <select id="subtypeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10">
@@ -198,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                
+
                 const myNode = document.getElementById("cardList");
                 if (myNode) {
                     while (myNode.firstChild) {
@@ -213,6 +212,23 @@ document.addEventListener('DOMContentLoaded', function() {
                         totalCards.innerHTML = data.total_cards || data.data.length;
     
                         noCardsMessage.classList.add('hidden');  // Hide the no cards found message
+
+                        const subtypes = new Set();
+                        data.data.forEach(card => {
+                            if (card.type_line.includes('—')) {
+                                const parts = card.type_line.split('—');
+                                const subtypesArray = parts[1].trim().split(' ');
+                                subtypesArray.forEach(subtype => subtypes.add(subtype));
+                            }
+                        });
+
+                        subtypeSelect.innerHTML = '<option value="">Tous les sous-types</option>';
+                        subtypes.forEach(subtype => {
+                            const option = document.createElement('option');
+                            option.value = subtype.toLowerCase();
+                            option.textContent = subtype;
+                            subtypeSelect.appendChild(option);
+                        });
     
                         data.data.forEach(card => {
                             let displayCard;

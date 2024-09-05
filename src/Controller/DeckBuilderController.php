@@ -76,7 +76,75 @@ class DeckBuilderController extends AbstractController
         $compositionSide = $compositionRepository->findByState($deck, $stateSide);
         $compositionMaybe = $compositionRepository->findByState($deck, $stateMaybe);
 
+        // Initialize arrays to store counts for card types, subtypes, and colors.
+        $typeCount = [];
+        $subtypeCount = [];
+        $colorCount = [];
         $count = 0;
+
+        // Process each card in the Mainboard composition.
+        foreach ($compositionMain as $el) {
+
+            $card = $el->getCard(); // The card entity is associated with the composition
+            $quantity = $el->getQuantity();
+            
+            // Increment card count based on quantity.
+            $count += 1 * $quantity;
+
+            
+            $cardData = $card->getData();
+
+            // Extract types, subtypes, and colors 
+            // Process and count card types.
+            $validTypes = ['creature', 'artifact', 'instant', 'sorcery', 'planeswalker', 'battle', 'land', 'enchantment'];
+
+            if (isset($cardData['type_line'])) {
+                // Split the type_line by spaces (or other delimiters if needed, such as "-")
+                $types = explode(' ', strtolower($cardData['type_line'])); // Convert to lowercase for consistency
+
+                foreach ($types as $type) {
+                    // Only count the type if it's in the list of valid types
+                    if (in_array($type, $validTypes)) {
+                        if (!isset($typeCount[$type])) {
+                            $typeCount[$type] = 0;
+                        }
+                        $typeCount[$type] += $quantity; // Add the card's quantity to the count
+                    }
+                }
+            }
+            
+            // Process and count subtypes (similarly to types excluding the types already counted).
+                // Define basic lands to exclude from subtypes
+            $basicLands = ['forest', 'plains', 'island', 'swamp', 'mountain'];
+
+            if (isset($cardData['type_line'])) {
+                // Check if there are subtypes listed after "—"
+                if (strpos($cardData['type_line'], '—') !== false) {
+                    list(, $subtypes) = explode('—', $cardData['type_line']); // Split at "—"
+                    $subtypes = explode(' ', trim($subtypes)); // Get individual subtypes
+
+                    foreach ($subtypes as $subtype) {
+                        // Only count the subtype if it's not one of the types listed in $validTypes or basic lands
+                        if (!in_array(strtolower($subtype), $validTypes) && !in_array(strtolower($subtype), $basicLands)) {
+                            if (!isset($subtypeCount[$subtype])) {
+                                $subtypeCount[$subtype] = 0;
+                            }
+                            $subtypeCount[$subtype] += $quantity; // Add the card's quantity to the count
+                        }
+                    }
+                }
+            }
+            
+            // Process and count colors.
+            if (isset($cardData['colors'])) {
+                foreach ($cardData['colors'] as $color) {
+                    if (!isset($colorCount[$color])) {
+                        $colorCount[$color] = 0;
+                    }
+                    $colorCount[$color] += $quantity;
+                }
+            }
+        }
 
         $comments = $commentRepository->findBy(['deck' => $deck]);
 
@@ -108,11 +176,6 @@ class DeckBuilderController extends AbstractController
         ]); 
         }
 
-        foreach ($compositionMain as $el) {
-
-            $count += 1 * $el->getQuantity();
-        }
-
         if($state == 'Mainboard') {
 
             return $this->render('decks/deckBuilder.html.twig', [
@@ -124,11 +187,13 @@ class DeckBuilderController extends AbstractController
                 'stateToken' => $stateToken,
                 'comments' => $comments,
                 'commentForm' => $form,
-                'comment' => $comment
+                'comment' => $comment,
+                'typeCount' => $typeCount, // Pass types count
+                'subtypeCount' => $subtypeCount, // Pass subtypes count
+                'colorCount' => $colorCount // Pass colors count
             ]);
-        }
 
-        else if ($state == 'Sideboard') {
+        } else if ($state == 'Sideboard') {
 
             $stateToken = 'Side';
 
@@ -141,11 +206,13 @@ class DeckBuilderController extends AbstractController
                 'stateToken' => $stateToken,
                 'comments' => $comments,
                 'commentForm' => $form,
-                'comment' => $comment
+                'comment' => $comment,
+                'typeCount' => $typeCount, // Pass types count
+                'subtypeCount' => $subtypeCount, // Pass subtypes count
+                'colorCount' => $colorCount // Pass colors count
             ]);
-        }
 
-        else if ($state == 'Maybeboard') {
+        } else if ($state == 'Maybeboard') {
 
             $stateToken = 'Maybe';
 
@@ -158,22 +225,29 @@ class DeckBuilderController extends AbstractController
                 'stateToken' => $stateToken,
                 'comments' => $comments,
                 'commentForm' => $form,
-                'comment' => $comment
+                'comment' => $comment,
+                'typeCount' => $typeCount, // Pass types count
+                'subtypeCount' => $subtypeCount, // Pass subtypes count
+                'colorCount' => $colorCount // Pass colors count
             ]);
+
         } else {
 
-        return $this->render('decks/deckBuilder.html.twig', [
-            'deck' => $deck,
-            'composition' => $compositionMain,
-            'compositionSide' => $compositionSide,
-            'compositionMaybe' => $compositionMaybe,
-            'count' => $count,
-            'stateToken' => $stateToken,
-            'comments' => $comments,
-            'commentForm' => $form,
-            'comment' => $comment
-        ]);
-    }
+            return $this->render('decks/deckBuilder.html.twig', [
+                'deck' => $deck,
+                'composition' => $compositionMain,
+                'compositionSide' => $compositionSide,
+                'compositionMaybe' => $compositionMaybe,
+                'count' => $count,
+                'stateToken' => $stateToken,
+                'comments' => $comments,
+                'commentForm' => $form,
+                'comment' => $comment,
+                'typeCount' => $typeCount, // Pass types count
+                'subtypeCount' => $subtypeCount, // Pass subtypes count
+                'colorCount' => $colorCount // Pass colors count
+            ]);
+        }
     }
 
     #[Route('/user/{user}/deck/{deck}/{state}/card', name: 'save_card_deck', methods: ['POST'])]
@@ -215,15 +289,14 @@ class DeckBuilderController extends AbstractController
                     $composition->setState($compositionState);
                     $entityManager->persist($composition);
                     
-                } else {
-                    $quantity = $composition->getQuantity();
-                    $quantity += 1;
-                    $composition->setQuantity($quantity);
-                    $composition->setState($compositionState);
-                    $entityManager->persist($composition);
-            }     
- 
-        // $card->addDeck($deck);
+            } else {
+                $quantity = $composition->getQuantity();
+                $quantity += 1;
+                $composition->setQuantity($quantity);
+                $composition->setState($compositionState);
+                $entityManager->persist($composition);
+        }     
+
         $entityManager->flush();
         return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
     }
@@ -245,6 +318,7 @@ class DeckBuilderController extends AbstractController
         $deck->setCommander($dataJS);
         $entityManager->persist($deck);
         $entityManager->flush();
+
         return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
     }
 
@@ -260,6 +334,7 @@ class DeckBuilderController extends AbstractController
 
         $entityManager->persist($deck);
         $entityManager->flush();
+        
 
         return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
     }
@@ -419,8 +494,7 @@ class DeckBuilderController extends AbstractController
 }
 
         //TODO deck (exceptions commandant, affichages etc) -> systeme pour changer les fetch sur la recherche -> ajouter la recherche générale -> trouver un moyen d'afficher correctement les carte doubles faces -> boutons pour ajouter/supprimer une carte au deck
-        //TODO FRONT FRONT FRONT 
-        //TODO collection ? // page profil
+
         //TODO affichage double cartes sur toutes les vues : cardDetail
-        //TODO pb : code javascript répété sur les vues 
+
         //TODO bug quand register -> utilisateur non connecté

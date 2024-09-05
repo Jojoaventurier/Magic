@@ -571,7 +571,17 @@
         </div>
 
     </div>
-    <section id="graphSection"></section>
+    <section id="graphSection" class="flex flex-wrap w-screen max-w-screen justify-center my-10">
+        <input id="colorCount" type="hidden" value="{{ colorCount|json_encode }}">
+        <input id="typeCount" type="hidden" value="{{ typeCount|json_encode }}">
+        <input id="subtypeCount" type="hidden" value="{{ subtypeCount|json_encode }}">
+
+        <div class="w-full inline-flex h-72 min-h-72 max-h-72 space-x-6 justify-center">
+            <canvas id="manaColorChart"></canvas>
+            <canvas id="typeChart"></canvas>
+            <canvas id="subtypeChart"></canvas>
+        </div>
+    </section>
 
     <section>
         <div class="bg-gray-100 flex flex-col items-center justify-center">
@@ -641,7 +651,7 @@
 {# </div> #}
 
 {% block javascripts %} 
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>  //TODO max number of cards
 
         document.addEventListener('DOMContentLoaded', function() { 
@@ -862,6 +872,114 @@
                 toggleButton.classList.remove('hidden');
 
             });
+
+            const manaColorCount = JSON.parse(document.getElementById('colorCount').value);
+            const typeCount = JSON.parse(document.getElementById('typeCount').value);
+            const subtypeCount = JSON.parse(document.getElementById('subtypeCount').value);
+            console.log(manaColorCount);
+
+            const manaColorCtx = document.getElementById('manaColorChart').getContext('2d');
+            new Chart(manaColorCtx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(manaColorCount),
+                    datasets: [{
+                        data: Object.values(manaColorCount),
+                        backgroundColor: ['#fff7d6', '#87ceeb', '#000000', '#ff4500', '#228b22'], // Example colors
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Répartition du mana'
+                    }
+                }
+            });
+
+
+        // Example for a bar chart (card types distribution)
+        const typeCtx = document.getElementById('typeChart').getContext('2d');
+        new Chart(typeCtx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(typeCount),
+                datasets: [{
+                    label: 'Total cartes',
+                    data: Object.values(typeCount),
+                    backgroundColor: '#4caf50',
+                    borderColor: '#388e3c',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Types de cartes'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Compte'
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Répartition selon les types de cartes'
+                    }
+                }
+            }
+        });
+
+        // Subtype Chart
+        const subtypeCtx = document.getElementById('subtypeChart').getContext('2d');
+        new Chart(subtypeCtx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(subtypeCount),
+                datasets: [{
+                    label: 'Total cartes',
+                    data: Object.values(subtypeCount),
+                    backgroundColor: '#ffcc66',
+                    borderColor: '#ff9933',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Sous-types'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Compte'
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Répartition selon les sous-types'
+                    }
+                }
+            }
+        });
 
         });
 
