@@ -52,7 +52,7 @@
 
 <section id="add-deck-section" class="px-4 py-8 sm:px-6 lg:px-8">
   <span class="w-full flex justify-center">
-    <button id="toggle-form-btn" class="bg-red-800 text-white mt-12 px-4 py-2 rounded-lg hover:bg-red-900 transition duration-300">
+    <button id="toggle-form-btn" class="bg-red-800 text-white mt-12 px-4 py-2 rounded-lg hover:bg-red-900 transition hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">
       Créer un deck
     </button>
   </span>
@@ -68,7 +68,7 @@
       {{ form_errors(form) }}
 
       {{ form_start(form, { 'attr': {'class': 'space-y-4'}}) }}
-      <div>
+      <div class="hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">
         {{ form_row(form.deckName, {
           'attr': {'class': 'w-full rounded-lg border border-gray-400 p-3 text-sm focus:outline-none focus:border-red-800'},
           'label_attr': {'class': 'font-semibold'}
@@ -76,7 +76,7 @@
       </div>
       {{ form_row(form.status, {'label_attr': {'class': 'font-semibold'}}) }}
       {{ form_row(form.format, {'label_attr': {'class': 'font-semibold'}}) }}
-      {{ form_row(form.Valider, { 'attr': {'class': "inline-block w-full rounded-lg bg-red-800 hover:bg-red-900 px-5 py-3 font-medium text-white sm:w-auto"}}) }}
+      {{ form_row(form.Valider, { 'attr': {'class': "inline-block w-full rounded-lg bg-red-800 hover:bg-red-900 px-5 py-3 font-medium text-white sm:w-auto hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300"}}) }}
 
       {{ form_end(form) }}
   </div>

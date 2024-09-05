@@ -99,8 +99,8 @@ class DeckBuilderController extends AbstractController
             $validTypes = ['creature', 'artifact', 'instant', 'sorcery', 'planeswalker', 'battle', 'land', 'enchantment'];
 
             if (isset($cardData['type_line'])) {
-                // Split the type_line by spaces (or other delimiters if needed, such as "-")
-                $types = explode(' ', strtolower($cardData['type_line'])); // Convert to lowercase for consistency
+                // Split the type_line by spaces 
+                $types = explode(' ', strtolower($cardData['type_line'])); // Convert to lowercase 
 
                 foreach ($types as $type) {
                     // Only count the type if it's in the list of valid types

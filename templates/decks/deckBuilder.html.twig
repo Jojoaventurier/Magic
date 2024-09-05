@@ -8,7 +8,7 @@
 
 <div class="gradient-adapt flex flex-wrap justify-center items-center space-x-8 w-full pb-8" > <!--style="background: url(' deck.commander.image_uris.art_crop ') no-repeat center center;"-->
 
-    <div class="space-y-2 block max-w-sm p-6 m-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <div class="space-y-2 block max-w-sm p-6 m-6 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
         <h2><span class='bold'>{{ deck.deckName }}</span></h2>
         <h2 class="text-sm hover:underline">par <a href="#profil">{{ deck.user.username }}</a></h2>
         <span class="pl-4">
@@ -75,12 +75,12 @@
             {% endif %}
         </div>
 
-        {% if app.user and app.user.id is same as deck.id %}   
+        {% if app.user is same as deck.user %}   
             <a class="red hover:underline" href="{{ path('delete_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer le deck</a><br>
             <a class="red hover:underline" href="{{ path('delete_all_cards_deck', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer toutes les cartes du deck</a><br>
         {% endif %}
 
-        <button id="downloadButton" class="my-4 bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4">
+        <button id="downloadButton" class="my-4 bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
            Exporter le deck
         </button>
         <div id="downloadLinks" class="hidden w-full mt-4">
@@ -109,7 +109,7 @@
                     {% if deck.commander is not null %}
                     <img class="commanderCard" src="{{ deck.commander.image_uris.normal }}">
 
-                    {% if app.user and app.user.id is same as deck.id %}
+                    {% if app.user is same as deck.user %}
                         <a class="flex justify-center text-red-500 text-sm hover:underline mt-4" href="{{ path('delete_commander', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer le commandant</a>
                     {% endif %}
 
@@ -127,7 +127,7 @@
     {% set format = deck.format.formatName|lower %}
 {% endif %}
 
-{% if app.user and app.user.id is same as deck.id %}
+{% if app.user is same as deck.user %}
 <div class="flex flex-wrap justify-center items-center space-x-4 p-2">
 
     {% if deck.format.formatName is same as 'Commander / EDH' and deck.commander is same as null %}
@@ -135,11 +135,11 @@
         <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
             <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
                 <label for="searchId" class="sr-only">Rechercher un commandant</label>
-                <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64" name="search" id="searchId" placeholder="Cherchez une carte...">
+                <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
                 <label for="cardSelect" class="sr-only">Choisir une carte</label>
             </div>
             <select class="card" name="cardName" id="cardSelect"></select>
-            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md" type="button" id="researchStart">Rechercher</button><br>
+            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out" type="button" id="researchStart">Rechercher</button><br>
         </div>
 
         <form id="saveCommanderForm" method="post" action="{{ path('save_commander_deck', {'user': deck.user.id, 'deck': deck.id}) }}">
@@ -152,11 +152,11 @@
         <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
             <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
                 <label for="searchId" class="sr-only">Rechercher une carte</label>
-                <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64" name="search" id="searchId" placeholder="Cherchez une carte...">
+                <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
                 <label for="cardSelect" class="sr-only">Choisir une carte</label>
             </div>
             <select class="card" name="cardName" id="cardSelect"></select>
-            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md" type="button" id="researchStart">Rechercher</button><br>
+            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out" type="button" id="researchStart">Rechercher</button><br>
         </div>
 
         <form id="saveCardWithColorsForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
@@ -165,7 +165,7 @@
             <input type="hidden" id="colors" value="{{ deck.commander.color_identity|join('') }}">
             <button id="save" class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter la carte</button>
         </form>
-        <div class="p-1 m-4">
+        <div class="p-1 m-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 rounded">
             <input type="checkbox" id="noRestrictions" name="noRestrictions">
             <label for="noRestrictions" class="text-sm italic text-red-700">Ignorer les restrictions du format pour la recherche</label>
         </div>
@@ -174,11 +174,11 @@
         <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
             <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
                 <label for="searchId" class="sr-only">Rechercher une carte</label>
-                <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64" name="search" id="searchId" placeholder="Cherchez une carte...">
+                <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
                 <label for="cardSelect" class="sr-only">Choisir une carte</label>
             </div>
             <select class="card" name="cardName" id="cardSelect"></select>
-            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md" type="button" id="researchStart">Rechercher</button><br>
+            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out " type="button" id="researchStart">Rechercher</button><br>
         </div>
 
         <form id="saveCardFormatForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
@@ -187,7 +187,7 @@
             <input type="hidden" id="cardData" name="cardData">
             <button id="save" class="border border-red-700  bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter la carte</button>
         </form>
-        <div class="border p-1 m-4 border-red-700 rounded">
+        <div class="p-1 m-4rounded hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
             <input type="checkbox" id="noRestrictions" name="noRestrictions">
             <label for="noRestrictions" class="text-sm italic text-red-700">Ignorer les restrictions du format pour la recherche</label>
         </div>
@@ -196,11 +196,11 @@
         <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
             <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
                 <label for="searchId" class="sr-only">Rechercher une carte</label>
-                <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64" name="search" id="searchId" placeholder="Cherchez une carte...">
+                <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
                 <label for="cardSelect" class="sr-only">Choisir une carte</label>
             </div>
             <select class="card" name="cardName" id="cardSelect"></select>
-            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md" type="button" id="researchStart">Rechercher</button><br>
+            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out" type="button" id="researchStart">Rechercher</button><br>
         </div>
 
         <form id="saveCardForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
@@ -213,7 +213,7 @@
 
 
 <div class="flex justify-center m-4">
-    <div class="flex items-center space-x-2 bg-red-800 text-white text-sm py-1 px-2 rounded-lg shadow-md">
+    <div class="flex items-center space-x-2 bg-red-800 text-white text-sm py-1 px-2 rounded-lg shadow-md hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">
         <label for="stateSelector" class="text-white text-sm font-medium">Ajouter la carte au</label>
         <select name="stateSelector" id="stateSelector" class="bg-red-700 text-white text-sm font-semibold py-1 px-3 rounded-md  focus:outline-none focus:ring-2 focus:ring-white">
             <option value="Mainboard" selected>Mainboard</option>
@@ -226,7 +226,9 @@
 
 
 <div id="cardBoard" class="flex justify-center w-full mb-4">
-    <img id="cardImage">
+    <div class="hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 shadow">
+        <img id="cardImage">
+    </div>
 </div>
 
 {# <div id="displayDeck" class="board"> #}
@@ -277,11 +279,11 @@
                         {% endif %}
                 </div>
                 <div class="flex flex-end">
-                    {% if app.user and app.user.id is same as deck.user.id %}                        
-                        <button id="editDeckButton" class="mb-4 bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4">Modifier le deck</button>
+                    {% if app.user is same as deck.user %}                        
+                        <button id="editDeckButton" class="mb-4 bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">Modifier le deck</button>
                     {% endif %}
-                    <button id="listViewBtn" class="mb-4 px-6 py-2 bg-gray-300 hover:bg-gray-400 rounded-l">List View</button>
-                    <button id="imageViewBtn" class="mb-4 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-r">Image View</button>
+                    <button id="listViewBtn" class="mb-4 px-6 py-2 bg-gray-300 hover:bg-gray-400 rounded-l hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">List View</button>
+                    <button id="imageViewBtn" class="mb-4 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-r hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">Image View</button>
                 </div>
             </div>
 
@@ -296,7 +298,7 @@
                 {# TODO ajouter les batailles/saga -->voir lesqueles manquent #}
                 {# TODO ajouter les cartes doubles faces #}
 
-        <div id="listView" class="flex flex-wrap w-full border p-4">
+        <div id="listView" class="flex flex-wrap w-full border hover:shadow transition-all p-8 rounded duration-300">
             {% for type in card_types %}
                 {% set type_count = 0 %}
                 {% for element in composition %}
@@ -314,7 +316,7 @@
                                     <li>
                                         <div class="flex items-center text-sm">
                                             {% if element.card.data.legalities[format] is defined %}
-                                                <a href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
+                                                <a class="hover:shadow" href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
                                                     <span class="card-name pr-2
                                                         {% if element.card.data.legalities[format] is not same as 'legal' %}
                                                         text-grey-400 italic
@@ -384,7 +386,7 @@
                                 <div id="displayDeck" class="flex flex-wrap">
                                     {% for element in composition %}
                                         {% if type in element.card.data.type_line %}
-                                            <div class="card">
+                                            <div class="card hover:shadow-[0px_0px_10px_5px_rgb(_153,_27,_27)] shadow duration-100">
                                                 {% if element.card.data.legalities[format] is defined %}
                                                     {% if element.quantity > 1 %}
                                                         {% if element.quantity > deck.format.maxQuantity %}
@@ -461,7 +463,7 @@
             </article>
         </div>
 
-        <div id="sideboard" class="shadow p-4 mx-4">
+        <div id="sideboard" class="shadow p-4 mx-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">
             <a href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Sideboard'}) }}">
                 <h3 class="font-semibold hover:underline hover:text-red-800 text-center mb-4">Sideboard</h3>
             </a>
@@ -516,7 +518,7 @@
             </ul>
         </div>
         
-        <div id="maybeboard" class="shadow p-4 mx-4">
+        <div id="maybeboard" class="shadow p-4 mx-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">
             <a href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Maybeboard'}) }}">
                 <h3 class="font-semibold hover:text-red-800 hover:underline text-center mb-4">Maybeboard</h3>
             </a>

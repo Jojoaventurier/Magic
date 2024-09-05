@@ -49,11 +49,11 @@
             <div class="px-2 space-x-2">
                 <label class="text-sm italic text-gray-700">
                     <input name="color" type="radio" checked value="c:" id="colorOnly">
-                    Incluant au minimum
+                    Incluant exactement
                 </label>
                 <label class="text-sm italic text-gray-700">
                     <input name="color" type="radio" value="ci:" id="colorIncluding">
-                    Incluant seulement
+                    Incluant séparément
                 </label>
             </div>
             <div id="colorSelect" class="flex flex-wrap justify-center space-x-4 py-2">
@@ -93,7 +93,7 @@
             </select>
         </div>
 
-        <button id="resetButton" class="h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900">Réinitialisez les filtres</button>
+        <button id="resetButton" class="h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900">Réinitialiser les filtres</button>
     </div>
 
     <div class="flex justify-center">
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
             query += `+rarity:${selectedRarity}`;
         }
 
-        return `https://api.scryfall.com/cards/search?order=dir&q=name:${query}`;
+        return `https://api.scryfall.com/cards/search?order=dir&q=${query}`;
         //return `https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=dir&unique=prints&q=name:${query}`;
     }
 
