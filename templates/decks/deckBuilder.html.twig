@@ -107,7 +107,9 @@
                 <h3 class="font-semibold text-white border border-white px-4 py-2  rounded-lg text-center">Votre Commandant</h3>
                 <div id="commandZone" class="w-fit">
                     {% if deck.commander is not null %}
-                    <img class="commanderCard" src="{{ deck.commander.image_uris.normal }}">
+                    <a href="{{ path('app_card_detail', {'cardId': deck.commander.id}) }}">
+                        <img class="commanderCard transform  rounded-xl bg-white shadow-xl transition duration-300 hover:scale-105" src="{{ deck.commander.image_uris.normal }}">
+                    </a>
 
                     {% if app.user is same as deck.user %}
                         <a class="flex justify-center text-red-500 text-sm hover:underline mt-4" href="{{ path('delete_commander', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer le commandant</a>
@@ -152,7 +154,7 @@
         <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
             <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
                 <label for="searchId" class="sr-only">Rechercher une carte</label>
-                <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
+                <input type="text" class="animate-bounce focus:animate-none hover:animate-none inline-flex tracking-wide bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
                 <label for="cardSelect" class="sr-only">Choisir une carte</label>
             </div>
             <select class="card" name="cardName" id="cardSelect"></select>
@@ -227,14 +229,14 @@
 
 <div id="cardBoard" class="flex justify-center w-full mb-4">
     <div class="hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 shadow">
-        <img id="cardImage">
+        <img id="cardImage" class="transform  rounded-xl bg-white shadow-xl transition duration-300 hover:scale-105">
     </div>
 </div>
 
 {# <div id="displayDeck" class="board"> #}
 <div class="light-white p-8 flex flex-wrap justify-center">
-    {% set active = 'mb-4 font-semibold bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4 shadow-md' %}
-    {% set inactive = 'mb-4 font-semibold bg-white text-red-800 px-4 py-2 rounded hover:bg-red-800 hover:text-white mr-4 shadow-md' %}
+    {% set active = 'mb-4 font-semibold bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300' %}
+    {% set inactive = 'mb-4 font-semibold bg-white text-red-800 px-4 py-2 rounded hover:bg-red-800 hover:text-white mr-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300' %}
 
     {% if stateToken is same as 'Main' %}
     <a class=" {{ inactive }}" href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Sideboard'}) }}">Sideboard</a>
@@ -295,10 +297,9 @@
             
 
                 {% set card_types = ["Creature", "Sorcery", "Instant", "Enchantment", "Artifact", "Planeswalker", "Land", "Battle"] %} 
-                {# TODO ajouter les batailles/saga -->voir lesqueles manquent #}
                 {# TODO ajouter les cartes doubles faces #}
 
-        <div id="listView" class="flex flex-wrap w-full border hover:shadow transition-all p-8 rounded duration-300">
+        <div id="listView" class="flex flex-wrap border hover:shadow transition-all p-8 rounded duration-300 bg-white">
             {% for type in card_types %}
                 {% set type_count = 0 %}
                 {% for element in composition %}
@@ -316,7 +317,7 @@
                                     <li>
                                         <div class="flex items-center text-sm">
                                             {% if element.card.data.legalities[format] is defined %}
-                                                <a class="hover:shadow" href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
+                                                <a class="hover:shadow transform rounded-xl hover:scale-105" href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
                                                     <span class="card-name pr-2
                                                         {% if element.card.data.legalities[format] is not same as 'legal' %}
                                                         text-grey-400 italic
@@ -386,23 +387,23 @@
                                 <div id="displayDeck" class="flex flex-wrap">
                                     {% for element in composition %}
                                         {% if type in element.card.data.type_line %}
-                                            <div class="card hover:shadow-[0px_0px_10px_5px_rgb(_153,_27,_27)] shadow duration-100">
+                                            <div class="card "> <!--hover:shadow-[0px_0px_10px_5px_rgb(_153,_27,_27)] shadow duration-100-->
                                                 {% if element.card.data.legalities[format] is defined %}
                                                     {% if element.quantity > 1 %}
                                                         {% if element.quantity > deck.format.maxQuantity %}
                                                         <a href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
-                                                            <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
+                                                            <img class="singleCard transform  rounded-xl bg-white shadow-xl transition duration-300 hover:scale-105" src="{{ element.card.data.image_uris.normal }}">
                                                             <span class="card-span red-span">X{{ element.quantity }}</span>
                                                         </a>
                                                         {% else %}
                                                         <a href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
-                                                            <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
+                                                            <img class="singleCard transform  rounded-xl bg-white shadow-xl transition duration-300 hover:scale-105" src="{{ element.card.data.image_uris.normal }}">
                                                             <span class="card-span white-span">X{{ element.quantity }}</span>
                                                         </a>
                                                         {% endif %}
                                                     {% else %}
                                                     <a href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
-                                                        <img class="singleCard" src="{{ element.card.data.image_uris.normal }}">
+                                                        <img class="singleCard transform  rounded-xl bg-white shadow-xl transition duration-300 hover:scale-105" src="{{ element.card.data.image_uris.normal }}">
                                                     </a>
                                                     {% endif %}
                                                     
@@ -463,7 +464,7 @@
             </article>
         </div>
 
-        <div id="sideboard" class="shadow p-4 mx-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">
+        <div id="sideboard" class="shadow p-4 mx-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 transform rounded-lg bg-white transition">
             <a href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Sideboard'}) }}">
                 <h3 class="font-semibold hover:underline hover:text-red-800 text-center mb-4">Sideboard</h3>
             </a>
@@ -518,7 +519,7 @@
             </ul>
         </div>
         
-        <div id="maybeboard" class="shadow p-4 mx-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">
+        <div id="maybeboard" class="shadow p-4 mx-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] transform  rounded-lg bg-white duration-300 transition">
             <a href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Maybeboard'}) }}">
                 <h3 class="font-semibold hover:text-red-800 hover:underline text-center mb-4">Maybeboard</h3>
             </a>

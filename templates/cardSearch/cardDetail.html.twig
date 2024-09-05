@@ -36,10 +36,13 @@
             <p id="artistName" class="mt-2">
                 <!-- Artist name will be inserted here -->
              </p>
+             <a id="artistSearch" href="">
+                <p class="text-sm italic hover:underline transition duration-300 mt-2">Voir les autres cartes dessinées par <span id="artistSpan" class="font-semibold"></span></p>
+            </a>
         </div>
         
-        <div id="purchaseLink" class="mt-4 w-full flex justify-center">
-           <a id="cardmarketLink" class="my-4 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800" href="#" target="_blank">Acheter la carte sur Cardmarket</a>
+        <div id="purchaseLink" class="mt-2 w-full flex justify-center">
+           <a id="cardmarketLink" class="my-4 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" href="#" target="_blank">Acheter la carte sur Cardmarket</a>
         </div>
     </div>
 </div>
@@ -146,6 +149,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Find the element with ID 'cardMarketLink' to update the card's market link.
                     let placeholder = document.getElementById("placeholder");  
                     // Find the element with ID 'placeholder' where the card image will be displayed.
+                    let artistName = document.getElementById('artistSpan');
+                    let artistSearch = document.querySelector('#artistSearch')
+                    console.log(artistSearch);
 
                     // Display card image
                     let displayCard = new Image(287.5, 402.5);  
@@ -153,6 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (data.image_uris && data.image_uris.normal) {  
                         // Check if the card data includes an image URI for the normal resolution.
                         displayCard.src = data.image_uris.normal;  
+                        displayCard.classList.add('singleCard', 'p-1', 'transform',  'rounded-xl', 'bg-white', 'shadow-xl', 'transition', 'duration-300', 'hover:scale-105');
                         // Set the source of the image to the normal image URI.
                     }
                     placeholder.appendChild(displayCard);  
@@ -199,8 +206,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Update the 'cardSet' element with the card's set name, making it a clickable link to the set's page on Scryfall.
 
                     // Display artist name
-                    attributeArtistName.innerHTML = `Illustration par : <span class="font-semibold hover:underline"><a href="https://www.google.fr/search?q=${data.artist}+mtg+artist" target="_blank">${data.artist}</a></span>`;  //AMELIORATION : rediriger vers liste de cartes dessinées par lui via une requete fetch (fetch par nom d'artistes possibles)
-                    // Update the 'artistName' element with the card's artist name, making the name bold.
+                    attributeArtistName.innerHTML = `Illustration par : <span class="font-semibold hover:underline"><a href="https://www.google.fr/search?q=${data.artist}+mtg+artist" target="_blank">${data.artist}</a></span>`;
+                    artistName.innerHTML = data.artist; 
+                    const artistSearchUrl = "{{ path('app_search', {'search': 'artist', 'parameter': 'PLACEHOLDER_ARTIST_NAME'}) }}"
+                    artistSearch.href = `${artistSearchUrl.replace('PLACEHOLDER_ARTIST_NAME', encodeURIComponent(data.artist))}`
+                    console.log(artistSearch.href)
 
                     // Set Cardmarket link
                     cardmarketLink.href = `https://www.cardmarket.com/en/Magic/Products/Search?searchString=${encodeURIComponent(data.name)}`;  

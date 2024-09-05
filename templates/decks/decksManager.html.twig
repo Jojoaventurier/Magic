@@ -57,9 +57,9 @@
     </button>
   </span>
 
-  <div id="deck-form-container" class="hidden grid grid-cols-1 lg:grid-cols-1">
-    <div class="relative max-w-md mx-auto rounded-lg bg-white p-8 shadow-lg lg:max-w-lg lg:p-8">
-      <button id="close-form-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
+  <div id="deck-form-container" class="hidden grid grid-cols-1 lg:grid-cols-1 ">
+    <div class="relative max-w-md mx-auto rounded-lg bg-white p-8 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 lg:max-w-lg lg:p-8">
+      <button id="close-form-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-2 py-1 rounded-md">
         &times;
       </button>
       
@@ -68,14 +68,14 @@
       {{ form_errors(form) }}
 
       {{ form_start(form, { 'attr': {'class': 'space-y-4'}}) }}
-      <div class="hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">
+      <div class=" p-4 rounded-lg">
         {{ form_row(form.deckName, {
-          'attr': {'class': 'w-full rounded-lg border border-gray-400 p-3 text-sm focus:outline-none focus:border-red-800'},
+          'attr': {'class': 'w-full rounded-lg border border-gray-400 p-3 text-sm focus:outline-none focus:border-red-800 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300'},
           'label_attr': {'class': 'font-semibold'}
         }) }}
       </div>
-      {{ form_row(form.status, {'label_attr': {'class': 'font-semibold'}}) }}
-      {{ form_row(form.format, {'label_attr': {'class': 'font-semibold'}}) }}
+      {{ form_row(form.status, {'label_attr': {'class': 'font-semibold'}, 'attr': {'class': 'hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] rounded-lg duration-300'}}) }}
+      {{ form_row(form.format, {'label_attr': {'class': 'font-semibold'}, 'attr': {'class': 'hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] rounded-lg duration-300'}}) }}
       {{ form_row(form.Valider, { 'attr': {'class': "inline-block w-full rounded-lg bg-red-800 hover:bg-red-900 px-5 py-3 font-medium text-white sm:w-auto hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300"}}) }}
 
       {{ form_end(form) }}

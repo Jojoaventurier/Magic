@@ -65,14 +65,23 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/search', name: 'app_search')]
-    public function advancedSearch(): Response
+    #[Route('/{search}/search/{parameter}', name: 'app_search')]
+    public function advancedSearch(String $search, String $parameter): Response
     {
-       $user =  $this->getUser();
         
+       $tokenValues = ['basic', 'artist']; 
+       if ($search == 'artist') {
+       
         return $this->render('cardSearch/cardSearchTest.html.twig', [
-            'user' => $user
+            'searchToken' => $search,
+            'searchParameter' => $parameter
         ]);
+
+    } else {
+        return $this->render('cardSearch/cardSearchTest.html.twig', [
+            'searchToken' => $search,
+        ]);
+    }
     }
 
     

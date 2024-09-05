@@ -15,8 +15,8 @@
 
     <div class="flex space-x-8 justify-center items-center px-4 py-2 m-8">
 
-        {% set active = 'text-sm bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 shadow-md cursor-pointer' %}
-        {% set inactive = 'text-sm bg-white text-red-700 px-4 py-2 rounded hover:bg-red-900 hover:text-white shadow-md cursor-pointer' %}
+        {% set active = 'text-sm bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 shadow-md cursor-pointer hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)]duration-300' %}
+        {% set inactive = 'text-sm bg-white text-red-700 px-4 py-2 rounded hover:bg-red-900 hover:text-white shadow-md cursor-pointer hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300' %}
 
         <div class="inline-flex items-center space-x-4">
             <div id="rarityAll" class="{{ active }}">Toutes</div>
@@ -26,7 +26,7 @@
             <div id="rarityCommon" class="{{ inactive }}">Communes</div>
         </div>
 
-        <select id="typeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10">
+        <select id="typeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
             <option value="">Tous les types</option>
             <option value="legendary">Légendaire</option>
             <option value="creature">Creature</option>
@@ -40,18 +40,18 @@
             <option value="saga">Saga</option>
         </select>
 
-        <select id="subtypeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10">
+        <select id="subtypeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
             <option value="">Tous les sous-types</option>
             <!-- Options will be dynamically populated -->
         </select>
 
-        <div class="border px-4 py-2 border-red-700 rounded hover:bg-gray-100">
+        <div class="border px-4 py-2 border-red-700 rounded hover:bg-gray-100 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
             <div class="px-2 space-x-2">
-                <label class="text-sm italic text-gray-700">
+                <label class="text-sm italic text-gray-700 hover:underline">
                     <input name="color" type="radio" checked value="c:" id="colorOnly">
                     Incluant exactement
                 </label>
-                <label class="text-sm italic text-gray-700">
+                <label class="text-sm italic text-gray-700 hover:underline">
                     <input name="color" type="radio" value="ci:" id="colorIncluding">
                     Incluant séparément
                 </label>
@@ -66,7 +66,7 @@
             </div>
         </div>
         
-        <div class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100">
+        <div class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
             <label for="cmcSelect">Filtrer par coût de mana :</label>
             <select id="cmcSelect" class="text-sm rounded focus:ring-2 focus:outline-none outline-none text-center px-2 space-y-1">
                 <option class="italic" value="">Aucun filtre</option>
@@ -93,11 +93,23 @@
             </select>
         </div>
 
-        <button id="resetButton" class="h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900">Réinitialiser les filtres</button>
+        <label>Recherche par nom d'artiste
+            <input id='artistSearch' type="checkbox"
+            {% if searchToken is same as 'artist' %}
+                checked
+            {% endif %}
+            >
+        </label>
+
+        <button id="resetButton" class="flex flex-wrap h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">Réinitialiser les filtres</button>
     </div>
 
     <div class="flex justify-center">
-        <input type="text" id="searchInput" class="border border-red-700 text-sm rounded px-4 py-2 w-96 focus:ring-2 focus:outline-none outline-none" placeholder="Entrez un terme de recherche...">
+        <input type="text" id="searchInput" class="border border-red-700 text-sm rounded px-4 py-2 w-96 focus:ring-2 focus:outline-none outline-none hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" 
+        {% if searchToken is same as 'artist' %}
+            value="{{ searchParameter }}"
+        {% endif %}  
+        placeholder="Entrez un terme de recherche...">
     </div>
 
     <div id="count" class="flex justify-center m-4 hidden">
@@ -126,6 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const typeSelect = document.getElementById('typeSelect');
     const colorCheckboxes = document.querySelectorAll('#colorSelect input[type="checkbox"]');
     const subtypeSelect = document.getElementById('subtypeSelect');
+    const artistSearch = document.getElementById('artistSearch')
 
     const colorOnly = document.getElementById('colorOnly');
     const colorIncluding = document.getElementById('colorIncluding');
@@ -186,6 +199,12 @@ document.addEventListener('DOMContentLoaded', function() {
             query += `+rarity:${selectedRarity}`;
         }
 
+        if (artistSearch.checked) {
+            // Check if artist name contains spaces and wrap in quotes
+            let artistQuery = searchTerm.includes(' ') ? `"${searchTerm}"` : searchTerm;
+            return `https://api.scryfall.com/cards/search?order=dir&q=artist:${artistQuery}`;
+        }
+
         return `https://api.scryfall.com/cards/search?order=dir&q=${query}`;
         //return `https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=dir&unique=prints&q=name:${query}`;
     }
@@ -236,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 displayCard = new Image(250, 350);
                                 displayCard.src = card.image_uris.normal;
                                 displayCard.id = card.id;
-                                displayCard.classList.add('singleCard', 'p-1');
+                                displayCard.classList.add('singleCard', 'p-1', 'transform',  'rounded-xl', 'bg-white', 'shadow-xl', 'transition', 'duration-300', 'hover:scale-105');
                             } else if (card.card_faces[0]['image_uris'] && card.card_faces[0]['image_uris']['normal']) {
                                 displayCard = new Image(250, 350);
                                 displayCard.src = card.card_faces[0]['image_uris']['normal'];
@@ -280,6 +299,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     typeSelect.addEventListener('change', fetchCards);
     subtypeSelect.addEventListener('change', fetchCards);
+    artistSearch.addEventListener('change', fetchCards)
     cmcSelect.addEventListener('change', fetchCards);
 
     resetButton.addEventListener('click', function() {
@@ -287,6 +307,7 @@ document.addEventListener('DOMContentLoaded', function() {
         typeSelect.selectedIndex = 0;
         subtypeSelect.selectedIndex = 0;
         cmcSelect.selectedIndex = 0;
+        artistSearch.checked = false;
 
         Array.from(colorCheckboxes).forEach(checkbox => checkbox.checked = false);
         colorOnly.checked = true;
@@ -311,8 +332,9 @@ document.addEventListener('DOMContentLoaded', function() {
             fetchCards();
         });
     });
-
-    //fetchCards(); // Initial fetch when page loads
+    if (searchInput.value) {
+    fetchCards(); // Initial fetch when page loads if there is a search parameter given
+    }
 });
 </script>
 {% endblock %}

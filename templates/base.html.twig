@@ -13,7 +13,7 @@
           <div class="row">
             <div class="row space-x-4 px-4">
               <a class="white hover:underline" href="{{ path('app_home') }}">Home</a>
-              <a class="white hover:underline" href="{{ path('app_search') }}">Recherche avancée</a>
+              <a class="white hover:underline" href="{{ path('app_search', {'search': 'basic', 'parameter': 'none'}) }}">Recherche avancée</a>
               <a class="white hover:underline" href="{{ path('all_sets') }}">Tous les sets/extensions</a> <!--path('app_all_sets')-->
               <a class="white hover:underline" href="{{ path('app_decks') }}">Tous les Decks</a>
               <a class="white hover:underline" href="{{ path('app_forum') }}">Forum</a>

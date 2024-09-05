@@ -17,8 +17,8 @@
 
     <div class="flex space-x-8 justify-center items-center px-4 py-2 m-8">
 
-        {% set active = 'text-sm bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 shadow-md cursor-pointer' %}
-        {% set inactive = 'text-sm bg-white text-red-700 px-4 py-2 rounded hover:bg-red-900 hover:text-white shadow-md cursor-pointer' %}
+        {% set active = 'text-sm bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 shadow-md cursor-pointer hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300' %}
+        {% set inactive = 'text-sm bg-white text-red-700 px-4 py-2 rounded hover:bg-red-900 hover:text-white shadow-md cursor-pointer hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300' %}
 
         <div class="inline-flex space-x-4">
             <div id="rarityAll" class="{{ active }}">Toutes</div>
@@ -28,7 +28,7 @@
             <div id="rarityCommon" class="{{ inactive }}">Communes</div>
         </div>
 
-        <select id="typeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10">
+        <select id="typeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
             <option value="">Tous les types</option>
             <option value="legendary">Légendaire</option>
             <option value="creature">Creature</option>
@@ -43,12 +43,12 @@
             <option value="background">Background</option>
         </select>
 
-        <select id="subtypeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10">
+        <select id="subtypeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
             <option value="">Tous les sous-types</option>
             <!-- Options will be dynamically populated -->
         </select>
 
-        <div class="border px-4 py-2 border-red-700 rounded hover:bg-gray-100">
+        <div class="border px-4 py-2 border-red-700 rounded hover:bg-gray-100 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
             <div class="px-2 space-x-2">
                 <label class="text-sm italic text-gray-700">
                     <input name="color" type="radio" checked value="c:" id="colorOnly">
@@ -69,7 +69,7 @@
             </div>
         </div>
         
-        <div class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100">
+        <div class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
             <label for="cmcSelect">Filtrer par coût de mana :</label>
             <select id="cmcSelect" class="text-sm rounded focus:ring-2 focus:outline-none outline-none text-center px-2 space-y-1">
                 <option class="italic" value="">Aucun filtre</option>
@@ -96,7 +96,7 @@
             </select>
         </div>
 
-        <button id="resetButton" class="h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900">Réinitialiser les filtres</button>
+        <button id="resetButton" class="h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">Réinitialiser les filtres</button>
     </div>
 
     <div id="cardBoard" class="w-full flex justify-center">
@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 displayCard = new Image(250, 350);
                                 displayCard.src = card.image_uris.normal;
                                 displayCard.id = card.id;
-                                displayCard.classList.add('singleCard', 'p-1');
+                                displayCard.classList.add('singleCard', 'p-1', 'transform',  'rounded-xl', 'bg-white', 'shadow-xl', 'transition', 'duration-300', 'hover:scale-105');
                             } else if (card.card_faces[0]['image_uris'] && card.card_faces[0]['image_uris']['normal']) {
                                 displayCard = new Image(250, 350);
                                 displayCard.src = card.card_faces[0]['image_uris']['normal'];
