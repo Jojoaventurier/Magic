@@ -290,16 +290,19 @@
             </div>
 
 
-            <article class="deckView flex justify-center">
-                <div class="w-72 mr-6">
-                    <img id="placeholder" class="singleCard" src="{{ asset('img/Magic_the_gathering-card_back.jpg') }}">
+            <article class="deckView flex justify-center ml-8">
+                <div id="zoom" class="md:w-72 lg:w-96 lg:min-w-96 mr-6 ">
+                    <div class="sticky top-48">
+                        <img id="placeholder" class="w-full h-auto object-contain sticky top-48 rounded-xl" src="{{ asset('img/Magic_the_gathering-card_back.jpg') }}">
+                        <span id="zoomIn">+</span><span id="zoomOut">-</span>
+                    </div>
                 </div>
             
 
                 {% set card_types = ["Creature", "Sorcery", "Instant", "Enchantment", "Artifact", "Planeswalker", "Land", "Battle"] %} 
                 {# TODO ajouter les cartes doubles faces #}
 
-        <div id="listView" class="flex flex-wrap border hover:shadow transition-all p-8 rounded duration-300 bg-white">
+        <div id="listView" class="flex flex-wrap border hover:shadow transition-all p-8 rounded duration-300 bg-white w-prose">
             {% for type in card_types %}
                 {% set type_count = 0 %}
                 {% for element in composition %}
@@ -317,7 +320,7 @@
                                     <li>
                                         <div class="flex items-center text-sm">
                                             {% if element.card.data.legalities[format] is defined %}
-                                                <a class="hover:shadow transform rounded-xl hover:scale-105" href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
+                                                <a class="hover:shadow transform rounded-xl px-1" href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
                                                     <span class="card-name pr-2
                                                         {% if element.card.data.legalities[format] is not same as 'legal' %}
                                                         text-grey-400 italic
@@ -372,7 +375,7 @@
             {% endfor %}
         </div>
         
-        <div id="imageView" class="grid grid-cols-1 gap-4 w-full">
+        <div id="imageView" class="grid grid-cols-1 gap-4 justify-center">
             {% for type in card_types %}
                 {% set type_count = 0 %}
                 {% for element in composition %}
@@ -382,9 +385,9 @@
                 {% endfor %}
                 
                         {% if type_count > 0 %}
-                            <div id="{{ type|lower }}Cards" class="category-container-image w-full">
+                            <div id="{{ type|lower }}Cards" class="category-container-image">
                                 <h3>{{ type }} ({{ type_count }})</h3>
-                                <div id="displayDeck" class="flex flex-wrap">
+                                <div id="displayDeck" class="flex flex-wrap w-max-1/2">
                                     {% for element in composition %}
                                         {% if type in element.card.data.type_line %}
                                             <div class="card "> <!--hover:shadow-[0px_0px_10px_5px_rgb(_153,_27,_27)] shadow duration-100-->
@@ -846,13 +849,13 @@
             listViewBtn.addEventListener('click', function() {
                 listView.classList.toggle('hidden', false);
                 listView.classList.toggle('flex', true);
-                imageView.classList.toggle('board', false);
+                imageView.classList.toggle('grid', false);
                 imageView.classList.toggle('hidden', true);
             });
         
             imageViewBtn.addEventListener('click', function() {
                 imageView.classList.toggle('hidden', false);
-                imageView.classList.toggle('board', true);
+                imageView.classList.toggle('grid', true);
                 listView.classList.toggle('flex', false);
                 listView.classList.toggle('hidden', true);
             });
