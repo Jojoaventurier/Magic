@@ -13,7 +13,7 @@
         </div>
     </div>
 
-    <div class="flex space-x-8 justify-center items-center px-4 py-10 mt-8 mb-1 sticky top-8 z-10 bg-white">
+    <div class="flex space-x-8 justify-center items-center p-2 mb-1 sticky top-8 z-10 bg-white">
 
         {% set active = 'text-sm bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 shadow-md cursor-pointer hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)]duration-300' %}
         {% set inactive = 'text-sm bg-white text-red-700 px-4 py-2 rounded hover:bg-red-900 hover:text-white shadow-md cursor-pointer hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300' %}
@@ -117,42 +117,47 @@
         <div class="flex flex-col items-center justify-center space-y-4">
             <button id="hideFilters" class="h-10 border border-bg-red-400 text-red-700 hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded shadow-md text-sm">Masquer les filtres</button>
             <button id="reinitializeButton" class="h-10 border border-bg-red-400 text-red-700 hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded shadow-md text-sm">Réinitialiser les filtres</button>
-        </div>                              class="h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 text-sm"
-                                            //TODO TODO TODO TODO
+        </div>                             
+         {# class="h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 text-sm"
+                                            //TODO TODO TODO TODO #}
     </div>
-
-    <div class="inline-flex justify-center space-x-3 w-full p-2 m-4 sticky top-48 bg-white z-10">
-        <input type="text" id="searchInput" class="border border-red-700 text-sm rounded px-4 py-2 w-96 focus:ring-2 focus:outline-none outline-none hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" 
-        {% if searchToken is same as 'artist' %}
-            value="{{ searchParameter }}"
-        {% endif %}  
-        placeholder="Entrez un terme de recherche...">
-
-        <img id="eraser" class="w-10 border rounded hover:border-red-800 transition duration-300 hover:shadow-md" src="https://img.icons8.com/carbon-copy/100/erase.png" alt="eraser to clear text"/>
-        <button id="searchStart" class="h-10 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] border border-red-700 duration-300 text-sm">Rechercher</button>
-        <button id="resetSearch" class="h-10 px-4 py-2 text-xs rounded bg-white border-red-700 text-red-700 hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">RESET</button>
-    </div>
-
-    <div id="count" class="flex justify-center m-4 hidden">
-        <p class="text-grey-600 italic text-xs"><span id="totalCards"></span> cartes trouvées</p>
-    </div>
-
-    <div class="flex justify-center w-full">
-        <div class="flex flex-col flex-wrap max-w-4/5 w-4/5 px-10">
-            <div class="inline-flex space-x-4 pl-16 mb-8 sticky top-48 z-20">
+    <div class="flex flex-col justify-center items-center w-full sticky top-40 z-30">
+        <div class="flex justify-evenly rounded-md">
+            <div class="inline-flex space-x-4 p-2 bg-white rounded-md">
                 <div id="rarityAll" class="{{ active }}">Toutes</div>
                 <div id="rarityMythic" class="{{ inactive }}">Mythiques</div>
                 <div id="rarityRare" class="{{ inactive }}">Rares</div>
                 <div id="rarityUncommon" class="{{ inactive }}">Non communes</div>
                 <div id="rarityCommon" class="{{ inactive }}">Communes</div>
             </div>
-        
 
+            <div class="inline-flex justify-center space-x-3 p-2 bg-white rounded-md">
+                <input type="text" id="searchInput" class="border border-red-700 bg-white text-sm rounded px-4 py-2 w-96 focus:ring-2 focus:outline-none outline-none hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" 
+                {% if searchToken is same as 'artist' %}
+                    value="{{ searchParameter }}"
+                {% endif %}  
+                placeholder="Entrez un terme de recherche...">
+
+                <img id="eraser" class="w-10 border rounded hover:border-red-800 transition duration-300 hover:shadow-md bg-white" src="https://img.icons8.com/carbon-copy/100/erase.png" alt="eraser to clear text"/>
+                <button id="searchStart" class="h-10 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] border border-red-700 duration-300 text-sm">Rechercher</button>
+                <button id="resetSearch" class="h-10 px-4 py-2 text-xs rounded bg-white border-red-700 text-red-700 hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">RESET</button>
+            </div>
+        </div>
+        <div id="count" class="flex justify-center hidden"></div>
+            <p class="text-grey-600 italic text-xs p-2 bg-white rounded-md"><span id="totalCards"></span> cartes trouvées</p>
+        </div>
+    </div>
+    
+
+    <div class="w-full flex justify-center mt-6">
+        <div class="flex flex-col flex-wrap max-w-4/5 w-4/5 px-10">
             <div id="cardBoard" class="w-full flex justify-center">
                 <div id="cardList" class="flex flex-wrap justify-center"></div>
             </div>
         </div>
     </div>
+
+    
 
     <!-- Placeholder for no cards found message -->
     <div id="noCardsMessage" class="hidden text-center text-red-500 mt-4">
