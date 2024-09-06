@@ -93,23 +93,36 @@
             </select>
         </div>
 
-        <label>Recherche par nom d'artiste
-            <input id='artistSearch' type="checkbox"
-            {% if searchToken is same as 'artist' %}
-                checked
-            {% endif %}
-            >
-        </label>
-
-        <button id="resetButton" class="flex flex-wrap h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">Réinitialiser les filtres</button>
+        <div class="flex flex-col flex-wrap">
+            <label class="text-sm hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded-lg">
+                <input id='artistSearch' type="checkbox"
+                {% if searchToken is same as 'artist' %}
+                    checked
+                {% endif %}
+                > Recherche par nom d'artiste
+            </label>
+            <label class="text-sm hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded-lg">
+                <input id='uniquePrints' type="checkbox">
+                Afficher toutes les versions des cartes
+            </label>
+            <label class="text-sm hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded-lg">
+                <input id='includeExtras' type="checkbox">
+                Inclure les Extras (jetons, plans...)
+            </label>
+        </div>
+        <div class="flex flex-col items-center justify-center space-y-4">
+            <button id="hideFilters" class="flex flex-wrap h-10 border border-bg-red-400 text-red-700 hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded shadow-md">Masquer les filtres</button>
+            <button id="resetButton" class="flex flex-wrap h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">Réinitialiser les filtres</button>
+        </div>
     </div>
 
-    <div class="flex justify-center">
+    <div class="flex justify-center space-x-3">
         <input type="text" id="searchInput" class="border border-red-700 text-sm rounded px-4 py-2 w-96 focus:ring-2 focus:outline-none outline-none hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" 
         {% if searchToken is same as 'artist' %}
             value="{{ searchParameter }}"
         {% endif %}  
         placeholder="Entrez un terme de recherche...">
+        <img id="eraser" class="w-10 border rounded hover:border-red-800 transition duration-300 hover:shadow-md" src="https://img.icons8.com/carbon-copy/100/erase.png" alt="eraser to clear text"/>
     </div>
 
     <div id="count" class="flex justify-center m-4 hidden">
@@ -139,6 +152,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const colorCheckboxes = document.querySelectorAll('#colorSelect input[type="checkbox"]');
     const subtypeSelect = document.getElementById('subtypeSelect');
     const artistSearch = document.getElementById('artistSearch')
+    const uniquePrints = document.getElementById('uniquePrints')
+    const includeExtras = document.getElementById('includeExtras')
 
     const colorOnly = document.getElementById('colorOnly');
     const colorIncluding = document.getElementById('colorIncluding');
@@ -197,6 +212,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (selectedRarity) {
             query += `+rarity:${selectedRarity}`;
+        }
+
+        if(uniquePrints.checked && includeExtras.checked == false) {
+            return `https://api.scryfall.com/cards/search?include_variations=true&order=dir&unique=prints&q=${query}`;
+        }
+        if(includeExtras.checked && uniquePrints.checked == false) {
+            return `https://api.scryfall.com/cards/search?include_extras=true&order=dir&q=${query}`;
+        }
+        if(uniquePrints.checked && includeExtras.checked) {
+            return `https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&unique=prints&q=${query}`;
         }
 
         if (artistSearch.checked) {
@@ -301,6 +326,8 @@ document.addEventListener('DOMContentLoaded', function() {
     subtypeSelect.addEventListener('change', fetchCards);
     artistSearch.addEventListener('change', fetchCards)
     cmcSelect.addEventListener('change', fetchCards);
+    uniquePrints.addEventListener('change', fetchCards);
+    includeExtras.addEventListener('change', fetchCards);
 
     resetButton.addEventListener('click', function() {
         //searchInput.value = '';
@@ -308,6 +335,8 @@ document.addEventListener('DOMContentLoaded', function() {
         subtypeSelect.selectedIndex = 0;
         cmcSelect.selectedIndex = 0;
         artistSearch.checked = false;
+        uniquePrints.checked = false;
+        includeExtras.checked = false;
 
         Array.from(colorCheckboxes).forEach(checkbox => checkbox.checked = false);
         colorOnly.checked = true;
