@@ -293,7 +293,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
                 if (data.data && Array.isArray(data.data)) {
                     if (data.data.length > 0) {
-
+                        console.log(data.data)
                         // Set the total number of cards
                         totalCards.innerHTML = data.total_cards || data.data.length;
     
@@ -301,10 +301,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         const subtypes = new Set();
                         data.data.forEach(card => {
-                            if (card.type_line.includes('—')) {
-                                const parts = card.type_line.split('—');
-                                const subtypesArray = parts[1].trim().split(' ');
-                                subtypesArray.forEach(subtype => subtypes.add(subtype));
+                            
+                            if(card.type_line) {
+                                if (card.type_line.includes('—')) {
+                                    const parts = card.type_line.split('—');
+                                    const subtypesArray = parts[1].trim().split(' ');
+                                    subtypesArray.forEach(subtype => subtypes.add(subtype));
+                                }
                             }
                         });
 
@@ -315,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             option.textContent = subtype;
                             subtypeSelect.appendChild(option);
                         });
-    
+                   
                         data.data.forEach(card => {
                             let displayCard;
                             if (card.image_uris && card.image_uris.normal) {
