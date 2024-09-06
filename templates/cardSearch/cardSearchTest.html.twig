@@ -18,32 +18,26 @@
         {% set active = 'text-sm bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 shadow-md cursor-pointer hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)]duration-300' %}
         {% set inactive = 'text-sm bg-white text-red-700 px-4 py-2 rounded hover:bg-red-900 hover:text-white shadow-md cursor-pointer hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300' %}
 
-        <div class="inline-flex items-center space-x-4">
-            <div id="rarityAll" class="{{ active }}">Toutes</div>
-            <div id="rarityMythic" class="{{ inactive }}">Mythiques</div>
-            <div id="rarityRare" class="{{ inactive }}">Rares</div>
-            <div id="rarityUncommon" class="{{ inactive }}">Non communes</div>
-            <div id="rarityCommon" class="{{ inactive }}">Communes</div>
+        <div class="flex flex-col space-y-4">
+            <select id="typeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+                <option value="">Tous les types</option>
+                <option value="legendary">Légendaire</option>
+                <option value="creature">Creature</option>
+                <option value="artifact">Artefact</option>
+                <option value="enchantment">Enchantement</option>
+                <option value="battle">Bataille</option>
+                <option value="instant">Ephémère</option>
+                <option value="sorcery">Rituel</option>
+                <option value="land">Terrain</option>
+                <option value="planeswalker">Planeswalker</option>
+                <option value="saga">Saga</option>
+            </select>
+
+            <select id="subtypeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+                <option value="">Tous les sous-types</option>
+                <!-- Options will be dynamically populated -->
+            </select>
         </div>
-
-        <select id="typeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
-            <option value="">Tous les types</option>
-            <option value="legendary">Légendaire</option>
-            <option value="creature">Creature</option>
-            <option value="artifact">Artefact</option>
-            <option value="enchantment">Enchantement</option>
-            <option value="battle">Bataille</option>
-            <option value="instant">Ephémère</option>
-            <option value="sorcery">Rituel</option>
-            <option value="land">Terrain</option>
-            <option value="planeswalker">Planeswalker</option>
-            <option value="saga">Saga</option>
-        </select>
-
-        <select id="subtypeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
-            <option value="">Tous les sous-types</option>
-            <!-- Options will be dynamically populated -->
-        </select>
 
         <div class="border px-4 py-2 border-red-700 rounded hover:bg-gray-100 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
             <div class="px-2 space-x-2">
@@ -65,32 +59,42 @@
                 <label><input id="colorless" type="checkbox" value="C"><img class="w-5" src="https://svgs.scryfall.io/card-symbols/C.svg" alt="Colorless Mana Symbol"></label>               
             </div>
         </div>
+        <div class="flex flex-col space-y-4">
         
-        <div class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
-            <label for="cmcSelect">Filtrer par coût de mana :</label>
-            <select id="cmcSelect" class="text-sm rounded focus:ring-2 focus:outline-none outline-none text-center px-2 space-y-1">
-                <option class="italic" value="">Aucun filtre</option>
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-                <option value="13">13</option>
-                <option value="14">14</option>
-                <option value="15">15</option>
-                <option value="16">16</option>
-                <option value="17">17</option>
-                <option value="18">18</option>
-                <option value="20">20</option>
-            </select>
+            <div class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+                <label for="cmcSelect">Filtrer par coût de mana :</label>
+                <select id="cmcSelect" class="text-sm rounded focus:ring-2 focus:outline-none outline-none text-center px-2 space-y-1">
+                    <option class="italic" value="">Aucun filtre</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="20">20</option>
+                </select>
+            </div>
+            <div class="flex flex-col">
+                <label class="text-sm">Set / Extension <span class="text-xs italic"> exemple : fdn</span></label>
+                <input id="setSearch" type="text" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300"
+                {% if searchToken is same as 'set' %}
+                    value="{{ searchParameter }}"    
+                {% endif %}
+                >
+            </div>
         </div>
 
         <div class="flex flex-col flex-wrap">
@@ -111,30 +115,45 @@
             </label>
         </div>
         <div class="flex flex-col items-center justify-center space-y-4">
-            <button id="hideFilters" class="flex flex-wrap h-10 border border-bg-red-400 text-red-700 hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded shadow-md">Masquer les filtres</button>
-            <button id="resetButton" class="flex flex-wrap h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">Réinitialiser les filtres</button>
+            <button id="hideFilters" class="h-10 border border-bg-red-400 text-red-700 hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded shadow-md text-sm">Masquer les filtres</button>
+            <button id="resetButton" class="h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 text-sm">Réinitialiser les filtres</button>
         </div>
     </div>
 
-    <div class="flex justify-center space-x-3">
+    <div class="inline-flex justify-center space-x-3 w-full m-6">
         <input type="text" id="searchInput" class="border border-red-700 text-sm rounded px-4 py-2 w-96 focus:ring-2 focus:outline-none outline-none hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" 
         {% if searchToken is same as 'artist' %}
             value="{{ searchParameter }}"
         {% endif %}  
         placeholder="Entrez un terme de recherche...">
+
         <img id="eraser" class="w-10 border rounded hover:border-red-800 transition duration-300 hover:shadow-md" src="https://img.icons8.com/carbon-copy/100/erase.png" alt="eraser to clear text"/>
+        <button id="searchStart" class="h-10 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] border border-red-700 duration-300 text-sm">Rechercher</button>
     </div>
 
     <div id="count" class="flex justify-center m-4 hidden">
-        <p class="border border-red-700 rounded p-2 text-sm text-red-700"><span id="totalCards"></span> cartes trouvées</p>
+        <p class="text-grey-600 italic text-xs"><span id="totalCards"></span> cartes trouvées</p>
     </div>
 
-    <div id="cardBoard" class="w-full flex justify-center">
-        <div id="cardList" class="flex flex-wrap justify-center max-w-4/5 w-4/5"></div>
+    <div class="flex justify-center w-full">
+        <div class="flex flex-col flex-wrap max-w-4/5 w-4/5 px-10">
+            <div class="inline-flex space-x-4 pl-16 mb-8">
+                <div id="rarityAll" class="{{ active }}">Toutes</div>
+                <div id="rarityMythic" class="{{ inactive }}">Mythiques</div>
+                <div id="rarityRare" class="{{ inactive }}">Rares</div>
+                <div id="rarityUncommon" class="{{ inactive }}">Non communes</div>
+                <div id="rarityCommon" class="{{ inactive }}">Communes</div>
+            </div>
+        
+
+            <div id="cardBoard" class="w-full flex justify-center">
+                <div id="cardList" class="flex flex-wrap justify-center"></div>
+            </div>
+        </div>
     </div>
 
     <!-- Placeholder for no cards found message -->
-    <div id="noCardsMessage" class="hidden text-center text-red-500 font-semibold mt-4">
+    <div id="noCardsMessage" class="hidden text-center text-red-500 mt-4">
         Aucune carte trouvée avec les filtres sélectionnés.
     </div>
 </main>
@@ -148,12 +167,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
     const count = document.getElementById('count');
 
+    const eraser = document.getElementById('eraser');
+    
+    // Add a click event listener to the eraser
+    eraser.addEventListener('click', () => {
+        // Clear the input field's value when the eraser is clicked
+        searchInput.value = '';
+    });
+
     const typeSelect = document.getElementById('typeSelect');
     const colorCheckboxes = document.querySelectorAll('#colorSelect input[type="checkbox"]');
     const subtypeSelect = document.getElementById('subtypeSelect');
     const artistSearch = document.getElementById('artistSearch')
     const uniquePrints = document.getElementById('uniquePrints')
     const includeExtras = document.getElementById('includeExtras')
+    const searchStart = document.getElementById('searchStart')
+    const setInput = document.getElementById('setSearch');
 
     const colorOnly = document.getElementById('colorOnly');
     const colorIncluding = document.getElementById('colorIncluding');
@@ -178,6 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let searchTerm = searchInput.value.trim();
         let type = typeSelect.value;
         let subtype = subtypeSelect.value;
+        let set = setInput.value
 
         let selectedColors = Array.from(colorCheckboxes)
             .filter(checkbox => checkbox.checked)
@@ -187,31 +217,43 @@ document.addEventListener('DOMContentLoaded', function() {
         let selectedCMC = cmcSelect.value;
 
         let query = searchTerm ? `${searchTerm}` : "";
+        let emptyQuery = '';
+
+        if (set) {
+            query += `+set:${set}`
+        }
 
         if (type) {
             query += `+type:${type}`;
+            emptyQuery += `+type:${type}`;
         }
 
         if (selectedColors) {
             if (colorless.checked) {
                 query += `+-c:W+-c:U+-c:B+-c:R+-c:G`;
+                emptyQuery += `+-c:W+-c:U+-c:B+-c:R+-c:G`;
             } else if (colorOnly.checked) {
                 query += `+color=${selectedColors}`;  // Exact color match
+                emptyQuery += `+color=${selectedColors}`;
             } else if (colorIncluding.checked) {
                 query += `+ci:${selectedColors}`;  // Inclusive color match
+                emptyQuery += `+ci:${selectedColors}`;
             }
         }
 
         if (selectedCMC) {
             query += `+cmc=${selectedCMC}`;
+            emptyQuery += `+cmc=${selectedCMC}`;
         }
 
         if (subtype) {
             query += `+type:${subtype}`;
+            emptyQuery += `+type:${subtype}`;
         }
 
         if (selectedRarity) {
             query += `+rarity:${selectedRarity}`;
+            emptyQuery += `+rarity:${selectedRarity}`;
         }
 
         if(uniquePrints.checked && includeExtras.checked == false) {
@@ -227,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (artistSearch.checked) {
             // Check if artist name contains spaces and wrap in quotes
             let artistQuery = searchTerm.includes(' ') ? `"${searchTerm}"` : searchTerm;
-            return `https://api.scryfall.com/cards/search?order=dir&q=artist:${artistQuery}`;
+            return `https://api.scryfall.com/cards/search?order=dir&q=artist:${artistQuery}${emptyQuery}`;
         }
 
         return `https://api.scryfall.com/cards/search?order=dir&q=${query}`;
@@ -312,7 +354,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    searchInput.addEventListener('input', fetchCards);
+    // searchInput.addEventListener('input', fetchCards);
+    searchStart.addEventListener('click', fetchCards);
+
 
     Array.from(colorCheckboxes).forEach(checkbox => {
         checkbox.addEventListener('change', fetchCards);
@@ -337,6 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
         artistSearch.checked = false;
         uniquePrints.checked = false;
         includeExtras.checked = false;
+        setInput.value = '';
 
         Array.from(colorCheckboxes).forEach(checkbox => checkbox.checked = false);
         colorOnly.checked = true;
@@ -362,7 +407,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     if (searchInput.value) {
-    fetchCards(); // Initial fetch when page loads if there is a search parameter given
+        fetchCards(); // Initial fetch when page loads if there is a search parameter given
+    }
+    if (setInput.value) {
+        fetchCards();
     }
 });
 </script>

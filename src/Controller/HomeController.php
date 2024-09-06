@@ -69,7 +69,7 @@ class HomeController extends AbstractController
     public function advancedSearch(String $search, String $parameter): Response
     {
         
-       $tokenValues = ['basic', 'artist']; 
+       $tokenValues = ['basic', 'artist', 'set']; 
        if ($search == 'artist') {
        
         return $this->render('cardSearch/cardSearchTest.html.twig', [
@@ -77,11 +77,16 @@ class HomeController extends AbstractController
             'searchParameter' => $parameter
         ]);
 
-    } else {
-        return $this->render('cardSearch/cardSearchTest.html.twig', [
-            'searchToken' => $search,
-        ]);
-    }
+        } else if ($search == 'set'){
+            return $this->render('cardSearch/cardSearchTest.html.twig', [
+                'searchToken' => $search,
+                'searchParameter' => $parameter
+            ]);
+        } else {
+            return $this->render('cardSearch/cardSearchTest.html.twig', [
+                'searchToken' => $search,
+            ]);
+        }
     }
 
     

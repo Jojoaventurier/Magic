@@ -15,6 +15,10 @@
         </div>
     </div>
 
+    <div class="m-4 flex w-full justify-center">
+        <a class="text-sm text-red-800 border-red-800 px-4 py-2 border hover:underline rounded-md" id="setSearch">Effectuer une recherche textuelle parmis les cartes du set</a>
+    </div>
+
     <div class="flex space-x-8 justify-center items-center px-4 py-2 m-8">
 
         {% set active = 'text-sm bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 shadow-md cursor-pointer hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300' %}
@@ -28,25 +32,26 @@
             <div id="rarityCommon" class="{{ inactive }}">Communes</div>
         </div>
 
-        <select id="typeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
-            <option value="">Tous les types</option>
-            <option value="legendary">Légendaire</option>
-            <option value="creature">Creature</option>
-            <option value="artifact">Artefact</option>
-            <option value="enchantment">Enchantement</option>
-            <option value="battle">Bataille</option>
-            <option value="instant">Instant</option>
-            <option value="sorcery">Rituel</option>
-            <option value="land">Terrain</option>
-            <option value="planeswalker">Planeswalker</option>
-            <option value="saga">Saga</option>
-            <option value="background">Background</option>
-        </select>
+        <div class="flex flex-col space-y-4">
+            <select id="typeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+                <option value="">Tous les types</option>
+                <option value="legendary">Légendaire</option>
+                <option value="creature">Creature</option>
+                <option value="artifact">Artefact</option>
+                <option value="enchantment">Enchantement</option>
+                <option value="battle">Bataille</option>
+                <option value="instant">Ephémère</option>
+                <option value="sorcery">Rituel</option>
+                <option value="land">Terrain</option>
+                <option value="planeswalker">Planeswalker</option>
+                <option value="saga">Saga</option>
+            </select>
 
-        <select id="subtypeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
-            <option value="">Tous les sous-types</option>
-            <!-- Options will be dynamically populated -->
-        </select>
+            <select id="subtypeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+                <option value="">Tous les sous-types</option>
+                <!-- Options will be dynamically populated -->
+            </select>
+        </div>
 
         <div class="border px-4 py-2 border-red-700 rounded hover:bg-gray-100 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
             <div class="px-2 space-x-2">
@@ -96,7 +101,7 @@
             </select>
         </div>
 
-        <button id="resetButton" class="h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">Réinitialiser les filtres</button>
+        <button id="resetButton" class="h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 text-sm">Réinitialiser les filtres</button>
     </div>
 
     <div id="cardBoard" class="w-full flex justify-center">
@@ -121,6 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const releaseDate = document.getElementById('releaseDate');
     const totalCards = document.getElementById('totalCards');
     const setCode = document.getElementById('setCode').value;
+    const setSearch = document.getElementById('setSearch')
 
     const typeSelect = document.getElementById('typeSelect');
     const colorCheckboxes = document.querySelectorAll('#colorSelect input[type="checkbox"]');
@@ -204,6 +210,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (data.data.length > 0) {
                         setName.innerHTML = data.data[0].set_name;
                         releaseDate.innerHTML = data.data[0].released_at;
+                        const setSearchUrl = "{{ path('app_search', {'search': 'set', 'parameter': 'PLACEHOLDER_SET'}) }}"
+                        setSearch.href = `${setSearchUrl.replace('PLACEHOLDER_SET', encodeURIComponent(data.data[0].set))}`
     
                         // Set the total number of cards
                         totalCards.innerHTML = data.total_cards || data.data.length;
