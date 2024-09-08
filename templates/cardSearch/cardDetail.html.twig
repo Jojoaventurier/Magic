@@ -6,51 +6,116 @@
 
 <input id="cardInput" type="hidden" value="{{ cardId }}">
 
-<div class="flex justify-center w-screen">
-   <!--<div id="detailBoard" class="hover:shadow-[5px_5px_0px_0px_rgba(0,_0,_0,_0.5)] hover:border transition-all shadow-md ease-in-out duration-300 rounded-lg flex flex-wrap justify-center m-8 p-10 space-x-8">--> 
-    <div id="detailBoard" class=" hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 rounded-lg flex flex-wrap justify-center m-8 p-10 space-x-8">
-        <div id="placeholder" class="max-w-fit">
-        </div>
+<div class="flex flex-wrap justify-center items-center w-screen">
 
-        <div id="cardDetails" class="space-y-2">
-            <div class=" mb-6">
-                <h1 id="name" class="font-bold p-1 text-lg"></h1>
-                <span id="manaCost" class="pb-4 w-full inline-flex"></span>
-            </div>
-            <span id="typeLine" class="py-4 font-semibold"></span>
-            <div id="oracleText" class="whitespace-pre-line w-96 pt-2">
-                <!-- Oracle text will be inserted here -->
-            </div>
+    <div class="flex flex-col items-center space-y-2 text-sm hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 m-6 rounded p-4">
+        <h3 class="px-2 py-1 bg-red-700 text-white rounded">Versions de la carte</h3>
+        <div id="printings" class="text-sm p-2 hidden">
         </div>
     </div>
+
+
+
+   <!--<div id="detailBoard" class="hover:shadow-[5px_5px_0px_0px_rgba(0,_0,_0,_0.5)] hover:border transition-all shadow-md ease-in-out duration-300 rounded-lg flex flex-wrap justify-center m-8 p-10 space-x-8">--> 
+    <div  class=" hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 rounded-lg m-8">
+        <div id="detailBoard" class="flex flex-wrap justify-center p-10 space-x-8">
+            <div id="placeholder" class="xl:w-96 lg:w-80 object-cover">
+            </div>
+
+            <div id="cardDetails" class="space-y-2">
+                <div class=" mb-4">
+                    <h1 id="name" class="font-bold p-1 text-lg"></h1>
+                    <span id="manaCost" class="pb-2 w-full inline-flex"></span>
+                </div>
+
+                    <p id="typeLine" class="py-2 my-2 border-t border-b font-semibold"></p>
+                    <p  class="text-sm py-4 pr-4">Rareté : <span id="rarity" class="py-4 pr-4 font-semibold"></span><p>
+
+                <div id="oracleText" class="whitespace-pre-line w-96 border px-4 py-2">
+                    <!-- Oracle text will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col items-center">
+            <div>
+                <p id="cardSet" class="border-t pt-4">
+                    <!-- Card set and artist details will be inserted here -->
+                </p>
+                <p class="text-xs"><!--"scryfall_set_uri": "https://scryfall.com/sets/mm3?utm_source=api",--></p>
+            </div>
+            <div class="text-center">
+                <p id="artistName" class="mt-2">
+                    <!-- Artist name will be inserted here -->
+                 </p>
+                 <a id="artistSearch" href="">
+                    <p class="text-sm italic hover:underline transition duration-300 mt-2">Voir les autres cartes dessinées par <span id="artistSpan" class="font-semibold"></span></p>
+                </a>
+            </div>
+        </div>
+        <div class="flex flex-col justify-center items-center p-4">
+              <!-- Button to trigger the image download options -->
+              <button id="download-button" class="text-xs p-2 rounded hover:underline">
+                Télécharger la carte
+            </button>
+            
+            <!-- Hidden div for image download links -->
+            <div id="download-links" class="hidden mt-4">
+                <p class="text-xs font-semibold">Choisir une taille à télécharger :</p>
+                <ul id="image-sizes">
+                <!-- Links will be added here dynamically -->
+                </ul>
+            </div>
+        </div>
+
+    
+    </div>
+
+
+
+    <div class="flex flex-col space-y-4">
+        <div class="text-sm p-4 m-6 flex flex-col space-y-2 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 rounded">
+            <a id="edhrec" href="#" target="_blank" class="hover:underline">Voir la carte sur <strong>EDHREC</strong></a>
+            <a id="tappedOut" href="#" target="_blank" class="hover:underline">Voir la carte sur <strong>Tapped Out</strong></a>
+            <a id="spellbook" href="#" target="_blank" class="hover:underline">Voir la carte sur <strong>Commander Spellbook</strong></a>
+            <a id="tcgArticles" href="#" target="_blank" class="hover:underline">Voir les articles sur <strong>TGCPlayer Infinite</strong></a>
+            <a id="mhDecks" href="#" target="_blank" class="hover:underline">Voir les decks sur <strong>MAGIC-HUB</strong></a>
+        </div>
+
+        <div id="legalities" class="text-xs p-4 m-6 grid grid-cols-2 gap-y-2 gap-x-2 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 rounded">
+        </div>
+
+    </div>
+
 </div>
 
+
+
 <div class="flex justify-center w-screen">
-    <div class="ml-8 flex flex-col p-6 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 rounded">
-        <div>
-            <p id="cardSet">
-                <!-- Card set and artist details will be inserted here -->
-            </p>
-        </div>
-        <div>
-            <p id="artistName" class="mt-2">
-                <!-- Artist name will be inserted here -->
-             </p>
-             <a id="artistSearch" href="">
-                <p class="text-sm italic hover:underline transition duration-300 mt-2">Voir les autres cartes dessinées par <span id="artistSpan" class="font-semibold"></span></p>
-            </a>
-        </div>
-        
-        <div id="purchaseLink" class="mt-2 w-full flex justify-center">
-           <a id="cardmarketLink" class="my-4 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" href="#" target="_blank">Acheter la carte sur Cardmarket</a>
-        </div>
+    <div class="flex flex-col justif-center items-center p-4 space-y-1 m-6 rounded ml-8 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+        <p class="py-2 border-t border-b">Rang EDHREC : <span id="edhrecRank" class="font-semibold"></span></p>
+        <p class="text-sm">Prix normal : <span id="price" class="font-semibold"></span></p>
+        <p class="text-sm">Prix Foil : <span id="priceFoil" class="font-semibold"></span></p>
+        <p class="text-xs italic pb-2">(Attention, les prix sont donnés à titre indicatif et peuvent ne pas être en adéquation avec les sites marchands.)</p>
+        <a id="cardmarketLink" class="my-4 text-xs bg-red-700 text-white p-1 rounded hover:bg-red-800 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" href="#" target="_blank">Acheter la carte sur Cardmarket</a>
     </div>
 </div>
 
 <div class="w-full flex justify-center">
+    <div id="otherPrints">
 
-
+    </div>
 </div>
+
+<!--
+"promo": false,
+"reprint": true,
+"rulings_uri": "https://api.scryfall.com/cards/f26a79b9-9f09-476e-b914-cade929dd852/rulings",
+"prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aebef6d84-b724-4a84-bcde-8eb6dc06717d&unique=prints",
+
+
+
+-->
 
 {% block javascripts %}
 <script>
@@ -131,27 +196,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Parse the API response as JSON.
                 .then((data) => {  
                     // Once the card data is parsed, execute this function to update the UI.
-                    console.log(data)
                     // Select elements in the DOM to update with card data
                     let attributeName = document.getElementById("name");  
-                    // Find the element with ID 'name' to update the card's name.
                     let attributeOracleText = document.getElementById("oracleText");  
-                    // Find the element with ID 'oracleText' to update the card's Oracle text.
                     let attributeManaCost = document.getElementById("manaCost");  
-                    // Find the element with ID 'manaCost' to update the card's mana cost.
+                    let attributeRarity = document.getElementById("rarity");  
                     let attributeTypeLine = document.getElementById("typeLine");  
-                    // Find the element with ID 'typeLine' to update the card's type line.
                     let attributeCardSet = document.getElementById("cardSet");  
-                    // Find the element with ID 'cardSet' to update the card's set information.
                     let attributeArtistName = document.getElementById("artistName");  
-                    // Find the element with ID 'artistName' to update the card's artist information.
                     let cardmarketLink = document.getElementById("cardmarketLink");  
-                    // Find the element with ID 'cardMarketLink' to update the card's market link.
                     let placeholder = document.getElementById("placeholder");  
-                    // Find the element with ID 'placeholder' where the card image will be displayed.
                     let artistName = document.getElementById('artistSpan');
                     let artistSearch = document.querySelector('#artistSearch')
-                    console.log(artistSearch);
+                    let edhrec = document.getElementById('edhrec');
+                    let spellbook = document.getElementById('spellbook');
+                    let edhrecRank = document.getElementById('edhrecRank');
+                    let price = document.getElementById('price')
+                    let priceFoil = document.getElementById('priceFoil')
+                    let tcgArticles = document.getElementById('tcgArticles')
+                    let tappedOut = document.getElementById('tappedOut')
+                    let legalities = document.getElementById('legalities')
+
+                    //let  = document.getElementById('')
+
+
 
                     // Display card image
                     let displayCard = new Image(287.5, 402.5);  
@@ -159,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (data.image_uris && data.image_uris.normal) {  
                         // Check if the card data includes an image URI for the normal resolution.
                         displayCard.src = data.image_uris.normal;  
-                        displayCard.classList.add('singleCard', 'p-1', 'transform',  'rounded-xl', 'bg-white', 'shadow-xl', 'transition', 'duration-300', 'hover:scale-105');
+                        displayCard.classList.add('w-full', 'h-auto', 'p-1', 'transform',  'rounded-xl', 'bg-white', 'shadow-xl', 'transition', 'duration-300', 'hover:scale-105');
                         // Set the source of the image to the normal image URI.
                     }
                     placeholder.appendChild(displayCard);  
@@ -180,54 +248,201 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Join the paragraphs back into a single string.
 
                     attributeOracleText.innerHTML = formattedOracleText;  
-                    // Update the inner HTML of the 'oracleText' element with the formatted text.
-
-                    // Display mana cost with symbol replacements
                     attributeManaCost.innerHTML = replaceSymbols(data.mana_cost, symbolMap);  
-                    // Update the inner HTML of the 'manaCost' element with the mana cost, replacing symbols with images.
-
-                    // Display type line
                     attributeTypeLine.innerHTML = data.type_line;  
-                    // Update the inner HTML of the 'typeLine' element with the card's type line.
+                    attributeRarity.innerHTML = data.rarity.toUpperCase();
+                    edhrecRank.innerHTML = data.edhrec_rank
+                    price.innerHTML = `${data.prices.eur} €`
+                    priceFoil.innerHTML = `${data.prices.eur_foil} €`
 
-                    // Prepare a base URL using Twig without dynamic parts
-                    const baseSetUrl = "{{ path('show_set', {'setCode': 'PLACEHOLDER'}) }}";
-                    /*Explanation:
-                        Twig Part: The Twig path() function generates the base URL, which includes the show_set route, and we use 'PLACEHOLDER' as a dummy value in the setCode part.
-                        JavaScript Part: We replace 'PLACEHOLDER' with the actual value of data.set using JavaScript's replace() method.
-                        This approach ensures that:
 
-                        Twig handles the server-side URL generation.
-                        JavaScript dynamically injects the value from the fetched data. */
+                    edhrec.href = data.related_uris.edhrec
+                    tcgArticles.href = data.related_uris.tcgplayer_infinite_articles
+                    spellbook.href = `https://commanderspellbook.com/search/?q=${encodeURIComponent(data.name)}`
+                    tappedOut.href = `https://tappedout.net/search/?q=${encodeURIComponent(data.name)}`
 
-                    // Display card set name with a link to the set's Scryfall page
-                    attributeCardSet.innerHTML = `Extension : <a href="${baseSetUrl.replace('PLACEHOLDER', encodeURIComponent(data.set))}" target="_blank"><span class="font-semibold hover:underline">${data.set_name}</span></a>`;  
-                    //attributeCardSet.innerHTML = `Extension : <a href="${data.set_uri}" target="_blank"><span class="font-semibold hover:underline">${data.set_name}</span></a>`;  
-                    // Update the 'cardSet' element with the card's set name, making it a clickable link to the set's page on Scryfall.
+                    displayDownloadLinks(data.image_uris)
 
-                    // Display artist name
-                    attributeArtistName.innerHTML = `Illustration par : <span class="font-semibold hover:underline"><a href="https://www.google.fr/search?q=${data.artist}+mtg+artist" target="_blank">${data.artist}</a></span>`;
-                    artistName.innerHTML = data.artist; 
-                    const artistSearchUrl = "{{ path('app_search', {'search': 'artist', 'parameter': 'PLACEHOLDER_ARTIST_NAME'}) }}"
-                    artistSearch.href = `${artistSearchUrl.replace('PLACEHOLDER_ARTIST_NAME', encodeURIComponent(data.artist))}`
-                    console.log(artistSearch.href)
+                    if (data.legalities ) {
+                        const legalityBoard = document.getElementById('legalities');
+                        legalityBoard.innerHTML = ''; // Clear any existing content
+                    
+                        // Iterate over the object keys and values
+                        for (const [format, legality] of Object.entries(data.legalities)) {
+                            let legalityElement = document.createElement('p');
+                    
+                            if (legality === 'legal') {
 
-                    // Set Cardmarket link
-                    cardmarketLink.href = `https://www.cardmarket.com/en/Magic/Products/Search?searchString=${encodeURIComponent(data.name)}`;  
-                    // Update the href attribute of the 'cardMarketLink' element to link to the card's page on Cardmarket.
-
-                    // Call function to display extensions
-                    if (data.prints_search_uri) {
-                        displayOtherPrintings(data.prints_search_uri); // Display the list of extensions
+                            legalityElement.innerHTML = `<span class="text-white p-1 bg-green-500 border border-white">${format.toUpperCase()}</span>`;
+                            legalityBoard.appendChild(legalityElement);
+                        } else {
+                            legalityElement.innerHTML = `<span class="text-white p-1 bg-red-500 border border-white">${format.toUpperCase()}</span>`;
+                            legalityBoard.appendChild(legalityElement);
+                        }
                     }
-                })
-                .catch((error) => {  
-                    // If there is an error during the fetch or processing of the card data, this block will handle it.
-                    console.error('Erreur lors de la récupération des données de carte:', error);  
-                    // Log the error to the console for debugging purposes.
-                });
+
+                    if (data.prints_search_uri) {
+                        fetchOtherPrintings(data.prints_search_uri);  // Fetch other printings and display
+                    }
+                } 
+
+                // Prepare a base URL using Twig without dynamic parts
+                /*Explanation:
+                    Twig Part: The Twig path() function generates the base URL, which includes the show_set route, and we use 'PLACEHOLDER' as a dummy value in the setCode part.
+                    JavaScript Part: We replace 'PLACEHOLDER' with the actual value of data.set using JavaScript's replace() method.
+                    This approach ensures that:
+
+                    Twig handles the server-side URL generation.
+                    JavaScript dynamically injects the value from the fetched data. */
+
+                const baseSetUrl = "{{ path('show_set', {'setCode': 'PLACEHOLDER'}) }}";
+                attributeCardSet.innerHTML = `Extension : <a href="${baseSetUrl.replace('PLACEHOLDER', encodeURIComponent(data.set))}" target="_blank"><span class="font-semibold hover:underline">${data.set_name}</span></a>`;  
+                
+                attributeArtistName.innerHTML = `Illustration par : <span class="font-semibold hover:underline"><a href="https://www.google.fr/search?q=${data.artist}+mtg+artist" target="_blank">${data.artist}</a></span>`;
+                artistName.innerHTML = data.artist; 
+
+                const artistSearchUrl = "{{ path('app_search', {'search': 'artist', 'parameter': 'PLACEHOLDER_ARTIST_NAME'}) }}"
+                artistSearch.href = `${artistSearchUrl.replace('PLACEHOLDER_ARTIST_NAME', encodeURIComponent(data.artist))}`
+                // Set Cardmarket link
+                cardmarketLink.href = `https://www.cardmarket.com/en/Magic/Products/Search?searchString=${encodeURIComponent(data.name)}`;  
+                // Update the href attribute of the 'cardMarketLink' element to link to the card's page on Cardmarket.
+
+                // Call function to display extensions
+                //if (data.prints_search_uri) {
+                //    displayOtherPrintings(data.prints_search_uri); // Display the list of extensions
+                //}
+            })
+            .catch((error) => {  
+                // If there is an error during the fetch or processing of the card data, this block will handle it.
+                console.error('Erreur lors de la récupération des données de carte:', error);  
+                // Log the error to the console for debugging purposes.
+            });
         });
     }
+
+    const downloadButton = document.getElementById('download-button');
+    const downloadLinksDiv = document.getElementById('download-links');
+    const imageSizesList = document.getElementById('image-sizes');
+    // Function to display download links
+    function displayDownloadLinks(imageUris) {
+        // Clear existing content
+        imageSizesList.innerHTML = '';
+
+        // Sizes provided by Scryfall API (small, normal, large, png, art_crop, border_crop)
+        const sizes = {
+            small: 'Small',
+            normal: 'Normal',
+            large: 'Large',
+            png: 'High Resolution PNG',
+            art_crop: 'Art Crop',
+            border_crop: 'Border Crop'
+        };
+
+        // Add links for each available size
+        for (const [size, label] of Object.entries(sizes)) {
+            if (imageUris[size]) {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = imageUris[size];  // Image URL for the size
+                link.innerText = `Télécharger ${label}`;
+                link.classList.add('text-blue-500', 'hover:underline', 'text-xs');  // Tailwind classes for styling
+                link.setAttribute('target', '_blank');  // Open link in new tab
+
+                listItem.appendChild(link);
+                imageSizesList.appendChild(listItem);
+            }
+        }
+    }
+
+    downloadButton.addEventListener('click', function() {
+
+        // Show the div
+        downloadLinksDiv.classList.toggle('hidden');
+    })
+
+    function fetchOtherPrintings(printsSearchUri) {
+        fetch(printsSearchUri)
+            .then((response) => response.json())
+            .then((data) => {
+                const printings = data.data;
+                const box = document.querySelector('#printings'); // Boîte 1 container
+    
+                // Clear any previous content
+                box.innerHTML = '';
+    
+                if (printings.length > 1) {
+                    const ul = document.createElement('ul');
+                    ul.classList.add('list-none');  // Tailwind for a clean list
+    
+                    printings.forEach((printing) => {
+                        
+                            const li = document.createElement('li');
+
+                            li.classList.add('hover:text-red-700', 'cursor-pointer', 'relative', 'text-sm', 'p-1', 'm-1', 'hover:underline');  // Add hover effect and cursor
+
+                           // Fetch set details to get the icon_svg_uri
+                            fetch(`https://api.scryfall.com/sets/${printing.set}`)
+                            .then((setResponse) => setResponse.json())
+                            .then((setData) => {
+                                // Create set icon with fetched icon_svg_uri
+                                const setIcon = document.createElement('img');
+                                setIcon.src = setData.icon_svg_uri;  // Use the icon_svg_uri from the set data
+                                setIcon.alt = printing.set_name;
+                                setIcon.classList.add('w-5', 'h-5', 'mr-2', 'inline-flex');  // Tailwind classes for size and margin
+
+                                // Append the set icon to the list item
+                                li.appendChild(setIcon);
+
+                                // Add set name
+                                const setName = document.createElement('span');
+                                setName.innerText = printing.set_name;  // Display set name
+
+                                // Append set name after the icon
+                                li.appendChild(setName);
+                            })
+                            .catch((error) => {
+                                console.error('Error fetching set details:', error);
+                            });
+    
+                            // Add hover effect to display card image above cursor
+                            li.addEventListener('mouseover', (e) => {
+                                const imagePreview = document.createElement('img');
+                                imagePreview.src = printing.image_uris.normal;  // Use normal image size
+                                imagePreview.classList.add('absolute', 'w-72', 'border', 'shadow-lg', 'z-50');
+                                imagePreview.style.top = `${e.pageY}px`;
+                                imagePreview.style.left = `${e.pageX}px`;
+                                imagePreview.id = 'hoverImagePreview';
+                                document.body.appendChild(imagePreview);
+                            });
+    
+                            li.addEventListener('mouseout', () => {
+                                const imagePreview = document.getElementById('hoverImagePreview');
+                                if (imagePreview) imagePreview.remove();  // Remove image on mouse out
+                            });
+    
+                            // Redirect to the card detail page when clicked
+                            li.addEventListener('click', () => {
+                                const cardDetailUrl = `{{ path('app_card_detail', {'cardId': 'PLACEHOLDER'}) }}`.replace('PLACEHOLDER', printing.id);
+                                window.location.href = cardDetailUrl;  // Redirect to the card detail page
+                            });
+    
+                            ul.appendChild(li);
+                        
+                    });
+                    box.classList.remove('hidden');
+                    box.classList.add('flex', 'justify-center')
+                    box.appendChild(ul);
+                } else {
+                    // Display message if no other printings exist
+                    box.innerHTML = '<p>Cette carte n\'a pas d\'autres impressions.</p>';
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching other printings:', error);
+            });
+    }
+
+
 
 
 });
