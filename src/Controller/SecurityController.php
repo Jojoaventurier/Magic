@@ -10,6 +10,7 @@ use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class SecurityController extends AbstractController
 {
@@ -64,13 +65,16 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/{user}/profile/delete', name: 'app_delete_user')]
-    public function deleteProfile(EntityManagerInterface $entityManager, Request $request)
+    public function deleteProfile(EntityManagerInterface $entityManager, Request $request, TokenStorageInterface $tokenStorage)
     {
        $user = $this->getUser();
-       $session = $request->getSession()->invalidate();
-
-
        $entityManager->remove($user);
+       $request->getSession()->invalidate();
+       
+        // Clear the security token to avoid the refresh user error
+        $tokenStorage->setToken(null);
+
+        
         $entityManager->flush();
 
         return $this->redirectToRoute('app_home');

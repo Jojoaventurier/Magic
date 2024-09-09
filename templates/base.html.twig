@@ -21,10 +21,9 @@
               <a class="white hover:underline" href="{{ path('app_forum') }}">Forum</a>
             </div>
             <div class="row space-x-2 px-4">
-              {% if app.user is defined and app.user %}
+              {% if app.user %}
               <a class="white hover:underline" href="{{ path('app_articleForm')}}">Rédiger un article</a>
               <a class="white hover:underline" href="{{ path('app_deck_manager', {'id': app.user.id})}}">Mes Decks</a>
-              {% else %}
               {% endif %}
             </div>
           </div>

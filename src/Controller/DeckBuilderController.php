@@ -18,6 +18,7 @@ use App\Repository\CompositionRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DeckBuilderController extends AbstractController
@@ -171,9 +172,7 @@ class DeckBuilderController extends AbstractController
             $entityManager->persist($comment);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_deck_consult', [
-            'id' => $deck->getId()
-        ]); 
+            return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']); 
         }
 
         if($state == 'Mainboard') {
@@ -423,7 +422,7 @@ class DeckBuilderController extends AbstractController
     }
 
     #[Route('/user/{user}/deck/{deck}/delete', name: 'delete_deck', methods: ['GET'])]
-    public function deleteDeck(Deck $deck, DeckRepository $deckRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager) {
+    public function deleteDeck(Deck $deck, DeckRepository $deckRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager, UserInterface $user) {
 
         $user = $this->getUser();
         $userId = $user->getId();

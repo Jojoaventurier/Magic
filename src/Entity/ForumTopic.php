@@ -39,7 +39,7 @@ class ForumTopic
     private ?bool $closed = null;
 
     #[ORM\ManyToOne(inversedBy: 'forumTopics')]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?User $user = null;
 
     public function __construct()
