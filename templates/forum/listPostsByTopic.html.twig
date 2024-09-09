@@ -16,15 +16,27 @@
         <a>Supprimer</a>
     {% endif %}
     {% if topic.editDate is same as null %}
-        <p>posté par {{ topic.user.userName }} le {{ topic.creationDate|date('d.m.Y H:i') }} </p>
+        <p>posté par {% if topic.user is same as null %}
+            <span class="italic">[profil supprimé]</span>
+            {% else %}
+            {{ topic.user.userName }} le {{ topic.creationDate|date('d.m.Y H:i') }} </p>
+            {% endif %}
         {% else %}
+        {% if topic.user is same as null %}
+            <span class="italic">[profil supprimé]</span>
+            {% else %}
         <p>posté par {{ topic.user.userName }} le {{ topic.creationDate|date('d.m.Y H:i') }} et modifié le {{ topic.editDate|date('d.m.Y H:i') }} </p>
+        {% endif %}
     {% endif %}
 
 
     {% for post in posts %}
         <p>
-            Par {{ post.user.userName }} <br>
+            Par {% if post.user is same as null %}
+            <span class="italic">[profil supprimé]</span>
+                {% else %}
+                {{ post.user.userName }} <br>
+            {% endif %}
             {% if post.editDate is same as null %}
                 posté le {{ post.creationDate|date('d.m.Y H:i') }} ,
                 {% else %}

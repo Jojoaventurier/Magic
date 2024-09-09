@@ -646,12 +646,16 @@
                         </div>
                         <div class="flex justify-between items-center">
                             <div class="text-sm font-semibold">
-                                {{ comment.user.userName }} • 
-                                {% if comment.updateDate is same as null %}
-                                    le {{ comment.creationDate|date('d.m.Y H:i') }}
-                                {% else %}
-                                    <span class="font-normal">modifié le {{ comment.updateDate|date('d.m.Y H:i') }}</span>
-                                {% endif %}
+                                {% if comment.user is same as null %}
+                            <span class="italic font-normal">[profil supprimé]</span>
+                            {% else %}
+                            {{ comment.user.userName }} • 
+                            {% endif %}
+                            {% if comment.updateDate is same as null %}
+                            <span class="font-normal">le {{ comment.creationDate|date('d.m.Y H:i') }}</span>
+                            {% else %}
+                                <span class="font-normal">modifié le {{ comment.updateDate|date('d.m.Y H:i') }}</span>
+                            {% endif %}
                             </div>
                             {% if app.user is same as comment.user %}
                                 <div class="flex space-x-4">

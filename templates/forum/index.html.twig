@@ -37,12 +37,17 @@
         {% for topic in topics %}
         <div class="postCard">
             <p>
-                Par {{ topic.user.userName }} 
-                {% if topic.editDate is same as null %}
-                    posté le {{ topic.creationDate|date('d.m.Y H:i') }} ,
+                Par {% if topic.user is same as null %}
+                    <span class="italic">[profil supprimé]</span>
                     {% else %}
-                    modifié le {{ topic.editDate|date('d.m.Y H:i') }}
-                {% endif %}
+                    {{ topic.user.userName }} 
+                    {% endif %}
+                    
+                    {% if topic.editDate is same as null %}
+                        posté le {{ topic.creationDate|date('d.m.Y H:i') }} ,
+                        {% else %}
+                        modifié le {{ topic.editDate|date('d.m.Y H:i') }}
+                    {% endif %}
             </p>
             <p>
                 {{ topic.topicTitle }}

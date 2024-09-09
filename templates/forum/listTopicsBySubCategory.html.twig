@@ -15,7 +15,11 @@
 
     {% for topic in topics %}
         <a href="{{ path('app_forum_posts', {'id': topic.id}) }}">{{ topic.topicTitle }}</a><br>
-        Par {{ topic.user.userName }}
+        Par {% if topic.user is same as null %}
+            <span class="italic">[profil supprimé]</span>
+            {% else %}
+            {{ topic.user.userName }}
+            {% endif %}
         {% if topic.editDate is same as null %}
         posté le {{ topic.creationDate|date('d.m.Y H:i') }}<br>
             {% else %}
