@@ -38,28 +38,28 @@
             {% if app.user %}
             {% set isLiked = false %}
 
-            {% if app.user.decksLiked is not null %}
-                {% for likedDeck in app.user.decksLiked %}
-                    {% if deck.deckName == likedDeck.deckName %}
-                        {% set isLiked = true %}
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
+                {% if app.user.decksLiked is not null %}
+                    {% for likedDeck in app.user.decksLiked %}
+                        {% if deck.deckName == likedDeck.deckName %}
+                            {% set isLiked = true %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
 
-            {% if isLiked %}
-                <!-- Link to remove the deck from favorites -->
-                <a href="{{ path('remove_like_deck', {'id': deck.id}) }}" class="inline-flex items-center space-x-1">
-                    <img class="w-4 h-4 mt-1 mx-1" src="https://img.icons8.com/material-rounded/24/like--v1.png" alt="like--v1"/>
-                    <p class="m-0 text-red-600">Retirer des favoris</p>      
-                </a>
-            {% else %}
-                <a href="{{ path('like_deck', {'id': deck.id}) }}">
-                    <div class="border-2 border-red-800 rounded inline-flex items-center space-x-2 px-4 py-1 hover:bg-red-800 hover:text-white transition duration-300">
-                        <p class="m-0">Ajouter le deck aux favoris</p>
-                        <img class="w-4 h-4" src="https://img.icons8.com/material-outlined/24/like--v1.png" alt="like--v1"/>
-                    </div>
-                </a>
-            {% endif %}
+                {% if isLiked %}
+                    <!-- Link to remove the deck from favorites -->
+                    <a href="{{ path('remove_like_deck', {'id': deck.id}) }}" class="inline-flex items-center space-x-1">
+                        <img class="w-4 h-4 mt-1 mx-1" src="https://img.icons8.com/material-rounded/24/like--v1.png" alt="like--v1"/>
+                        <p class="m-0 text-red-600">Retirer des favoris</p>      
+                    </a>
+                {% else %}
+                    <a href="{{ path('like_deck', {'id': deck.id}) }}">
+                        <div class="border-2 border-red-800 rounded inline-flex items-center space-x-2 px-4 py-1 hover:bg-red-800 hover:text-white transition duration-300">
+                            <p class="m-0">Ajouter le deck aux favoris</p>
+                            <img class="w-4 h-4" src="https://img.icons8.com/material-outlined/24/like--v1.png" alt="like--v1"/>
+                        </div>
+                    </a>
+                {% endif %}
             <div class="flex space-x-2">
                 (<img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-rounded/24/like--v1.png" alt="like--v1"/>
                 {{ deck.likes|length }}) 
@@ -107,13 +107,13 @@
                 <h3 class="font-semibold text-white border border-white px-4 py-2  rounded-lg text-center">Votre Commandant</h3>
                 <div id="commandZone" class="w-fit">
                     {% if deck.commander is not null %}
-                    <a href="{{ path('app_card_detail', {'cardId': deck.commander.id}) }}">
-                        <img class="commanderCard transform  rounded-xl bg-white shadow-xl transition duration-300 hover:scale-105" src="{{ deck.commander.image_uris.normal }}">
-                    </a>
+                        <a href="{{ path('app_card_detail', {'cardId': deck.commander.id}) }}">
+                            <img class="commanderCard transform  rounded-xl bg-white shadow-xl transition duration-300 hover:scale-105" src="{{ deck.commander.image_uris.normal }}">
+                        </a>
 
-                    {% if app.user is same as deck.user %}
-                        <a class="flex justify-center text-red-500 text-sm hover:underline mt-4" href="{{ path('delete_commander', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer le commandant</a>
-                    {% endif %}
+                        {% if app.user is same as deck.user %}
+                            <a class="flex justify-center text-red-500 text-sm hover:underline mt-4" href="{{ path('delete_commander', {'user': deck.user.id, 'deck': deck.id}) }}">Supprimer le commandant</a>
+                        {% endif %}
 
                     {% endif %}
                 </div>
@@ -154,7 +154,7 @@
         <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
             <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
                 <label for="searchId" class="sr-only">Rechercher une carte</label>
-                <input type="text" class="animate-bounce focus:animate-none hover:animate-none inline-flex tracking-wide bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
+                <input type="text" class="inline-flex tracking-wide bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
                 <label for="cardSelect" class="sr-only">Choisir une carte</label>
             </div>
             <select class="card" name="cardName" id="cardSelect"></select>
@@ -293,7 +293,7 @@
             <article class="deckView flex justify-center ml-8">
                 <div id="zoom" class="md:w-72 lg:w-96 lg:min-w-96 mr-6 ">
                     <div class="sticky top-48">
-                        <img id="placeholder" class="w-full h-auto object-contain sticky top-48 rounded-xl" src="{{ asset('img/Magic_the_gathering-card_back.jpg') }}">
+                        <img id="placeholder" class="w-full h-auto object-contain sticky top-36 rounded-xl" src="{{ asset('img/Magic_the_gathering-card_back.jpg') }}">
                         <span id="zoomIn">+</span><span id="zoomOut">-</span>
                     </div>
                 </div>
@@ -468,9 +468,16 @@
         </div>
 
         <div id="sideboard" class="shadow p-4 mx-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 transform rounded-lg bg-white transition">
+            {% if stateToken is same as 'Main' %}
             <a href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Sideboard'}) }}">
                 <h3 class="font-semibold hover:underline hover:text-red-800 text-center mb-4">Sideboard</h3>
             </a>
+            {% elseif stateToken is same as 'Side' or stateToken is same as 'Maybe'  %}
+            <a href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Mainboard'}) }}">
+                <h3 class="font-semibold hover:underline hover:text-red-800 text-center mb-4">Mainboard</h3>
+            </a>
+            {% endif %}
+            
             <ul class="list-none">
                 {% for element in compositionSide %}
                         <li>
@@ -523,9 +530,15 @@
         </div>
         
         <div id="maybeboard" class="shadow p-4 mx-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] transform  rounded-lg bg-white duration-300 transition">
+            {% if stateToken is same as 'Main' or stateToken is same as 'Side' %}
             <a href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Maybeboard'}) }}">
                 <h3 class="font-semibold hover:text-red-800 hover:underline text-center mb-4">Maybeboard</h3>
             </a>
+            {% elseif stateToken is same as 'Maybe' %}
+            <a href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Maybeboard'}) }}">
+                <h3 class="font-semibold hover:text-red-800 hover:underline text-center mb-4">Sideboard</h3>
+            </a>
+            {% endif %}
             <ul class="list-none">
                 {% for element in compositionMaybe %}
                         <li>
@@ -577,6 +590,7 @@
         </div>
 
     </div>
+
     <section id="graphSection" class="flex flex-wrap w-screen max-w-screen justify-center my-10">
         <input id="colorCount" type="hidden" value="{{ colorCount|json_encode }}">
         <input id="typeCount" type="hidden" value="{{ typeCount|json_encode }}">
@@ -865,12 +879,13 @@
             const toggleButton = document.getElementById('toggleCommentForm');
             const formContainer = document.getElementById('commentFormContainer');
             const closeButton = document.getElementById('closeCommentForm');
-
-            // Show the form when the button is clicked
-            toggleButton.addEventListener('click', function() {
-                formContainer.classList.toggle('hidden');
-                toggleButton.classList.toggle('hidden');
-            });
+            if(toggleButton) {
+                // Show the form when the button is clicked
+                toggleButton.addEventListener('click', function() {
+                    formContainer.classList.toggle('hidden');
+                    toggleButton.classList.toggle('hidden');
+                });
+            }
 
             // Hide the form when the close button is clicked
             closeButton.addEventListener('click', function() {
