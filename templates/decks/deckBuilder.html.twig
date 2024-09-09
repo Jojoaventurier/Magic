@@ -468,9 +468,16 @@
         </div>
 
         <div id="sideboard" class="shadow p-4 mx-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 transform rounded-lg bg-white transition">
+            {% if stateToken is same as 'Main' %}
             <a href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Sideboard'}) }}">
                 <h3 class="font-semibold hover:underline hover:text-red-800 text-center mb-4">Sideboard</h3>
             </a>
+            {% elseif stateToken is same as 'Side' or stateToken is same as 'Maybe'  %}
+            <a href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Mainboard'}) }}">
+                <h3 class="font-semibold hover:underline hover:text-red-800 text-center mb-4">Mainboard</h3>
+            </a>
+            {% endif %}
+            
             <ul class="list-none">
                 {% for element in compositionSide %}
                         <li>
@@ -523,9 +530,15 @@
         </div>
         
         <div id="maybeboard" class="shadow p-4 mx-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] transform  rounded-lg bg-white duration-300 transition">
+            {% if stateToken is same as 'Main' or stateToken is same as 'Side' %}
             <a href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Maybeboard'}) }}">
                 <h3 class="font-semibold hover:text-red-800 hover:underline text-center mb-4">Maybeboard</h3>
             </a>
+            {% elseif stateToken is same as 'Maybe' %}
+            <a href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Maybeboard'}) }}">
+                <h3 class="font-semibold hover:text-red-800 hover:underline text-center mb-4">Sideboard</h3>
+            </a>
+            {% endif %}
             <ul class="list-none">
                 {% for element in compositionMaybe %}
                         <li>
