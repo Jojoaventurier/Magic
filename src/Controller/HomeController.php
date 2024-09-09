@@ -182,4 +182,25 @@ class HomeController extends AbstractController
         return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
     }
 
+    #[Route('/{user}/Profil', name: 'app_profile')]
+    public function profile(): Response
+    {
+       
+        
+        return $this->render('home/profile.html.twig', [
+            
+        ]);
+    }
+
+    #[Route('/{user}/profile/edit', name: 'app_profile_edit')]
+    public function editProfile(): Response
+    {
+       
+        
+        return $this->render('home/editProfile.html.twig', [
+            
+        ]);
+    }
+
+
 }

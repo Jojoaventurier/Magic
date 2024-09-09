@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon profil{% endblock %}
+
+{% block body %}
+
+<div class="flex flex-wrap justify-center">
+    <div class="w-4/5 m-8">
+        <div class="flex flex-col items-center justify-center h-64 w-64 space-y-4 border rounded p-6">
+            
+            <h1>{{ app.user.username }}</h1>
+
+            <p class="text-sm space-x-4">
+                <span id="followers"></span> Abonnés
+                <span id="following"></span> Abonnements
+            </p>
+            <p class="text-sm">
+                <span id="following" class="pl-2"></span> a rejoint {{ app.user.creationDate|date('d/m/Y') }}
+            </p>
+            <div class="flex flex-col justify-end h-full">
+                <a href="{{ path('app_profile_edit', {'user': app.user.id}) }}" class="text-xs px-2 py-1 bg-red-700 text-white rounded-md">
+                    Modifier le profil
+                </a>
+            </div>
+        </div>
+
+
+        <div class="w-full border space-x-4">
+            <button class="px-3 py-2 border border-red-700 rounded hover:bg-red-800 hover hover:text-white duration-300">Mes decks</button>
+            <div class="text-sm">
+                    <table class="w-4/5">
+                    {% for deck  in app.user.decks %}
+                            <tr class="">
+                                <td>{{ deck.deckName }}</td>
+                                <td>couleurs</td>
+                                <td><img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-outlined/24/comments--v1.png" alt="like--v1"/></td>
+                                <td><img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-outlined/24/like--v1.png" alt="like--v1"/></td>
+                            </tr>
+                    {% endfor %}
+                    </table>
+            </div>
+
+            <button class="px-3 py-2 border border-red-700 rounded hover:bg-red-800 hover hover:text-white duration-300">Decks favoris</button>
+            <div class="text-sm">
+                    <table class="w-4/5">
+                    {% for deck  in app.user.decksLiked %}
+                            <tr class="">
+                                <td>{{ deck.deckName }}</td>
+                                <td>couleurs</td>
+                                <td><img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-outlined/24/comments--v1.png" alt="like--v1"/></td>
+                                <td><img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-outlined/24/like--v1.png" alt="like--v1"/></td>
+                            </tr>
+                    {% endfor %}
+                    </table>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+{# <iframe
+    src="https://player.twitch.tv/?channel=kruidjack&parent=127.0.0.1&muted=true"
+    height="720"
+    width="1280"
+    allowfullscreen>
+</iframe> #}
+
+{% block javascripts %}
+{% endblock %}
+{% endblock %}

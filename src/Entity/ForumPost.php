@@ -28,7 +28,7 @@ class ForumPost
     private ?ForumTopic $forumTopic = null;
 
     #[ORM\ManyToOne(inversedBy: 'forumPosts')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
 
     public function getId(): ?int

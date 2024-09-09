@@ -21,6 +21,7 @@ class Composition
     private ?Card $card = null;
 
     #[ORM\ManyToOne(inversedBy: 'compositions')]
+    #[ORM\JoinColumn(onDelete: "CASCADE")]
     private ?Deck $deck = null;
 
     #[ORM\ManyToOne(inversedBy: 'composition')]

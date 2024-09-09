@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
@@ -59,6 +61,20 @@ class SecurityController extends AbstractController
     public function check(): Response
     {
        return new Response(status: 200);
+    }
+
+    #[Route('/{user}/profile/delete', name: 'app_delete_user')]
+    public function deleteProfile(EntityManagerInterface $entityManager, Request $request)
+    {
+       $user = $this->getUser();
+       $session = $request->getSession()->invalidate();
+
+
+       $entityManager->remove($user);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_home');
+        
     }
 
     

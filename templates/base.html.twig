@@ -10,6 +10,7 @@
         {% endblock %}
       </head>
       <body>
+
         <nav class="flex justify-between py-5">
           <div class="row">
             <div class="row space-x-4 px-4">
@@ -29,7 +30,7 @@
 
           <div class="space-x-2 px-4">
             {% if app.user %}
-            <a class="white hover:underline" href="{{ path('app_profile') }}">Mon profil</a>
+            <a class="white hover:underline" href="{{ path('app_profile', {'user': app.user.id}) }}">Mon profil</a>
             <a class="white hover:underline" href="{{ path('app_logout') }}">Se déconnecter</a>
             {# <a href="{{ path('app_deck_manager', {'user': user.id})}}">MES DECKS</a> #}
             {% else %}
