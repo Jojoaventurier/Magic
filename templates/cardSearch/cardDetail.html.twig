@@ -6,7 +6,7 @@
 
 <input id="cardInput" type="hidden" value="{{ cardId }}">
 
-<div class="flex flex-wrap justify-center items-center w-screen">
+<div id="container" class="flex flex-wrap justify-center items-center w-screen">
 
     <div class="flex flex-col items-center space-y-2 text-sm hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 m-6 rounded p-4">
         <h3 class="px-2 py-1 bg-red-700 text-white rounded">Versions de la carte</h3>
@@ -218,9 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     let tcgArticles = document.getElementById('tcgArticles')
                     let tappedOut = document.getElementById('tappedOut')
                     let legalities = document.getElementById('legalities')
-
                     //let  = document.getElementById('')
-
 
 
                     // Display card image
@@ -377,74 +375,88 @@ document.addEventListener('DOMContentLoaded', function() {
                     ul.classList.add('list-none');  // Tailwind for a clean list
     
                     printings.forEach((printing) => {
-                        
-                            const li = document.createElement('li');
-
-                            li.classList.add('hover:text-red-700', 'cursor-pointer', 'relative', 'text-sm', 'p-1', 'm-1', 'hover:underline');  // Add hover effect and cursor
-
-                           // Fetch set details to get the icon_svg_uri
-                            fetch(`https://api.scryfall.com/sets/${printing.set}`)
+                        console.log(printing);
+                        const li = document.createElement('li');
+                        li.classList.add('hover:text-red-700', 'cursor-pointer', 'relative', 'text-sm', 'p-1', 'm-1', 'hover:underline');  // Add hover effect and cursor
+    
+                        // Fetch set details to get the icon_svg_uri
+                        fetch(`https://api.scryfall.com/sets/${printing.set}`)
                             .then((setResponse) => setResponse.json())
                             .then((setData) => {
+                                console.log(setData)
                                 // Create set icon with fetched icon_svg_uri
                                 const setIcon = document.createElement('img');
                                 setIcon.src = setData.icon_svg_uri;  // Use the icon_svg_uri from the set data
                                 setIcon.alt = printing.set_name;
                                 setIcon.classList.add('w-5', 'h-5', 'mr-2', 'inline-flex');  // Tailwind classes for size and margin
-
-                                // Append the set icon to the list item
-                                li.appendChild(setIcon);
-
-                                // Add set name
+    
+                                // Create a container for the set details
+                                const setDetails = document.createElement('div');
+                                setDetails.classList.add('flex', 'items-center');
+    
+                                // Append the set icon to the set details container
+                                setDetails.appendChild(setIcon);
+    
+                                // Add set name and card number
                                 const setName = document.createElement('span');
-                                setName.innerText = printing.set_name;  // Display set name
-
-                                // Append set name after the icon
-                                li.appendChild(setName);
+                                setName.innerText = `${printing.set_name} (${setData.code.toUpperCase()}) #${printing.collector_number}`;
+                                setName.classList.add('mr-2');  // Add some margin
+                      
+                                // Append set name and attributes to the set details container
+                                setDetails.appendChild(setName);
+    
+                                // Append set details to the list item
+                                li.appendChild(setDetails);
                             })
                             .catch((error) => {
                                 console.error('Error fetching set details:', error);
                             });
     
-                            // Add hover effect to display card image above cursor
                             li.addEventListener('mouseover', (e) => {
                                 const imagePreview = document.createElement('img');
                                 imagePreview.src = printing.image_uris.normal;  // Use normal image size
                                 imagePreview.classList.add('absolute', 'w-72', 'border', 'shadow-lg', 'z-50');
-                                imagePreview.style.top = `${e.pageY}px`;
-                                imagePreview.style.left = `${e.pageX}px`;
+                            
+                                // Define the offset values
+                                const offsetX = -20;  // Adjust this value to move the image to the left or right
+                                const offsetY = 20;  // Adjust this value to move the image up or down
+                            
+                                // Set the position with offsets
+                                imagePreview.style.top = `${e.pageY + offsetY}px`;
+                                imagePreview.style.left = `${e.pageX - offsetX}px`;
+                            
                                 imagePreview.id = 'hoverImagePreview';
                                 document.body.appendChild(imagePreview);
                             });
-    
+                            
                             li.addEventListener('mouseout', () => {
                                 const imagePreview = document.getElementById('hoverImagePreview');
                                 if (imagePreview) imagePreview.remove();  // Remove image on mouse out
                             });
     
-                            // Redirect to the card detail page when clicked
-                            li.addEventListener('click', () => {
-                                const cardDetailUrl = `{{ path('app_card_detail', {'cardId': 'PLACEHOLDER'}) }}`.replace('PLACEHOLDER', printing.id);
-                                window.location.href = cardDetailUrl;  // Redirect to the card detail page
-                            });
+                        // Redirect to the card detail page when clicked
+                        li.addEventListener('click', () => {
+                            const cardDetailUrl = `{{ path('app_card_detail', {'cardId': 'PLACEHOLDER'}) }}`.replace('PLACEHOLDER', printing.id);
+                            window.location.href = cardDetailUrl;  // Redirect to the card detail page
+                        });
     
-                            ul.appendChild(li);
-                        
+                        ul.appendChild(li);
                     });
+    
                     box.classList.remove('hidden');
-                    box.classList.add('flex', 'justify-center')
+                    box.classList.add('flex', 'justify-center');
                     box.appendChild(ul);
                 } else {
                     // Display message if no other printings exist
-                    box.innerHTML = '<p>Cette carte n\'a pas d\'autres impressions.</p>';
+                    box.classList.remove('hidden');
+                    box.classList.add('flex', 'justify-center');
+                    box.innerHTML = '<p class="text-gray-700 italic">Cette carte n\'a pas d\'autres impressions.</p>';
                 }
             })
             .catch((error) => {
                 console.error('Error fetching other printings:', error);
             });
     }
-
-
 
 
 });
