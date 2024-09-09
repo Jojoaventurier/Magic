@@ -82,7 +82,11 @@
             <a id="mhDecks" href="#" target="_blank" class="hover:underline">Voir les decks sur <strong>MAGIC-HUB</strong></a>
         </div>
 
-        <div id="legalities" class="text-xs p-4 m-6 grid grid-cols-2 gap-y-2 gap-x-2 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 rounded">
+
+        <div class="flex flex-col text-center m-6 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 rounded">
+            <h3 class="px-2 py-1 mb-4 border text-black rounded text-sm m-auto">Légalité de la carte</h3>
+            <div id="legalities" class="text-xs p-4 grid grid-cols-2 gap-y-3 gap-x-2 text-left rounded">
+            </div>
         </div>
 
     </div>
@@ -275,10 +279,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                             if (legality === 'legal') {
 
-                            legalityElement.innerHTML = `<span class="text-white p-1 bg-green-500 border border-white">${format.toUpperCase()}</span>`;
+                            legalityElement.innerHTML = `<span class="text-white p-1 mt-1 bg-green-500 border border-white rounded">${format.toUpperCase()}</span>`;
                             legalityBoard.appendChild(legalityElement);
                         } else {
-                            legalityElement.innerHTML = `<span class="text-white p-1 bg-red-500 border border-white">${format.toUpperCase()}</span>`;
+                            legalityElement.innerHTML = `<span class="text-white p-1 mt-1 bg-red-700 border border-white rounded">${format.toUpperCase()}</span>`;
                             legalityBoard.appendChild(legalityElement);
                         }
                     }
