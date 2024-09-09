@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Deck;
+use App\Entity\User;
+use App\Form\UserType;
 use App\Entity\Comment;
 use App\Form\CommentType;
 use App\Repository\DeckRepository;
@@ -181,24 +183,39 @@ class HomeController extends AbstractController
         return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
     }
 
-    #[Route('/{user}/Profil', name: 'app_profile')]
-    public function profile(): Response
+    #[Route('/{user}/profile', name: 'app_profile')]
+    public function profile(User $user): Response
     {
        
-        
         return $this->render('home/profile.html.twig', [
-            
+            'user' => $user
         ]);
     }
 
     #[Route('/{user}/profile/edit', name: 'app_profile_edit')]
-    public function editProfile(): Response
+    public function editProfile(User $user): Response
     {
-       
+       $form = $this->createForm(UserType::class, $user);
         
         return $this->render('home/editProfile.html.twig', [
-            
+            'form' => $form->createView()
         ]);
+    }
+
+
+    #[Route('/follow/{followedUser}', name: 'app_user_follow')]
+    public function followUser(User $followedUser, EntityManagerInterface $entityManager): Response
+    {
+       $user = $this->getUser();
+
+       $user->addFollowedUser($followedUser);
+       $entityManager->persist($user);
+       $entityManager->persist($followedUser);
+
+       $entityManager->flush();
+
+        
+        return $this->redirectToRoute('app_home');
     }
 
 

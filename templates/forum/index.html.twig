@@ -52,7 +52,8 @@
             <p>
                 {{ topic.topicTitle }}
             </p>
-            {% if app.user is same as topic.user %}
+            
+            {% if app.user is same as topic.user and topic.user is not same as null %}
                 <a href="{{ path('edit_topic', {'id': topic.id}) }}">Modifier</a>
                 {# <a href="{{ path('lock_topic', {id : topic.id}) }}">Verrouiller</a> #} 
                 {% endif %}

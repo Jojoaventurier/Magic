@@ -29,6 +29,8 @@
 
     {% if app.user %} <!--Si un utilisateur est connecté, il peut ajouter un sujet à la sous-catégorie du forum-->
         <a href="{{ path('new_topic', {id: subCategory.id}) }}">Créer un sujet</a>
+        {% else %}
+        <p class="italic">Vous devez être connecté pour créer un sujet sur le forum</p>
     {% endif %}
 
 </div>

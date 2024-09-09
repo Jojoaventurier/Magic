@@ -80,6 +80,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'user')]
     private Collection $comments;
 
+    #[ORM\Column(length: 40, nullable: true)]
+    private ?string $discordUsername = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $youtubeChannel = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $twitchUsername = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $privateWebsite = null;
+
+    /**
+     * @var Collection<int, self>
+     */
+    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'followedUsers')]
+    private Collection $followingUsers;
+
+    /**
+     * @var Collection<int, self>
+     */
+    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'followingUsers')]
+    private Collection $followedUsers;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $description = null;
+
     /**
      * @var Collection<int, Deck>
      */
@@ -92,6 +119,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->decks = new ArrayCollection();
         $this->decksLiked = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->followingUsers = new ArrayCollection();
+        $this->followedUsers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -360,6 +389,117 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $comment->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDiscordUsername(): ?string
+    {
+        return $this->discordUsername;
+    }
+
+    public function setDiscordUsername(?string $discordUsername): static
+    {
+        $this->discordUsername = $discordUsername;
+
+        return $this;
+    }
+
+    public function getYoutubeChannel(): ?string
+    {
+        return $this->youtubeChannel;
+    }
+
+    public function setYoutubeChannel(?string $youtubeChannel): static
+    {
+        $this->youtubeChannel = $youtubeChannel;
+
+        return $this;
+    }
+
+    public function getTwitchUsername(): ?string
+    {
+        return $this->twitchUsername;
+    }
+
+    public function setTwitchUsername(?string $twitchUsername): static
+    {
+        $this->twitchUsername = $twitchUsername;
+
+        return $this;
+    }
+
+    public function getPrivateWebsite(): ?string
+    {
+        return $this->privateWebsite;
+    }
+
+    public function setPrivateWebsite(?string $privateWebsite): static
+    {
+        $this->privateWebsite = $privateWebsite;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getFollowingUsers(): Collection
+    {
+        return $this->followingUsers;
+    }
+
+    public function addFollowingUser($followingUser): static
+    {
+        if (!$this->followingUsers->contains($followingUser)) {
+            $this->followingUsers->add($followingUser);
+        }
+
+        return $this;
+    }
+
+    public function removeFollowingUser($followingUser): static
+    {
+        $this->followingUsers->removeElement($followingUser);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getFollowedUsers(): Collection
+    {
+        return $this->followedUsers;
+    }
+
+    public function addFollowedUser($followedUser): static
+    {
+        if (!$this->followedUsers->contains($followedUser)) {
+            $this->followedUsers->add($followedUser);
+            $followedUser->addFollowingUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollowedUser($followedUser): static
+    {
+        if ($this->followedUsers->removeElement($followedUser)) {
+            $followedUser->removeFollowingUser($this);
+        }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }

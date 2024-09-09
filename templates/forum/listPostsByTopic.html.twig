@@ -11,7 +11,7 @@
 <div class="example-wrapper">
 
     <h1>{{ topic.topicTitle }}</h1>
-    {% if app.user is same as topic.user %}
+    {% if app.user is same as topic.user and topic.user is not same as null %}
         <a href="{{ path('edit_topic', {id: topic.id}) }}">Modifier</a>
         <a>Supprimer</a>
     {% endif %}
@@ -47,13 +47,16 @@
             {{ post.textContent }}
         </p>
 
-        {% if app.user is same as post.user %}
+        {% if app.user is same as post.user and post.user is not same as null %}
             <a href="{{ path('edit_post', {'topic': topic.id, 'post': post.id}) }}">Modifier</a>
             <a href="{{ path('delete_post', {id : post.id}) }}">Supprimer</a>
         {% endif %}
     {% endfor %}
-
-    <a href="{{ path('new_post', {topic: topic.id}) }}">Répondre</a>
+        {% if app.user %}
+        <a href="{{ path('new_post', {topic: topic.id}) }}">Répondre</a>
+        {% else %}
+        <p class="italic">Vous devez être connecté pour répondre à un sujet</p>
+        {% endif %}
 
     <div class="navigation flex justify-center mb-8">
         {{ knp_pagination_render(posts) }}        

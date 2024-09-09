@@ -3,63 +3,98 @@
 {% block title %}Mon profil{% endblock %}
 
 {% block body %}
-{% if app.user %}
+
 <div class="flex flex-wrap justify-center">
     <div class="w-4/5 m-8">
         <div class="flex flex-col items-center justify-center h-64 w-64 space-y-4 border rounded p-6">
                 
-                    
-                
-            <h1>{{ app.user.username }}</h1>
+            <h1>
+                {{ user.username }}
+            </h1>
 
             <p class="text-sm space-x-4">
-                <span id="followers"></span> Abonnés
-                <span id="following"></span> Abonnements
+                <span id="following">{{ user.followingUsers|length }}</span> abonnés
+                <span id="followers">{{ user.followedUsers|length }}</span> abonnements
             </p>
             <p class="text-sm">
-                <span id="following" class="pl-2"></span> a rejoint {{ app.user.creationDate|date('d/m/Y') }}
+                <span id="following" class="pl-2"></span> a rejoint {{ user.creationDate|date('d/m/Y') }}
             </p>
+            
             <div class="flex flex-col justify-end h-full">
-                <a href="{{ path('app_profile_edit', {'user': app.user.id}) }}" class="text-xs px-2 py-1 bg-red-700 text-white rounded-md">
-                    Modifier le profil
-                </a>
+                {% if app.user %}
+                    {% if app.user is same as user %}
+                        <a href="{{ path('app_profile_edit', {'user': app.user.id}) }}" class="text-xs px-2 py-1 bg-red-700 text-white rounded-md hover:bg-white hover:text-red-700 duration-300">
+                            Modifier le profil
+                        </a>
+                        {# Check if the current user is already following the profile #}
+                    {% elseif user in app.user.followedUsers  %}
+                        <p class="text-sm italic text-gray-700">Vous suivez cet utilisateur.</p>
+                    {% else %}
+                    <a href="{{ path('app_user_follow', {'followedUser': user.id}) }}" class="text-xs px-2 py-1 bg-red-700 text-white rounded-md hover:bg-white hover:text-red-700 duration-300">
+                        Suivre
+                    </a>
+                    {% endif %}
+                {% else %}
+                    <p class="text-sm italic text-gray-700">Vous devez être connecté pour suivre un profil.</p>
+                {% endif %}
             </div>
         </div>
 
 
-        <div class="w-full border space-x-4">
-            <button class="px-3 py-2 border border-red-700 rounded hover:bg-red-800 hover hover:text-white duration-300">Mes decks</button>
-            <div class="text-sm">
-                    <table class="w-4/5">
-                    {% for deck  in app.user.decks %}
-                            <tr class="">
-                                <td>{{ deck.deckName }}</td>
-                                <td>couleurs</td>
-                                <td><img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-outlined/24/comments--v1.png" alt="like--v1"/></td>
-                                <td><img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-outlined/24/like--v1.png" alt="like--v1"/></td>
-                            </tr>
-                    {% endfor %}
-                    </table>
+        <div class="flex flex-col" x-data="{ showMyDecks: false, showFavDecks: false }">
+            <div class="flex justify-center space-x-4">
+                <!-- Button to toggle "Mes decks" -->
+                <button class="text-sm px-2 py-1 border border-red-700 rounded hover:bg-red-800 hover:text-white duration-300"
+                        x-on:click="showMyDecks = !showMyDecks; showFavDecks = false">
+                        {% if app.user is same as user %}
+                        Mes decks
+                        {% else %}
+                            Decks de {{ user.userName }}
+                        {% endif %}
+                </button>
+                {% if app.user is same as user %}
+                <!-- Button to toggle "Decks favoris" -->
+                <button class="text-sm px-2 py-1 border border-red-700 rounded hover:bg-red-800 hover:text-white duration-300"
+                        x-on:click="showFavDecks = !showFavDecks; showMyDecks = false">
+                    Decks favoris
+                </button>
+                {% endif %}
             </div>
-
-            <button class="px-3 py-2 border border-red-700 rounded hover:bg-red-800 hover hover:text-white duration-300">Decks favoris</button>
-            <div class="text-sm">
-                    <table class="w-4/5">
-                    {% for deck  in app.user.decksLiked %}
-                            <tr class="">
-                                <td>{{ deck.deckName }}</td>
-                                <td>couleurs</td>
-                                <td><img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-outlined/24/comments--v1.png" alt="like--v1"/></td>
-                                <td><img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-outlined/24/like--v1.png" alt="like--v1"/></td>
-                            </tr>
-                    {% endfor %}
-                    </table>
+            <div class="w-full flex justify-center">
+                <!-- "Mes decks" content -->
+                <div class="text-sm" x-show="showMyDecks" x-transition>
+                    
+                        <ul class="list-none">
+                            {% for deck in user.decks %}
+                            <a class="hover:underline hover:text-red-700" href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Main'}) }}">
+                                <li><span class="mr-4">couleurs</span>{{ deck.deckName }} <span class="mr-4 italic">({{ deck.format.formatName }})</span></li>
+                            </a>
+                            {% endfor %}
+                        </ul>
+                </div>
+                {% if app.user is same as user %}
+                <!-- "Decks favoris" content -->
+                <div class="text-sm" x-show="showFavDecks" x-transition>
+                    <ul class="list-none">
+                        {% for deck in app.user.decksLiked %}
+                        <a class="hover:underline hover:text-red-700" href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Main'}) }}">
+                            <li><span class="mr-4">couleurs</span>{{ deck.deckName }} par {% if app.user is same as deck.user %}
+                                (moi)
+                                {% else %}
+                                {{ deck.user.userName }}
+                            {% endif %}</li>
+                        </a>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                
             </div>
         </div>
 
 
     </div>
-    {% endif %}
+
 </div>
 
 {# <iframe
@@ -70,5 +105,8 @@
 </iframe> #}
 
 {% block javascripts %}
+
+
+
 {% endblock %}
 {% endblock %}
