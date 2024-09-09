@@ -436,6 +436,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     box.appendChild(ul);
                 } else {
                     // Display message if no other printings exist
+                    box.classList.remove('hidden');
+                    box.classList.add('flex', 'justify-center')
                     box.innerHTML = '<p>Cette carte n\'a pas d\'autres impressions.</p>';
                 }
             })
