@@ -10,7 +10,7 @@
 
     <div class="space-y-2 block max-w-sm p-6 m-6 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
         <h2><span class='bold'>{{ deck.deckName }}</span></h2>
-        <h2 class="text-sm hover:underline">par <a href="#profil">{{ deck.user.username }}</a></h2>
+        <h2 class="text-sm hover:underline">par <a href="{{ path('app_profile', {'user': deck.user.id}) }}">{{ deck.user.username }}</a></h2>
         <span class="pl-4">
             <p class="font-normal text-sm italic text-gray-700 dark:text-gray-400">
                 créé le <span class="font-semibold">{{ deck.creationDate|date('d.m.Y à H:i') }}</span>

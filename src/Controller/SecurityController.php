@@ -73,8 +73,6 @@ class SecurityController extends AbstractController
        
         // Clear the security token to avoid the refresh user error
         $tokenStorage->setToken(null);
-
-        
         $entityManager->flush();
 
         return $this->redirectToRoute('app_home');

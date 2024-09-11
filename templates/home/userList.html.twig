@@ -1,33 +1,57 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Abonnés / Abonnements{% endblock %}
+{% block title %}{% endblock %}
 
 {% block body %}
 
-<div class="flex justify-center w-full mt-6">
-    <div>
-        <button>Abonnés</button>
+<div class="flex justify-center w-full mt-6 space-x-10">
+
+    <div class="m-4 flex flex-col">
+        {% if param is same as 'following' %}
+            
+        
+        <h2 class="text-sm text-center px-2 py-1 rounded bg-red-800 text-white mb-2">Abonnés</h2>
         <div>
-            {% for user in app.user.followingUsers %}
-            <a href={{ path('app_profile', {'user': user.id}) }} class="hover:underline">
-                <li>{{ user.userName }}</li>
-            </a> 
-            {% endfor %}
+            <ul class="list-none">
+                {% for el in user.followingUsers %}
+                <li class="py-1 border-b">
+                    <a href={{ path('app_profile', {'user': el.id}) }} class="hover:underline hover:text-red-800">
+                        {{ el.userName }}
+                    </a>
+                </li>
+                
+                {% endfor %}
+            </ul>
         </div>
     </div>
 
-    <div>
-        <button>Abonnements</button>
+    {% elseif param is same as 'followed' %}
+
+    <div class="m-4">
+        <h2 class="text-sm text-center px-2 py-1 rounded bg-red-800 text-white mb-2">Abonnements</h2>
         <div>
-            {% for user in app.user.followingUsers %}
-            <a href={{ path('app_profile', {'user': user.id}) }} class="hover:underline">
-                <li>{{ user.userName }}</li>
-            </a> 
-            {% endfor %}
+            <ul class="list-none">
+                {% for el in user.followedUsers %}
+                <li>
+                    <a href={{ path('app_profile', {'user': el.id}) }} class="hover:underline hover:text-red-800">
+                        {{ el.userName }}
+                    </a> 
+                    {% if app.user is same as user %}
+                    <span>
+                        <a class="text-xs italic hover:underline hover:text-red-800" href="{{ path('app_user_unfollow', {'unfollowedUser': el.id, 'location': 'list'})}}">
+                           (se désabonner) 
+                        </a>
+                    </span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
+
+
+    {% endif %}
 </div>
-
 
 
 {% block javascripts %}

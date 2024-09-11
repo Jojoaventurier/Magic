@@ -5,18 +5,19 @@
 {% block body %}
 
 <div class="flex flex-wrap justify-center">
-    <div class="w-4/5 m-8">
+    <div class="w-4/5 m-8 inline-flex justify-items">
 
         <div class="flex flex-col items-center justify-center h-64 w-64 space-y-4 border rounded p-6">
-
             <h1>
                 {{ user.userName }}
             </h1>
 
             <p class="text-sm space-x-4">
-                <a class="hover:underline hover:text-red-800 text-" href="{{ path('app_user_list', {'user': user.id}) }}">
-                    <span id="following">{{ user.followingUsers|length }}</span> abonnés
+                <a class="hover:underline hover:text-red-800 text-" href="{{ path('app_user_list', {'user': user.id, 'param': 'followed'}) }}">
                     <span id="followers">{{ user.followedUsers|length }}</span> abonnements
+                </a>
+                <a class="hover:underline hover:text-red-800 text-" href="{{ path('app_user_list', {'user': user.id, 'param': 'following'}) }}">
+                    <span id="following">{{ user.followingUsers|length }}</span> abonnés
                 </a>
             </p>
             <p class="text-sm">
@@ -32,7 +33,7 @@
                         {# Check if the current user is already following the profile #}
                     {% elseif user in app.user.followedUsers  %}
                         <p class="text-sm italic text-gray-700">Vous suivez cet utilisateur.</p>
-                        <a href="{{ path('app_user_unfollow', {'unfollowedUser': user.id}) }}" class="text-xs hover:underline hover:text-red-800">(Ne plus suivre)</a>
+                        <a href="{{ path('app_user_unfollow', {'unfollowedUser': user.id, 'location': 'profile'}) }}" class="text-xs hover:underline hover:text-red-800">(Ne plus suivre)</a>
                     {% else %}
                     <a href="{{ path('app_user_follow', {'followedUser': user.id}) }}" class="text-xs px-2 py-1 bg-red-700 text-white rounded-md hover:bg-white hover:text-red-700 duration-300">
                         Suivre
@@ -43,6 +44,20 @@
                 {% endif %}
             </div>
         </div>
+
+        <div class="flex flex-col text-center justify-center justify-items w-full ">
+            <h3 class="hidden">Description</h3>
+            <p>
+                {% if user.description is not null %}
+                    {{ user.description }}
+                    {% else %}
+                    Aucune description pour le moment...   
+                {% endif %}
+            </p>
+        </div>
+
+    </div>
+</div>
 
         <!-- Decks Section -->
         <div class="flex flex-col" x-data="{ showMyDecks: false, showFavDecks: false }">
@@ -138,8 +153,8 @@
                 {% endif %}
             </div>
         </div>
-    </div>
-</div>
+
+
 
 {# <iframe
     src="https://player.twitch.tv/?channel=kruidjack&parent=127.0.0.1&muted=true"

@@ -200,9 +200,18 @@ class HomeController extends AbstractController
     }
 
     #[Route('/{user}/profile/edit', name: 'app_profile_edit')]
-    public function editProfile(User $user): Response
+    public function editProfile(User $user, Request $request, EntityManagerInterface $entityManager): Response
     {
        $form = $this->createForm(UserType::class, $user);
+       $form->handleRequest($request);
+       if ($form->isSubmitted() && $form->isValid()) {
+            $user = $form->getData();
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_profile', ['user' => $user->getId()]);
+       }
         
         return $this->render('home/editProfile.html.twig', [
             'form' => $form->createView()
@@ -225,8 +234,8 @@ class HomeController extends AbstractController
         return $this->redirectToRoute('app_profile', ['user' => $followedUser->getId()]);
     }
 
-    #[Route('/unfollow/{unfollowedUser}', name: 'app_user_unfollow')]
-    public function unfollowUser(User $unfollowedUser, EntityManagerInterface $entityManager): Response
+    #[Route('/{location}/unfollow/{unfollowedUser}', name: 'app_user_unfollow')]
+    public function unfollowUser(User $unfollowedUser, EntityManagerInterface $entityManager, String $location): Response
     {
        $user = $this->getUser();
 
@@ -236,17 +245,21 @@ class HomeController extends AbstractController
 
        $entityManager->flush();
 
-        
-        return $this->redirectToRoute('app_profile', ['user' => $unfollowedUser->getId()]);
+       if($location === 'list') {
+            return $this->redirectToRoute('app_user_list', ['user' => $user->getId(), 'param' => 'followed']);
+        } else {
+            return $this->redirectToRoute('app_profile', ['user' => $unfollowedUser->getId()]);
+        }
     }
 
-    #[Route('/{user}/list', name: 'app_user_list')]
-    public function listUsers(User $user): Response
-    {
-
+    #[Route('/{user}/list/{param}', name: 'app_user_list')]
+    public function listUsers(User $user, String $param): Response
+    {   
+        
         
         return $this->render('home/userList.html.twig', [
-            'user' => $user->getId()
+            'user' => $user,
+            'param' => $param
         ]);
     }
 
