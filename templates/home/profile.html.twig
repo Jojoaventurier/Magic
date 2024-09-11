@@ -6,9 +6,42 @@
 
 <div class="flex flex-wrap justify-center">
     <div class="w-4/5 m-8">
-        <!-- Profile Section (as before) -->
+
         <div class="flex flex-col items-center justify-center h-64 w-64 space-y-4 border rounded p-6">
-            <!-- Profile info (unchanged) -->
+
+            <h1>
+                {{ user.userName }}
+            </h1>
+
+            <p class="text-sm space-x-4">
+                <a class="hover:underline hover:text-red-800 text-" href="{{ path('app_user_list', {'user': user.id}) }}">
+                    <span id="following">{{ user.followingUsers|length }}</span> abonnés
+                    <span id="followers">{{ user.followedUsers|length }}</span> abonnements
+                </a>
+            </p>
+            <p class="text-sm">
+                <span id="following" class="pl-2"></span> a rejoint {{ user.creationDate|date('d/m/Y') }}
+            </p>
+
+            <div class="flex flex-col justify-end h-full">
+                {% if app.user %}
+                    {% if app.user is same as user %}
+                        <a href="{{ path('app_profile_edit', {'user': app.user.id}) }}" class="text-xs px-2 py-1 bg-red-700 text-white rounded-md hover:bg-white hover:text-red-700 duration-300">
+                            Modifier le profil
+                        </a>
+                        {# Check if the current user is already following the profile #}
+                    {% elseif user in app.user.followedUsers  %}
+                        <p class="text-sm italic text-gray-700">Vous suivez cet utilisateur.</p>
+                        <a href="{{ path('app_user_unfollow', {'unfollowedUser': user.id}) }}" class="text-xs hover:underline hover:text-red-800">(Ne plus suivre)</a>
+                    {% else %}
+                    <a href="{{ path('app_user_follow', {'followedUser': user.id}) }}" class="text-xs px-2 py-1 bg-red-700 text-white rounded-md hover:bg-white hover:text-red-700 duration-300">
+                        Suivre
+                    </a>
+                    {% endif %}
+                {% else %}
+                    <p class="text-sm italic text-gray-700">Vous devez être connecté pour suivre un profil.</p>
+                {% endif %}
+            </div>
         </div>
 
         <!-- Decks Section -->

@@ -22,7 +22,6 @@ class UserType extends AbstractType
             ->add('discordUsername', TextType::class)
             ->add('youtubeChannel', TextType::class)
             ->add('twitchUsername', TextType::class)
-            ->add('privateWebsite', TextType::class)
             ->add('submit', SubmitType::class)
             
         ;

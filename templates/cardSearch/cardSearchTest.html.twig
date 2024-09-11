@@ -133,7 +133,7 @@
 
             <div class="inline-flex justify-center space-x-3 p-2 bg-white rounded-md">
                 <input type="text" id="searchInput" class="border border-red-700 bg-white text-sm rounded px-4 py-2 w-96 focus:ring-2 focus:outline-none outline-none hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" 
-                {% if searchToken is same as 'artist' %}
+                {% if searchToken is same as 'artist' or searchToken is same as 'active' %}
                     value="{{ searchParameter }}"
                 {% endif %}  
                 placeholder="Entrez un terme de recherche...">

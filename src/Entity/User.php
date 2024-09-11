@@ -89,8 +89,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $twitchUsername = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $privateWebsite = null;
 
     /**
      * @var Collection<int, self>
@@ -429,17 +427,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPrivateWebsite(): ?string
-    {
-        return $this->privateWebsite;
-    }
-
-    public function setPrivateWebsite(?string $privateWebsite): static
-    {
-        $this->privateWebsite = $privateWebsite;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, self>

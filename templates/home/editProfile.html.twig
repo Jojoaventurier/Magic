@@ -29,11 +29,6 @@
                 {{ form_widget(form.discordUsername, {'attr': {'class': 'w-full px-4 py-2 border border-red-700 text-sm rounded focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 hover:shadow-md shadow duration-300'}}) }}
             </div>
 
-            <div class="space-y-2">
-                <label for="privateWebsite" class="block text-sm font-medium text-gray-700"><span class="inline-flex space-x-2">Site Web <img class="w-5 mx-2" src="https://img.icons8.com/ios/50/internet--v1.png" alt="internet--v1"/></span></label>
-                {{ form_widget(form.privateWebsite, {'attr': {'class': 'w-full px-4 py-2 border border-red-700 text-sm rounded focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 hover:shadow-md shadow duration-300'}}) }}
-            </div>
-
             <div>
                 {{ form_row(form.submit, { 'label': 'Confirmer les modifications', 'attr': {'class': 'h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900 hover:shadow-md shadow duration-300 text-sm'}}) }}
             </div>

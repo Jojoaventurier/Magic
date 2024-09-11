@@ -34,10 +34,11 @@
 
         <div class="ninety">
             <div class="flex justify-center">
+
                 <input type="text" class="search-field w-1/2 rounded-md border-gray-200 p-2 py-2.5 pe-10 shadow-sm sm:text-sm focus:outline-none" name="search" id="searchId" placeholder="Cherchez une carte...">
-                <button class="text-white border ml-2 p-2 border-white rounded-md hover:bg-white hover:text-red-700 duration-300" type="button" id="researchStart">
+                <a id="searchUrl" href="#" class="text-white border ml-2 p-2 border-white rounded-md hover:bg-white hover:text-red-700 duration-300">
                     GO
-                </button>
+                </a>
 
             </div>
 
@@ -209,23 +210,37 @@
             } else {
                 console.error('Spoiler carousel not found');
             }
-        };
 
-        function enlargeCard(src) {
-            const modal = document.createElement('div');
-            modal.classList.add('fixed', 'inset-0', 'bg-black', 'bg-opacity-75', 'flex', 'justify-center', 'items-center', 'z-50');
+            function enlargeCard(src) {
+                const modal = document.createElement('div');
+                modal.classList.add('fixed', 'inset-0', 'bg-black', 'bg-opacity-75', 'flex', 'justify-center', 'items-center', 'z-50');
+    
+                const card = document.createElement('img');
+                card.src = src;
+                card.classList.add('h-auto', 'w-auto', 'max-w-screen-sm', 'shadow-lg', 'rounded');
+    
+                modal.onclick = function() {
+                    modal.remove();
+                };
+    
+                modal.appendChild(card);
+                document.body.appendChild(modal);
+            }
 
-            const card = document.createElement('img');
-            card.src = src;
-            card.classList.add('h-auto', 'w-auto', 'max-w-screen-sm', 'shadow-lg', 'rounded');
+            const searchUrl = "{{ path('app_search', {'search': 'active', 'parameter': 'PLACEHOLDER'}) }}"
 
-            modal.onclick = function() {
-                modal.remove();
-            };
+            let link = document.getElementById('searchUrl')
+            link.addEventListener('click', function() {
+            let placeholder = document.getElementById('searchId').value
 
-            modal.appendChild(card);
-            document.body.appendChild(modal);
+            if (placeholder != null) {
+                let updatedUrl = searchUrl.replace('PLACEHOLDER', placeholder);
+                link.href = updatedUrl;
+            }
+        })
         }
+        
+        
     </script>
 
 

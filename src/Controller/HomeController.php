@@ -70,7 +70,7 @@ class HomeController extends AbstractController
     public function advancedSearch(String $search, String $parameter): Response
     {
         
-       $tokenValues = ['basic', 'artist', 'set']; 
+    //    $tokenValues = ['basic', 'artist', 'set', 'active']; 
        if ($search == 'artist') {
        
         return $this->render('cardSearch/cardSearchTest.html.twig', [
@@ -83,6 +83,13 @@ class HomeController extends AbstractController
                 'searchToken' => $search,
                 'searchParameter' => $parameter
             ]);
+
+        }else if($search == 'active') {
+            return $this->render('cardSearch/cardSearchTest.html.twig', [
+                'searchToken' => $search,
+                'searchParameter' => $parameter
+            ]);
+
         } else {
             return $this->render('cardSearch/cardSearchTest.html.twig', [
                 'searchToken' => $search,
@@ -215,7 +222,32 @@ class HomeController extends AbstractController
        $entityManager->flush();
 
         
-        return $this->redirectToRoute('app_home');
+        return $this->redirectToRoute('app_profile', ['user' => $followedUser->getId()]);
+    }
+
+    #[Route('/unfollow/{unfollowedUser}', name: 'app_user_unfollow')]
+    public function unfollowUser(User $unfollowedUser, EntityManagerInterface $entityManager): Response
+    {
+       $user = $this->getUser();
+
+       $user->removeFollowedUser($unfollowedUser);
+       $entityManager->persist($user);
+       $entityManager->persist($unfollowedUser);
+
+       $entityManager->flush();
+
+        
+        return $this->redirectToRoute('app_profile', ['user' => $unfollowedUser->getId()]);
+    }
+
+    #[Route('/{user}/list', name: 'app_user_list')]
+    public function listUsers(User $user): Response
+    {
+
+        
+        return $this->render('home/userList.html.twig', [
+            'user' => $user->getId()
+        ]);
     }
 
 

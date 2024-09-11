@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Abonnés / Abonnements{% endblock %}
+
+{% block body %}
+
+<div class="flex justify-center w-full mt-6">
+    <div>
+        <button>Abonnés</button>
+        <div>
+            {% for user in app.user.followingUsers %}
+            <a href={{ path('app_profile', {'user': user.id}) }} class="hover:underline">
+                <li>{{ user.userName }}</li>
+            </a> 
+            {% endfor %}
+        </div>
+    </div>
+
+    <div>
+        <button>Abonnements</button>
+        <div>
+            {% for user in app.user.followingUsers %}
+            <a href={{ path('app_profile', {'user': user.id}) }} class="hover:underline">
+                <li>{{ user.userName }}</li>
+            </a> 
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+
+{% block javascripts %}
+{% endblock %}
+{% endblock %}
