@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+
+
+<h2>Select a user to chat with</h2>
+
+<ul>
+    {% for user in users %}
+        <li>
+            <a href="{{ path('start_conversation', { 'userId': user.id }) }}">
+                {{ user.userName }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+
+{% block javascripts %}
+{% endblock %}
+{% endblock %}

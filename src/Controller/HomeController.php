@@ -178,7 +178,7 @@ class HomeController extends AbstractController
         return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
     }
 
-    #[Route('/deck/{id}/likedremoved', name: 'remove_like_deck')]
+    #[Route('/deck/{id}/likeremoved', name: 'remove_like_deck')]
     public function removeLike(Deck $deck, EntityManagerInterface $entityManager): Response
     {   
         $user = $this->getUser();

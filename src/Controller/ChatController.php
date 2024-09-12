@@ -63,11 +63,11 @@ class ChatController extends AbstractController
      * @Route("/users", name="user_list", methods={"GET"})
      */
     #[Route('/users', name: 'user_list')]
-    public function listUsers(): Response
+    public function listUsers(UserRepository $userRepository): Response
     {
-        $users = $this->userRepository->findAll();
-        
-        return $this->render('chat/user_list.html.twig', [
+        $users = $userRepository->findAll();
+            dd($users);
+        return $this->render('chat/userList.html.twig', [
             'users' => $users
         ]);
     }
