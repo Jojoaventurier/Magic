@@ -91,4 +91,15 @@ class Conversation
 
         return $this;
     }
+
+    public function getOtherParticipant(User $currentUser): ?User
+{
+    foreach ($this->participants as $participant) {
+        if ($participant !== $currentUser) {
+            return $participant;
+        }
+    }
+
+    return null;
+}
 }

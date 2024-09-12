@@ -3,3 +3,11 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+
+# config/routes.yaml
+chat:
+    path: /chat/{id}
+    controller: App\Controller\ChatController::chat
+    requirements:
+        id: \d+

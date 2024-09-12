@@ -7,7 +7,9 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Entity\Comment;
 use App\Form\CommentType;
+use App\Entity\Conversation;
 use App\Repository\DeckRepository;
+use App\Repository\ConversationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,12 +20,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class HomeController extends AbstractController
 {
     
-    #[Route('/home', name: 'app_home')]
-    public function index(): Response
+    #[Route('/home', name: 'app_home', methods: ['GET'])]
+    public function index(ConversationRepository $conversationRepository): Response
     {
+        $conversations = null;
+        $user = $this->getUser();
+
+        if ($user) {
+            // Retrieve existing conversations for the logged-in user
+            $conversations = $conversationRepository->findByParticipant($user);
+        }
 
         return $this->render('home/index.html.twig', [
-
+            'conversations' => $conversations,
         ]);
     }
 

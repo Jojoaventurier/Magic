@@ -4,6 +4,28 @@
 
 {% block body %}
 
+{% if app.user %}
+<a href="{{ path('user_list') }}" class="px-4 py-2">Chat</a>
+{% endif %}
+
+{% if conversations is not same as null %}
+    <h2>Your Conversations</h2>
+    <ul>
+        {% for conversation in conversations %}
+            <li>
+                <a href="{{ path('chat', { id: conversation.id }) }}">
+                    Chat with {{ conversation.getOtherParticipant(app.user).username }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You don't have any conversations yet.</p>
+    <a href="{{ path('user_list') }}" class="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900 hover:shadow-md shadow duration-300">
+        Start a new conversation
+    </a>
+{% endif %}
+
 <div class="row-container gradient">
     <div class="column">
         <h1 class='white title-homepage justify-center'>Bienvenue sur <br><span class="bold">Magic-Hub</span></h1>

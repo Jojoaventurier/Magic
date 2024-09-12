@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\Conversation;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Conversation>
@@ -14,6 +15,20 @@ class ConversationRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Conversation::class);
+    }
+
+
+    /**
+     * Find conversations for a specific participant.
+     */
+    public function findByParticipant(User $user): array
+    {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.participants', 'p')
+            ->where('p = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
     }
 
     //    /**

@@ -112,6 +112,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $conversations;
 
     /**
+     * @var Collection<int, Message>
+     */
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'author')]
+    private Collection $messages;
+
+    /**
      * @var Collection<int, Deck>
      */
 
@@ -126,6 +132,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->followingUsers = new ArrayCollection();
         $this->followedUsers = new ArrayCollection();
         $this->conversations = new ArrayCollection();
+        $this->messages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -520,6 +527,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->conversations->removeElement($conversation)) {
             $conversation->removeParticipant($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Message $message): static
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages->add($message);
+            $message->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Message $message): static
+    {
+        if ($this->messages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getAuthor() === $this) {
+                $message->setAuthor(null);
+            }
         }
 
         return $this;
