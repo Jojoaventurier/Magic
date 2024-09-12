@@ -31,6 +31,17 @@ class ConversationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findConversationBetweenUsers(User $user1, User $user2)
+    {
+        return $this->createQueryBuilder('c')
+            ->join('c.participants', 'p')
+            ->where('p.id = :user1 OR p.id = :user2')
+            ->setParameter('user1', $user1->getId())
+            ->setParameter('user2', $user2->getId())
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     //    /**
     //     * @return Conversation[] Returns an array of Conversation objects
     //     */

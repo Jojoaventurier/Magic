@@ -10,7 +10,7 @@
 <ul>
     {% for user in users %}
         <li>
-            <a href="{{ path('start_conversation', { 'userId': user.id }) }}">
+            <a href="{{ path('chatting', { 'id': user.id }) }}">
                 {{ user.userName }}
             </a>
         </li>

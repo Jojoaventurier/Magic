@@ -1,23 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier Commentaire{% endblock %}
+{% block title %}Chat{% endblock %}
 
 {% block body %}
 
 
-
+{% if messages is defined %}
 <div id="chat-box">
+   
     {% for message in messages %}
         <div class="message">
             <strong>{{ message.author.username }}:</strong> {{ message.content }}
         </div>
     {% endfor %}
 </div>
-
+{% endif %}
 {{ form_start(form) }}
     {{ form_widget(form.content) }}
     <button type="submit">Send</button>
 {{ form_end(form) }}
+
+
 
 
 {% block javascripts %}

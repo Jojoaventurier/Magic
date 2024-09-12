@@ -66,7 +66,7 @@ class ChatController extends AbstractController
     public function listUsers(UserRepository $userRepository): Response
     {
         $users = $userRepository->findAll();
-            dd($users);
+            // dd($users);
         return $this->render('chat/userList.html.twig', [
             'users' => $users
         ]);

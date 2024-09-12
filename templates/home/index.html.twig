@@ -6,7 +6,7 @@
 
 {% if app.user %}
 <a href="{{ path('user_list') }}" class="px-4 py-2">Chat</a>
-{% endif %}
+
 
 {% if conversations is not same as null %}
     <h2>Your Conversations</h2>
@@ -25,7 +25,7 @@
         Start a new conversation
     </a>
 {% endif %}
-
+{% endif %}
 <div class="row-container gradient">
     <div class="column">
         <h1 class='white title-homepage justify-center'>Bienvenue sur <br><span class="bold">Magic-Hub</span></h1>
