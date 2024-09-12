@@ -66,7 +66,7 @@
                 {% endif %}
             </div>
         </div>
-        {% if user.twitchUsername is not same as 'twitch.tv/' %}
+        {% if user.twitchUsername is not same as 'twitch.tv/' and user.twitchUsername is not null %}
         <iframe class="mx-auto"
         src="https://player.twitch.tv/?channel={{ user.twitchUsername[10:] }}&parent=127.0.0.1&muted=true"
 
