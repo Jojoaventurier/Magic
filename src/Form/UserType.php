@@ -7,6 +7,7 @@ use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -27,11 +28,34 @@ class UserType extends AbstractType
                     'class' => 'w-full px-4 py-2 border border-red-700 text-sm rounded focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 hover:shadow-md shadow duration-300'
                 ]
             ])
-            ->add('discordUsername', TextType::class, ['required' => false])
-            ->add('youtubeChannel', TextType::class, ['required' => false])
-            ->add('twitchUsername', TextType::class, ['required' => false])
+            ->add('discordUsername', TextType::class, [
+                'required' => false,
+                'constraints' => [
+                    new Regex([
+                        'pattern' => '/^discord\.gg\/.*$/',
+                        'message' => 'Please provide a valid Discord invite link starting with "discord.gg/".',
+                    ])
+                ],
+            ])
+            ->add('youtubeChannel', TextType::class, [
+                'required' => false,  
+                'constraints' => [
+                    new Regex([
+                        'pattern' => '/^youtube\.com\/.*$/',
+                        'message' => 'Please provide a valid YouTube channel link starting with "youtube.com/".',
+                    ])
+                ],
+            ])
+            ->add('twitchUsername', TextType::class, [
+                'required' => false,
+                'constraints' => [
+                    new Regex([
+                        'pattern' => '/^twitch\.tv\/.*$/',
+                        'message' => 'Please provide a valid Twitch link starting with "twitch.tv/".',
+                    ])
+                ],
+            ])
             ->add('submit', SubmitType::class)
-            
         ;
     }
 

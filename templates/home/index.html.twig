@@ -233,12 +233,14 @@
             link.addEventListener('click', function() {
             let placeholder = document.getElementById('searchId').value
 
-            if (placeholder != null) {
+            if (!placeholder) {
+                link.href = "{{ path('app_search', {'search': 'basic', 'parameter': 'none'}) }}";
+            } else {
                 let updatedUrl = searchUrl.replace('PLACEHOLDER', placeholder);
                 link.href = updatedUrl;
             }
         })
-        }
+    }
         
         
     </script>

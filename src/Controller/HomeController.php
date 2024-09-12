@@ -202,8 +202,21 @@ class HomeController extends AbstractController
     #[Route('/{user}/profile/edit', name: 'app_profile_edit')]
     public function editProfile(User $user, Request $request, EntityManagerInterface $entityManager): Response
     {
+          // Check if fields are empty and set default values
+    if (empty($user->getDiscordUsername())) {
+        $user->setDiscordUsername('discord.gg/');
+    }
+
+    if (empty($user->getYoutubeChannel())) {
+        $user->setYoutubeChannel('youtube.com/');
+    }
+
+    if (empty($user->getTwitchUsername())) {
+        $user->setTwitchUsername('twitch.tv/');
+    }
        $form = $this->createForm(UserType::class, $user);
        $form->handleRequest($request);
+
        if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
 
@@ -214,7 +227,8 @@ class HomeController extends AbstractController
        }
         
         return $this->render('home/editProfile.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'user' => $user
         ]);
     }
 

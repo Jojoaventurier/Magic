@@ -7,7 +7,7 @@
 <div class="flex flex-wrap justify-center">
     <div class="w-4/5 m-8 inline-flex justify-items">
 
-        <div class="flex flex-col items-center justify-center h-64 w-64 space-y-4 border rounded p-6">
+        <div class="flex flex-col items-center justify-center h-64 w-64 space-y-4 border rounded p-6 mx-auto">
             <h1>
                 {{ user.userName }}
             </h1>
@@ -23,6 +23,28 @@
             <p class="text-sm">
                 <span id="following" class="pl-2"></span> a rejoint {{ user.creationDate|date('d/m/Y') }}
             </p>
+
+            <div>
+                <p class="text-xs font-semibold">
+                    {% if user.discordUsername is same as 'discord.gg/' %}
+                        {% else %}
+                        {{ user.discordUsername }}
+                    {% endif %}
+
+                </p>
+                <p class="text-xs font-semibold">
+                    {% if user.twitchUsername is same as 'twitch.tv/' %}
+                        {% else %}
+                    {{ user.twitchUsername }}
+                    {% endif %}
+                </p>
+                <p class="text-xs font-semibold">
+                    {% if user.youtubeChannel is same as 'youtube.com/' %}
+                        {% else %}
+                    {{ user.youtubeChannel }}
+                    {% endif %}
+                </p>
+            </div>
 
             <div class="flex flex-col justify-end h-full">
                 {% if app.user %}
@@ -44,10 +66,19 @@
                 {% endif %}
             </div>
         </div>
+        {% if user.twitchUsername is not same as 'twitch.tv/' %}
+        <iframe class="mx-auto"
+        src="https://player.twitch.tv/?channel={{ user.twitchUsername[10:] }}&parent=127.0.0.1&muted=true"
 
-        <div class="flex flex-col text-center justify-center justify-items w-full ">
+        width="720"
+        allowfullscreen>
+    </iframe> 
+        {% endif %}
+         
+
+        <div class="flex flex-col text-center justify-center justify-items mx-auto shadow-md rounded-md p-8">
             <h3 class="hidden">Description</h3>
-            <p>
+            <p class="text-sm">
                 {% if user.description is not null %}
                     {{ user.description }}
                     {% else %}
@@ -152,16 +183,14 @@
                 </div>
                 {% endif %}
             </div>
+
+            
+
         </div>
 
 
 
-{# <iframe
-    src="https://player.twitch.tv/?channel=kruidjack&parent=127.0.0.1&muted=true"
-    height="720"
-    width="1280"
-    allowfullscreen>
-</iframe> #}
+
 
 {% block javascripts %}
 

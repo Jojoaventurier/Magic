@@ -375,7 +375,6 @@ document.addEventListener('DOMContentLoaded', function() {
     colorOnly.addEventListener('change', fetchCards);
     colorIncluding.addEventListener('change', fetchCards);
     colorless.addEventListener('change', fetchCards);
-
     typeSelect.addEventListener('change', fetchCards);
     subtypeSelect.addEventListener('change', fetchCards);
     artistSearch.addEventListener('change', fetchCards)
@@ -459,8 +458,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-
-
 
     if (searchInput.value) {
         fetchCards(); // Initial fetch when page loads if there is a search parameter given
