@@ -679,7 +679,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>  //TODO max number of cards
 
-        document.addEventListener('DOMContentLoaded', function() { 
+    document.addEventListener('DOMContentLoaded', function() { 
 
             const placeholder = document.getElementById('placeholder');
             const cardImages = document.querySelectorAll('.singleCard');
@@ -727,45 +727,33 @@
                 });
             }
 
-            const stateSelector = document.getElementById('stateSelector');
-
-            if(document.getElementById('saveCardWithColorsForm')) {
-                saveCardForm = document.getElementById('saveCardWithColorsForm');
-            }
-            if(document.getElementById('saveCardFormatForm')) {
-                saveCardForm = document.getElementById('saveCardFormatForm');
-            }
-            if(document.getElementById('saveCardForm')) {
-                saveCardForm = document.getElementById('saveCardForm');
-            }
-
             
             let url;
             let noRestrictions = document.getElementById('noRestrictions')
-
+            console.log(noRestrictions);
             if(researchButton) {
 
                 researchButton.addEventListener('click', function() { 
 
                     const query = searchInput.value; 
 
-                    if(noRestrictions) {
-                        if(noRestrictions.checked) {
-                            url = `https://api.scryfall.com/cards/search?q=name:${query}`;
-                        }
-                    }
-                    if (document.getElementById('saveCommanderForm')) {
-                        url = `https://api.scryfall.com/cards/search?q=is:commander+name:${query}`;
-                    } 
-                    if (document.getElementById('saveCardWithColorsForm')) {
-                        url = `https://api.scryfall.com/cards/search?q=identity<=${document.getElementById('colors').value}+legal:commander+name:${query}`
-                    } 
-                    if (document.getElementById('saveCardFormatForm')) {
-                        url = `https://api.scryfall.com/cards/search?q=legal:${document.getElementById('format').value}+name:${query}`
-                    } 
-                    if (document.getElementById('saveCardForm')) {
+                    if (noRestrictions && noRestrictions.checked) {
                         url = `https://api.scryfall.com/cards/search?q=name:${query}`;
-                    } 
+                    } else {
+                        // Handle other form conditions
+                        if (document.getElementById('saveCommanderForm')) {
+                            url = `https://api.scryfall.com/cards/search?q=is:commander+name:${query}`;
+                        } 
+                        else if (document.getElementById('saveCardWithColorsForm')) {
+                            url = `https://api.scryfall.com/cards/search?q=identity<=${document.getElementById('colors').value}+legal:commander+name:${query}`;
+                        } 
+                        else if (document.getElementById('saveCardFormatForm')) {
+                            url = `https://api.scryfall.com/cards/search?q=legal:${document.getElementById('format').value}+name:${query}`;
+                        } 
+                        else if (document.getElementById('saveCardForm')) {
+                            url = `https://api.scryfall.com/cards/search?q=name:${query}`;
+                        } 
+                    }
                     //TODO gérer la requête dynamiquement en fonction du format ! 
                     console.log(url);
                     fetch(url)
@@ -792,6 +780,29 @@
                         .catch(error => console.error('Erreur:', error));
                 });
             }
+
+            const stateSelector = document.getElementById('stateSelector');
+
+            if(document.getElementById('saveCardWithColorsForm')) {
+                saveCardForm = document.getElementById('saveCardWithColorsForm');
+            }
+            if(document.getElementById('saveCardFormatForm')) {
+                saveCardForm = document.getElementById('saveCardFormatForm');
+            }
+            if(document.getElementById('saveCardForm')) {
+                saveCardForm = document.getElementById('saveCardForm');
+            }
+
+            const baseActionUrl = "{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'PLACEHOLDER'}) }}"; // The base action URL
+
+            stateSelector.addEventListener('change', function() {
+                const selectedState = stateSelector.value; // Get the selected value (Mainboard, Sideboard, etc.)
+                
+                // Update the form action dynamically based on the selected value
+                const newAction = baseActionUrl.replace('PLACEHOLDER', `${selectedState}`);
+                saveCardForm.setAttribute('action', newAction);
+                console.log(newAction);
+            });
 
             if(cardSelect) {
                 // Dynamic modification based on the user's selection in the select element
