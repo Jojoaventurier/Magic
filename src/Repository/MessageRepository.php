@@ -27,18 +27,36 @@ class MessageRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByMostRecentGroupedByReceiver($currentUser) {
+        public function findByMostRecentUser($currentUser)
+        {
+            return $this->createQueryBuilder('m')
+                ->innerJoin('m.author', 'a')
+                ->innerJoin('m.receiver', 'r')
+                ->select('a.userName AS authorName, r.userName AS receiverName, a.id AS authorId, r.id AS receiverId, MAX(m.createdAt) as lastMessageDate')
+                ->andWhere('(m.author = :currentUser OR m.receiver = :currentUser)')
+                ->setParameter('currentUser', $currentUser)
+                // Group by conversation participants, regardless of who is the sender or receiver
+                ->groupBy('a.id, r.id')
+                ->orderBy('lastMessageDate', 'DESC')
+                ->getQuery()
+                ->getResult();
+        }
 
-        return $this->createQueryBuilder('m')
-            ->innerJoin('m.author', 'a') // Join the author entity
-            ->select('a.userName, a.id, MAX(m.createdAt) as lastMessageDate') 
-            ->andWhere('(m.receiver = :receiver)')
-            ->setParameter('receiver', $currentUser)
-            ->groupBy('a.id')
-            ->orderBy('lastMessageDate', 'DESC')
-            ->getQuery()
-            ->getResult();
-    }
+        
+
+
+    // public function findByMostRecentGroupedByReceiver($currentUser) {
+
+    //     return $this->createQueryBuilder('m')
+    //         ->innerJoin('m.author', 'a') // Join the author entity
+    //         ->select('a.userName, a.id, MAX(m.createdAt) as lastMessageDate') 
+    //         ->andWhere('(m.receiver = :currentUser) OR (m.author = :currentUser)')
+    //         ->setParameter('currentUser', $currentUser)
+    //         ->groupBy('a.id')
+    //         ->orderBy('lastMessageDate', 'DESC')
+    //         ->getQuery()
+    //         ->getResult();
+    // }
 
     public function findByUsers($author, $receiver): array
     {

@@ -196,17 +196,26 @@
 
 {% if app.user and app.user is same as user %}
 
-     {% if messages is defined %}
-     <div class="shadow p-6">
+{% if messages is defined %}
+    <div class="shadow p-6">
         <h2>Dernières conversations</h2>
-            {% for author in messages %}
-            <form action="{{ path('chatting') }}" method="POST">
-                <input type="hidden" value="{{ author.id }}" id="otherUserId" name="otherUserId">
-                <input type="submit"  class="btn btn-primary" value="{{ author.userName }}">
-            </form>
-            {% endfor %}
+        {% for message in messages %}
+            {% if message.authorId == app.user.id %}
+                <!-- Current user is the author, show the receiver -->
+                <form action="{{ path('chatting') }}" method="POST">
+                    <input type="hidden" value="{{ message.receiverId }}" id="otherUserId" name="otherUserId">
+                    <input type="submit" class="btn btn-primary" value="{{ message.receiverName }}">
+                </form>
+            {% else %}
+                <!-- Current user is the receiver, show the author -->
+                <form action="{{ path('chatting') }}" method="POST">
+                    <input type="hidden" value="{{ message.authorId }}" id="otherUserId" name="otherUserId">
+                    <input type="submit" class="btn btn-primary" value="{{ message.authorName }}">
+                </form>
+            {% endif %}
+        {% endfor %}
     </div>
-     {% endif %}       
+{% endif %}     
 
     {% if app.user.followingUsers is not empty %}
     <h2>Select a user to chat with</h2>

@@ -193,18 +193,30 @@ class HomeController extends AbstractController
 
     #[Route('/{user}/profile', name: 'app_profile')]
     public function profile(User $user, MessageRepository $messageRepository): Response
-    {   
+    {
         $currentUser = $this->getUser();
-        if($currentUser  === $user) {
-            $messages = $messageRepository->findByMostRecentGroupedByReceiver($currentUser);
+        
+        if ($currentUser === $user) {
+            // Retrieve the messages
+            $messages = $messageRepository->findByMostRecentUser($currentUser);
+    
+        // Filter out duplicates based on conversation between same users
+        $uniqueConversations = [];
+        foreach ($messages as $message) {
+            // Use min and max to ensure a consistent key for each conversation
+            $key = min($message['authorId'], $message['receiverId']) . '-' . max($message['authorId'], $message['receiverId']);
             
+            // Only add unique conversations
+            if (!isset($uniqueConversations[$key])) {
+                $uniqueConversations[$key] = $message;
+            }
+        }
+    
             return $this->render('home/profile.html.twig', [
                 'user' => $user,
-                'messages' => $messages
+                'messages' => $uniqueConversations,
             ]);
-
         } else {
-       
             return $this->render('home/profile.html.twig', [
                 'user' => $user,
             ]);
