@@ -8,6 +8,7 @@ use App\Form\UserType;
 use App\Entity\Comment;
 use App\Form\CommentType;
 use App\Repository\DeckRepository;
+use App\Repository\MessageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -191,13 +192,23 @@ class HomeController extends AbstractController
     }
 
     #[Route('/{user}/profile', name: 'app_profile')]
-    public function profile(User $user): Response
+    public function profile(User $user, MessageRepository $messageRepository): Response
     {   
-        
+        $currentUser = $this->getUser();
+        if($currentUser  === $user) {
+            $messages = $messageRepository->findByMostRecentGroupedByReceiver($currentUser);
+            
+            return $this->render('home/profile.html.twig', [
+                'user' => $user,
+                'messages' => $messages
+            ]);
+
+        } else {
        
-        return $this->render('home/profile.html.twig', [
-            'user' => $user,
-        ]);
+            return $this->render('home/profile.html.twig', [
+                'user' => $user,
+            ]);
+        }
     }
 
     #[Route('/{user}/profile/edit', name: 'app_profile_edit')]

@@ -98,7 +98,7 @@ class ChatController extends AbstractController
         }
     
         $messages = $messageRepository->findByUsers($currentUser, $otherUser);
-    
+        // dd($messages);
         // Handle form submission for new messages
         $message = new Message();
         $form = $this->createForm(MessageType::class, $message);

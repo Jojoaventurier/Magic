@@ -21,7 +21,7 @@
                 </a>
             </p>
             <p class="text-sm">
-                <span id="following" class="pl-2"></span> a rejoint {{ user.creationDate|date('d/m/Y') }}
+                <span id="following" class="pl-2"></span> a rejoint le {{ user.creationDate|date('d/m/Y') }}
             </p>
 
             <div>
@@ -30,7 +30,6 @@
                         {% else %}
                         {{ user.discordUsername }}
                     {% endif %}
-
                 </p>
                 <p class="text-xs font-semibold">
                     {% if user.twitchUsername is same as 'twitch.tv/' %}
@@ -193,22 +192,35 @@
             </form>
         {% endif %}
 
+
+
 {% if app.user and app.user is same as user %}
 
-{% if app.user.followingUsers is not empty %}
-<h2>Select a user to chat with</h2>
-{% endif %}
-
-<ul>
-    {% for user in app.user.followingUsers %}
-        <li>
+     {% if messages is defined %}
+     <div class="shadow p-6">
+        <h2>Dernières conversations</h2>
+            {% for author in messages %}
             <form action="{{ path('chatting') }}" method="POST">
-                <input type="hidden" value="{{ user.id }}" id="otherUserId" name="otherUserId">
-                <input type="submit"  class="btn btn-primary" value="Chat with {{ user.userName }}">
+                <input type="hidden" value="{{ author.id }}" id="otherUserId" name="otherUserId">
+                <input type="submit"  class="btn btn-primary" value="{{ author.userName }}">
             </form>
-        </li>
-    {% endfor %}
-</ul>     
+            {% endfor %}
+    </div>
+     {% endif %}       
+
+    {% if app.user.followingUsers is not empty %}
+    <h2>Select a user to chat with</h2>
+    {% endif %}
+    <ul>
+        {% for user in app.user.followingUsers %}
+            <li>
+                <form action="{{ path('chatting') }}" method="POST">
+                    <input type="hidden" value="{{ user.id }}" id="otherUserId" name="otherUserId">
+                    <input type="submit"  class="btn btn-primary" value="Chat with {{ user.userName }}">
+                </form>
+            </li>
+        {% endfor %}
+    </ul>     
 {% endif %}
 
 

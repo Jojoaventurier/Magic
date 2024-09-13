@@ -16,6 +16,30 @@ class MessageRepository extends ServiceEntityRepository
         parent::__construct($registry, Message::class);
     }
 
+    public function findByMostRecent($author) {
+
+        return $this->createQueryBuilder('m')
+            ->andWhere('(m.author = :author AND m.receiver = :receiver) OR (m.author = :receiver AND m.receiver = :author)')
+            ->setParameter('author', $author)
+            ->setParameter('receiver', $author)
+            ->orderBy('m.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByMostRecentGroupedByReceiver($currentUser) {
+
+        return $this->createQueryBuilder('m')
+            ->innerJoin('m.author', 'a') // Join the author entity
+            ->select('a.userName, a.id, MAX(m.createdAt) as lastMessageDate') 
+            ->andWhere('(m.receiver = :receiver)')
+            ->setParameter('receiver', $currentUser)
+            ->groupBy('a.id')
+            ->orderBy('lastMessageDate', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findByUsers($author, $receiver): array
     {
         return $this->createQueryBuilder('m')
