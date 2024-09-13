@@ -184,17 +184,56 @@
                 {% endif %}
             </div>
 
-            
-
         </div>
+        
+        {% if app.user is not same as user and app.user in user.followedUsers %}
+            <form action="{{ path('chatting') }}" method="POST">
+                <input type="hidden" value="{{ user.id }}" id="otherUserId" name="otherUserId">
+                <input type="submit"  class="btn btn-primary" value="Chat with {{ user.userName }}">
+            </form>
+        {% endif %}
+
+{% if app.user and app.user is same as user %}
+
+{% if app.user.followingUsers is not empty %}
+<h2>Select a user to chat with</h2>
+{% endif %}
+
+<ul>
+    {% for user in app.user.followingUsers %}
+        <li>
+            <form action="{{ path('chatting') }}" method="POST">
+                <input type="hidden" value="{{ user.id }}" id="otherUserId" name="otherUserId">
+                <input type="submit"  class="btn btn-primary" value="Chat with {{ user.userName }}">
+            </form>
+        </li>
+    {% endfor %}
+</ul>     
+{% endif %}
+
+
+
+{# {% block javascripts %}
+
+    
+const url = new URL('http://localhost:3000/.well-known/mercure');
+url.searchParams.append('topic', 'conversation_{{ conversation.id }}');
+
+const eventSource = new EventSource(url);
+
+eventSource.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    const chatBox = document.getElementById('chat-box');
+    
+    const newMessage = document.createElement('div');
+    newMessage.classList.add('message');
+    newMessage.innerHTML = `<strong>${data.author}:</strong> ${data.content}`;
+    
+    chatBox.appendChild(newMessage);
+};
 
 
 
 
-
-{% block javascripts %}
-
-
-
-{% endblock %}
+{% endblock %} #}
 {% endblock %}

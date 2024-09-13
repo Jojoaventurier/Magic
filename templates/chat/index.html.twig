@@ -4,43 +4,51 @@
 
 {% block body %}
 
+<div class="flex justify-center w-full">
 
-{% if messages is defined %}
-<div id="chat-box">
-   
-    {% for message in messages %}
-        <div class="message">
-            <strong>{{ message.author.username }}:</strong> {{ message.content }}
+    <div id="chat-box" class="w-[500px] p-6 shadow-md mt-10">
+        <div>
+            {% if messages is defined %}
+
+                {% for message in messages %}
+                <div class="message">
+                    <strong>{{ message.author.username }}:</strong> {{ message.content }}
+                </div>
+                {% endfor %}
+
+            {% else %}
+                <p>No messages yet.</p>
+            {% endif %}
         </div>
-    {% endfor %}
+
+        <div>
+            <h2>Chat with {{ otherUser.userName }}</h2>
+
+            {{ form_start(form) }}
+                {{ form_widget(form.content) }}
+                <input type="hidden" name="otherUserId" id="otherUserId" value="{{ otherUser.id }}">
+                <button type="submit">Send</button>
+            {{ form_end(form) }}
+        </div>
 </div>
-{% endif %}
-{{ form_start(form) }}
-    {{ form_widget(form.content) }}
-    <button type="submit">Send</button>
-{{ form_end(form) }}
 
 
+
+{# Optional: List of users to chat with #}
+{# <h2>Select a user to chat with</h2>
+
+<ul>
+    {% for user in app.user.followedUsers %}
+        <li>
+            <a href="{{ path('start_conversation', { 'userId': user.id }) }}">
+                {{ user.userName }}
+            </a>
+        </li>
+    {% endfor %}
+</ul> #}
 
 
 {% block javascripts %}
-<script>
-const url = new URL('http://localhost:3000/.well-known/mercure');
-url.searchParams.append('topic', 'conversation_{{ conversation.id }}');
 
-const eventSource = new EventSource(url);
-
-eventSource.onmessage = function(event) {
-    const data = JSON.parse(event.data);
-    const chatBox = document.getElementById('chat-box');
-    
-    const newMessage = document.createElement('div');
-    newMessage.classList.add('message');
-    newMessage.innerHTML = `<strong>${data.author}:</strong> ${data.content}`;
-    
-    chatBox.appendChild(newMessage);
-};
-
-</script>
 {% endblock %}
 {% endblock %}

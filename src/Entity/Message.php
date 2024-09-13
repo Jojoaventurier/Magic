@@ -22,11 +22,11 @@ class Message
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Conversation $conversation = null;
-
-    #[ORM\ManyToOne(inversedBy: 'messages')]
-    #[ORM\JoinColumn(nullable: false)]
     private ?User $author = null;
+
+    #[ORM\ManyToOne(inversedBy: 'receivedMessages')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $receiver = null;
 
     public function getId(): ?int
     {
@@ -57,18 +57,6 @@ class Message
         return $this;
     }
 
-    public function getConversation(): ?Conversation
-    {
-        return $this->conversation;
-    }
-
-    public function setConversation(?Conversation $conversation): static
-    {
-        $this->conversation = $conversation;
-
-        return $this;
-    }
-
     public function getAuthor(): ?User
     {
         return $this->author;
@@ -77,6 +65,18 @@ class Message
     public function setAuthor(?User $author): static
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    public function getReceiver(): ?User
+    {
+        return $this->receiver;
+    }
+
+    public function setReceiver(?User $receiver): static
+    {
+        $this->receiver = $receiver;
 
         return $this;
     }
