@@ -88,6 +88,7 @@ class ChatController extends AbstractController
             // Store `otherUserId` in the session
             $session->set('otherUserId', $otherUserId);
         }
+
     
         $currentUser = $this->getUser();
         $otherUser = $this->userRepository->findOneBy(['id' => $otherUserId]);
@@ -98,6 +99,16 @@ class ChatController extends AbstractController
         }
     
         $messages = $messageRepository->findByUsers($currentUser, $otherUser);
+
+        foreach($messages as $message) {
+
+            // Mark the message as read by the current user
+            if ($message->getReceiver() === $currentUser) {
+                $message->setRead(true);
+                $this->entityManager->persist($message);
+                $this->entityManager->flush();
+            }
+        }
         // dd($messages);
         // Handle form submission for new messages
         $message = new Message();

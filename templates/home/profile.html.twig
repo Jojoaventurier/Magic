@@ -197,40 +197,54 @@
 {% if app.user and app.user is same as user %}
 
 {% if messages is defined %}
-    <div class="shadow p-6">
-        <h2>Dernières conversations</h2>
-        {% for message in messages %}
-            {% if message.authorId == app.user.id %}
-                <!-- Current user is the author, show the receiver -->
-                <form action="{{ path('chatting') }}" method="POST">
-                    <input type="hidden" value="{{ message.receiverId }}" id="otherUserId" name="otherUserId">
-                    <input type="submit" class="btn btn-primary" value="{{ message.receiverName }}">
-                </form>
-            {% else %}
-                <!-- Current user is the receiver, show the author -->
-                <form action="{{ path('chatting') }}" method="POST">
-                    <input type="hidden" value="{{ message.authorId }}" id="otherUserId" name="otherUserId">
-                    <input type="submit" class="btn btn-primary" value="{{ message.authorName }}">
-                </form>
-            {% endif %}
-        {% endfor %}
-    </div>
-{% endif %}     
+    <div class="flex w-full justify-center">
+        <div class="w-4/5 m-8 space-y-4">       
+            <div class="shadow p-6 rounded hover:shadow-lg w-[280px]">
+                <h2 class="text-sm font-semibold py-1 text-center">Dernières conversations</h2>
+                {% for message in messages %}
+                    {% if message.authorId == app.user.id %}
+                        <!-- Current user is the author, so show the receiver -->
+                        <form action="{{ path('chatting') }}" method="POST">
+                            <input type="hidden" value="{{ message.receiverId }}" id="otherUserId" name="otherUserId">
+                            <input type="submit" class="text-sm px-4 py-1 hover:text-red-600 hover:underline cursor-pointer" value="{{ message.receiverName }}">
+                        </form>
+                    {% else %}
+                        <!-- Current user is the receiver, so show the author -->
+                        <form action="{{ path('chatting') }}" method="POST">
+                            <input type="hidden" value="{{ message.authorId }}" id="otherUserId" name="otherUserId">
+                            <input type="submit" class="text-sm px-4 py-1 hover:text-red-600 hover:underline cursor-pointer" value="{{ message.authorName }}">
+                            {% if not message.isRead %}
+                            <span class="italic text-red-500 text-xs">Vous avez un nouveau message</span>
+                            {% endif %}
+                        </form>
+                    {% endif %}
+                {% endfor %}
+            </div>
 
-    {% if app.user.followingUsers is not empty %}
-    <h2>Select a user to chat with</h2>
-    {% endif %}
-    <ul>
-        {% for user in app.user.followingUsers %}
-            <li>
-                <form action="{{ path('chatting') }}" method="POST">
-                    <input type="hidden" value="{{ user.id }}" id="otherUserId" name="otherUserId">
-                    <input type="submit"  class="btn btn-primary" value="Chat with {{ user.userName }}">
-                </form>
-            </li>
-        {% endfor %}
-    </ul>     
-{% endif %}
+            <div x-data="{ isOpen: false }" class="shadow p-6 rounded hover:shadow-lg w-[280px]">
+                {% if app.user.followingUsers is not empty %}
+                    <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer">
+                        Choisir un abonné pour disctuer
+                        <span x-text="isOpen ? '▲' : '▼'" class="ml-2"></span> <!-- Toggle arrow -->
+                    </h2>
+                {% endif %}
+    
+                <ul x-show="isOpen" x-transition>
+                    {% for user in app.user.followingUsers %}
+                        <li>
+                            <form action="{{ path('chatting') }}" method="POST">
+                                <input type="hidden" value="{{ user.id }}" id="otherUserId" name="otherUserId">
+                                <input type="submit" class="text-sm px-4 py-1 hover:text-red-600 hover:underline" value="{{ user.userName }}">
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+
+        </div> 
+    </div>
+{% endif %}    
 
 
 

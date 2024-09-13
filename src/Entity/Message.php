@@ -28,6 +28,10 @@ class Message
     #[ORM\JoinColumn(nullable: false)]
     private ?User $receiver = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isRead = false;
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -80,4 +84,18 @@ class Message
 
         return $this;
     }
+
+    public function isRead(): ?bool
+    {
+        return $this->isRead;
+    }
+
+    public function setRead(?bool $isRead): static
+    {
+        $this->isRead = $isRead;
+
+        return $this;
+    }
+
+
 }
