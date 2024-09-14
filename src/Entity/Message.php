@@ -28,7 +28,7 @@ class Message
     #[ORM\JoinColumn(nullable: false)]
     private ?User $receiver = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: false)]
     private ?bool $isRead = false;
 
 

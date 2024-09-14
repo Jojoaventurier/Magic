@@ -41,8 +41,16 @@ class MessageRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-
-
+    public function countUnreadMessages($currentUser)
+    {
+        return $this->createQueryBuilder('m')
+            ->select('COUNT(m.id)') // Count the number of message IDs
+            ->where('m.receiver = :currentUser') // Condition for the receiver
+            ->andWhere('m.isRead = false') // Condition for unread messages
+            ->setParameter('currentUser', $currentUser) // Set the parameter
+            ->getQuery() // Get the query object
+            ->getSingleScalarResult(); // Execute and retrieve the count
+    }
 
     // public function findByMostRecentGroupedByReceiver($currentUser) {
 
