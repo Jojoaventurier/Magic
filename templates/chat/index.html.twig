@@ -4,51 +4,46 @@
 
 {% block body %}
 
-<div class="flex justify-center w-full">
+<div class="flex flex-col items-center justify-center w-full">
+    <div id="chat-box" class="w-[650px] max-h-[80vh] p-6 bg-white shadow-lg rounded-lg mt-10 flex flex-col overflow-hidden">
+        <h2 class="text-xl mb-6 text-center text-white bg-red-800 rounded-md px-4 py-2">Discussion avec {{ otherUser.userName }}</h2>
 
-    <div id="chat-box" class="w-[500px] p-6 shadow-md mt-10">
-        <div>
+        <div id="messages-container" class="overflow-y-auto flex-1 border border-gray-200 rounded-lg p-4 mb-4">
             {% if messages is defined %}
-
                 {% for message in messages %}
-                <div class="message">
-                    <strong>{{ message.author.username }}:</strong> {{ message.content }}
-                </div>
+                    <div class="flex w-full {{ message.author.id == app.user.id ? 'justify-end text-end' : 'justify-start' }}">
+                        <div class="px-2 rounded-lg max-w-full {{ message.author.id == app.user.id ? 'bg-red-100' : 'bg-blue-100' }}">
+                            <strong class="text-xs text-slate-700">
+                                {{ message.author.username }}:
+                            </strong><br>
+                            <p class="text-gray-800 rounded-md px-3 py-2 text-sm">{{ message.content }}</p>
+                        </div>
+                    </div>
                 {% endfor %}
-
             {% else %}
-                <p>No messages yet.</p>
+                <p class="text-gray-500 text-center">Aucun message pour l'instant.</p>
             {% endif %}
         </div>
 
-        <div>
-            <h2>Chat with {{ otherUser.userName }}</h2>
-
-            {{ form_start(form) }}
-                {{ form_widget(form.content) }}
-                <input type="hidden" name="otherUserId" id="otherUserId" value="{{ otherUser.id }}">
-                <button type="submit">Send</button>
-            {{ form_end(form) }}
-        </div>
+        {{ form_start(form, {'attr': {'class': 'flex items-center'}}) }}
+            {{ form_widget(form.content, {'attr': {'class': 'border border-gray-300 rounded-lg p-2 flex-1 mr-2'}}) }}
+            <input type="hidden" name="otherUserId" id="otherUserId" value="{{ otherUser.id }}">
+            <button type="submit" class="bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 transition duration-300">Envoyer</button>
+        {{ form_end(form) }}
+    </div>
 </div>
 
 
-
-{# Optional: List of users to chat with #}
-{# <h2>Select a user to chat with</h2>
-
-<ul>
-    {% for user in app.user.followedUsers %}
-        <li>
-            <a href="{{ path('start_conversation', { 'userId': user.id }) }}">
-                {{ user.userName }}
-            </a>
-        </li>
-    {% endfor %}
-</ul> #}
-
-
 {% block javascripts %}
-
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const messagesContainer = document.getElementById('messages-container');
+        
+        // Scroll to the bottom of the chat box
+        if (messagesContainer) {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    });
+</script>
 {% endblock %}
 {% endblock %}

@@ -295,7 +295,10 @@ class HomeController extends AbstractController
     #[Route('/{user}/list/{param}', name: 'app_user_list')]
     public function listUsers(User $user, String $param): Response
     {   
-        
+        $currentUser = $this->getUser();
+        if($currentUser === $user && $param === 'following') {
+            $newUsers = $currentUser->getFollowingUsers();
+        }
         
         return $this->render('home/userList.html.twig', [
             'user' => $user,

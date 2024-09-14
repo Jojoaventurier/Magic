@@ -117,6 +117,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'receiver', orphanRemoval: true)]
     private Collection $receivedMessages;
 
+
     /**
      * @var Collection<int, Deck>
      */
@@ -565,7 +566,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-
 
 }

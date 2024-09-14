@@ -7,7 +7,7 @@
 <div class="flex flex-wrap justify-center">
     <div class="w-4/5 m-8 inline-flex justify-items">
 
-        <div class="flex flex-col items-center justify-center h-64 w-64 space-y-4 border rounded p-6 mx-auto">
+        <div class="flex flex-col items-center justify-center h-[400px] w-[400px] space-y-4 border rounded p-6 mx-auto">
             <h1>
                 {{ user.userName }}
             </h1>
@@ -20,8 +20,8 @@
                     <span id="following">{{ user.followingUsers|length }}</span> abonnés
                 </a>
             </p>
-            <p class="text-sm">
-                <span id="following" class="pl-2"></span> a rejoint le {{ user.creationDate|date('d/m/Y') }}
+            <p class="text-xs italic text-slate-700">
+                <span class="pl-2"> a rejoint le</span> {{ user.creationDate|date('d/m/Y') }}
             </p>
 
             <div>
@@ -45,7 +45,7 @@
                 </p>
             </div>
 
-            <div class="flex flex-col justify-end h-full">
+            <div class="flex flex-col justify-end items-center h-full">
                 {% if app.user %}
                     {% if app.user is same as user %}
                         <a href="{{ path('app_profile_edit', {'user': app.user.id}) }}" class="text-xs px-2 py-1 bg-red-700 text-white rounded-md hover:bg-white hover:text-red-700 duration-300">
@@ -55,14 +55,28 @@
                     {% elseif user in app.user.followedUsers  %}
                         <p class="text-sm italic text-gray-700">Vous suivez cet utilisateur.</p>
                         <a href="{{ path('app_user_unfollow', {'unfollowedUser': user.id, 'location': 'profile'}) }}" class="text-xs hover:underline hover:text-red-800">(Ne plus suivre)</a>
+                    {% elseif user in app.user.followingUsers and user not in app.user.followedUsers %}
+                    <span class="text-xs italic">Cet utilisateur vous suit</span>
+                    <a href="{{ path('app_user_follow', {'followedUser': user.id}) }}" class="text-sm px-2 py-1 bg-red-700 text-white rounded-md hover:bg-white hover:text-red-700 duration-300">
+                        Suivre en retour
+                    </a>
                     {% else %}
-                    <a href="{{ path('app_user_follow', {'followedUser': user.id}) }}" class="text-xs px-2 py-1 bg-red-700 text-white rounded-md hover:bg-white hover:text-red-700 duration-300">
+                    <a href="{{ path('app_user_follow', {'followedUser': user.id}) }}" class="text-sm px-2 py-1 bg-red-700 text-white rounded-md hover:bg-white hover:text-red-700 duration-300">
                         Suivre
                     </a>
                     {% endif %}
                 {% else %}
                     <p class="text-sm italic text-gray-700">Vous devez être connecté pour suivre un profil.</p>
                 {% endif %}
+
+                {% if app.user is not same as user and app.user in user.followedUsers %}
+                <div>
+                    <form action="{{ path('chatting') }}" method="POST">
+                        <input type="hidden" value="{{ user.id }}" id="otherUserId" name="otherUserId">
+                        <input type="submit"  class=" text-sm cursor-pointer px-4 py-3 mt-2 shadow rounded-md hover:text-white hover:bg-red-800 duration-300" value="Discuter avec {{ user.userName }}">
+                    </form>
+                </div>
+            {% endif %}
             </div>
         </div>
         {% if user.twitchUsername is not same as 'twitch.tv/' and user.twitchUsername is not null %}
@@ -75,7 +89,7 @@
         {% endif %}
          
 
-        <div class="flex flex-col text-center justify-center justify-items mx-auto shadow-md rounded-md p-8 min-w-52">
+        <div class="flex flex-col text-center justify-center justify-items mx-auto shadow-md rounded-md p-8 min-w-52 my-auto">
             <h3 class="hidden">Description</h3>
             <p class="text-sm">
                 {% if user.description is not null %}
@@ -90,7 +104,7 @@
 </div>
 
         <!-- Decks Section -->
-        <div class="flex flex-col" x-data="{ showMyDecks: false, showFavDecks: false }">
+        <div class="flex flex-col" x-data="{ showMyDecks: true, showFavDecks: false }">
             <div class="flex justify-center space-x-4">
                 <!-- Button to toggle "Mes decks" -->
                 <button class="text-sm px-2 py-1 border border-red-700 rounded hover:bg-red-800 hover:text-white duration-300"
@@ -111,7 +125,7 @@
                 {% endif %}
             </div>
             
-            <div class="w-full flex justify-center mt-6">
+            <div class="w-3/5 flex justify-center mt-6 mx-auto">
                 <!-- "Mes decks" table -->
                 <div class="text-sm w-full" x-show="showMyDecks" x-transition>
                     <table class="table-auto w-full text-left border-collapse">
@@ -185,12 +199,7 @@
 
         </div>
         
-        {% if app.user is not same as user and app.user in user.followedUsers %}
-            <form action="{{ path('chatting') }}" method="POST">
-                <input type="hidden" value="{{ user.id }}" id="otherUserId" name="otherUserId">
-                <input type="submit"  class="btn btn-primary" value="Chat with {{ user.userName }}">
-            </form>
-        {% endif %}
+        
 
 
 
@@ -201,7 +210,6 @@
 
 <div class="flex w-full justify-center">
     <div class="w-4/5 m-8 space-y-4">      
-        
         
         <div x-data="{ isOpen: false }" 
         {% if unreadCount > 0 %}    
@@ -220,73 +228,54 @@
             </span>
             {% endif %}
 
-
-{# 
-
-     <div class="flex w-full justify-center">
-        <div class="w-4/5 m-8 space-y-4">       
-            <div x-data="{ isOpen: false }" class="shadow p-6 rounded hover:shadow-lg w-[280px] bg-red-700 text-white relative hover:bg-white hover:text-red-700">  #}
-                 {# {% if not message.isRead %}  #}
-                    {# <h2 @click="isOpen = !isOpen" class="text-sm font-semibold py-1 text-center cursor-pointer">
-                        Conversations récentes
-                        <span x-text="isOpen ? '▲' : '▼'" class="ml-2"></span> <!-- Toggle arrow -->
-                    </h2>
-                    <span class="italic text-xs absolute top-2 ">Vous avez un message non-lu</span>                      #}
-                    {# {% else %} #}
-                    {# <h2 @click="isOpen = !isOpen" class="text-sm font-semibold py-1 text-center cursor-pointer">
-                        Conversations récentes
-                        <span x-text="isOpen ? '▲' : '▼'" class="ml-2"></span> <!-- Toggle arrow --> #}
-                
-                {# {% endif %} #}
-                
-            
-                <ul class="bg-white text-black rounded px-2 py-1" x-show="isOpen" x-transition>
-                    {% for message in messages %}
-                        <li class="border-b border-red-800 hover:bg-slate-100">
-                            {% if message.authorId == app.user.id %}
-                                <!-- Current user is the author, so show the receiver -->
-                                <form action="{{ path('chatting') }}" method="POST">
-                                    <input type="hidden" value="{{ message.receiverId }}" id="otherUserId" name="otherUserId">
-                                    <input type="submit" class="text-sm px-4 py-1 hover:text-red-600 hover:underline cursor-pointer" value="{{ message.receiverName }}">
-                                </form>
-                            {% else %}
-                                <!-- Current user is the receiver, so show the author -->
-                                <form action="{{ path('chatting') }}" method="POST">
-                                    <input type="hidden" value="{{ message.authorId }}" id="otherUserId" name="otherUserId">
-                                    <input type="submit" class="text-sm px-4 pt-1 hover:text-red-600 hover:underline cursor-pointer" value="{{ message.authorName }}">
-                                    {% if not message.isRead %}
-                                        <span class="italic text-red-500 text-xs pl-16 pb-1">vous a écrit</span>
-                                    {% endif %}
-                                </form>
-                            {% endif %}
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-            
-            <div x-data="{ isOpen: false }" class="shadow p-6 rounded hover:shadow-lg w-[280px]">
-                {% if app.user.followingUsers is not empty %}
-                    <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer pb-2">
-                        Démarrer une conversation
-                        <span x-text="isOpen ? '▲' : '▼'" class="ml-2"></span> <!-- Toggle arrow -->
-                    </h2>
-                {% endif %}
-            
-                <ul x-show="isOpen" x-transition>
-                    {% for user in app.user.followingUsers %}
-                        <li class="border-b border-red-800 hover:bg-slate-100">
+            <ul class="bg-white text-black rounded px-2 py-1" x-show="isOpen" x-transition>
+                {% for message in messages %}
+                    <li class="border-b border-red-800 hover:bg-slate-100">
+                        {% if message.authorId == app.user.id %}
+                            <!-- Current user is the author, so show the receiver -->
                             <form action="{{ path('chatting') }}" method="POST">
-                                <input type="hidden" value="{{ user.id }}" id="otherUserId" name="otherUserId">
-                                <input type="submit" class="text-sm px-4 py-1 hover:text-red-600 hover:underline" value="{{ user.userName }}">
+                                <input type="hidden" value="{{ message.receiverId }}" id="otherUserId" name="otherUserId">
+                                <input type="submit" class="text-sm px-4 py-1 hover:text-red-600 hover:underline cursor-pointer" value="{{ message.receiverName }}">
                             </form>
-                        </li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-            </div>
+                        {% else %}
+                            <!-- Current user is the receiver, so show the author -->
+                            <form action="{{ path('chatting') }}" method="POST">
+                                <input type="hidden" value="{{ message.authorId }}" id="otherUserId" name="otherUserId">
+                                <input type="submit" class="text-sm px-4 pt-1 hover:text-red-600 hover:underline cursor-pointer" value="{{ message.authorName }}">
+                                {% if not message.isRead %}
+                                    <span class="italic text-red-500 text-xs pl-16 pb-1">vous a écrit</span>
+                                {% endif %}
+                            </form>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
 
-        </div> 
-    </div>
+        </div>
+            
+        <div x-data="{ isOpen: false }" class="shadow p-6 rounded hover:shadow-lg w-[280px]">
+            {% if app.user.followingUsers is not empty %}
+                <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer pb-2">
+                    Démarrer une conversation
+                    <span x-text="isOpen ? '▲' : '▼'" class="ml-2"></span> <!-- Toggle arrow -->
+                </h2>
+            {% endif %}
+        
+            <ul x-show="isOpen" x-transition>
+                {% for user in app.user.followingUsers %}
+                    <li class="border-b border-red-800 hover:bg-slate-100">
+                        <form action="{{ path('chatting') }}" method="POST">
+                            <input type="hidden" value="{{ user.id }}" id="otherUserId" name="otherUserId">
+                            <input type="submit" class="text-sm px-4 py-1 hover:text-red-600 hover:underline" value="{{ user.userName }}">
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+
+    </div> 
+</div>
 {% endif %}    
 
 
