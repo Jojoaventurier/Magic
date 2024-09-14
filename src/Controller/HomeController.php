@@ -195,6 +195,7 @@ class HomeController extends AbstractController
     public function profile(User $user, MessageRepository $messageRepository): Response
     {
         $currentUser = $this->getUser();
+        $unreadCount = $messageRepository->countUnreadMessages($currentUser);
         
         if ($currentUser === $user) {
             // Retrieve the messages
@@ -215,6 +216,7 @@ class HomeController extends AbstractController
             return $this->render('home/profile.html.twig', [
                 'user' => $user,
                 'messages' => $uniqueConversations,
+                'unreadCount' => $unreadCount
             ]);
         } else {
             return $this->render('home/profile.html.twig', [

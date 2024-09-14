@@ -120,6 +120,7 @@ class ChatController extends AbstractController
             $message->setAuthor($currentUser);
             $message->setReceiver($otherUser);
             $message->setCreatedAt(new \DateTime());
+            $message->setread(false);
     
             $this->entityManager->persist($message);
             $this->entityManager->flush();
