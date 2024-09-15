@@ -7,7 +7,7 @@
 <div class="flex flex-wrap justify-center">
     <div class="w-4/5 m-8 inline-flex justify-items">
 
-        <div class="flex flex-col items-center justify-center h-[400px] w-[400px] space-y-4 border rounded p-6 mx-auto">
+        <div class="flex flex-col items-center justify-center h-[350px] w-[350px] space-y-4 border rounded p-6 m-auto">
             <h1>
                 {{ user.userName }}
             </h1>
@@ -25,19 +25,19 @@
             </p>
 
             <div>
-                <p class="text-xs font-semibold">
+                <p class="text-normal">
                     {% if user.discordUsername is same as 'discord.gg/' %}
                         {% else %}
                         {{ user.discordUsername }}
                     {% endif %}
                 </p>
-                <p class="text-xs font-semibold">
+                <p class="text-normal">
                     {% if user.twitchUsername is same as 'twitch.tv/' %}
                         {% else %}
                     {{ user.twitchUsername }}
                     {% endif %}
                 </p>
-                <p class="text-xs font-semibold">
+                <p class="text-normal">
                     {% if user.youtubeChannel is same as 'youtube.com/' %}
                         {% else %}
                     {{ user.youtubeChannel }}
@@ -53,40 +53,52 @@
                         </a>
                         {# Check if the current user is already following the profile #}
                     {% elseif user in app.user.followedUsers  %}
-                        <p class="text-sm italic text-gray-700">Vous suivez cet utilisateur.</p>
+                        <p class="text-sm italic text-gray-700 px-2 py-1">Vous suivez cet utilisateur.</p>
                         <a href="{{ path('app_user_unfollow', {'unfollowedUser': user.id, 'location': 'profile'}) }}" class="text-xs hover:underline hover:text-red-800">(Ne plus suivre)</a>
                     {% elseif user in app.user.followingUsers and user not in app.user.followedUsers %}
                     <span class="text-xs italic">Cet utilisateur vous suit</span>
-                    <a href="{{ path('app_user_follow', {'followedUser': user.id}) }}" class="text-sm px-2 py-1 bg-red-700 text-white rounded-md hover:bg-white hover:text-red-700 duration-300">
+                    <a href="{{ path('app_user_follow', {'followedUser': user.id}) }}" class="text-sm px-3 py-2 bg-red-700 text-white rounded-md hover:bg-white hover:text-red-700 duration-300">
                         Suivre en retour
                     </a>
                     {% else %}
-                    <a href="{{ path('app_user_follow', {'followedUser': user.id}) }}" class="text-sm px-2 py-1 bg-red-700 text-white rounded-md hover:bg-white hover:text-red-700 duration-300">
+                    <a href="{{ path('app_user_follow', {'followedUser': user.id}) }}" class="text-sm px-3 py-2 bg-red-700 text-white rounded-md hover:bg-white hover:text-red-700 duration-300">
                         Suivre
                     </a>
                     {% endif %}
                 {% else %}
-                    <p class="text-sm italic text-gray-700">Vous devez être connecté pour suivre un profil.</p>
+                    <p class="text-sm italic text-gray-700 px-4 py-3">Vous devez être connecté pour suivre un profil.</p>
                 {% endif %}
 
                 {% if app.user is not same as user and app.user in user.followedUsers %}
                 <div>
                     <form action="{{ path('chatting') }}" method="POST">
                         <input type="hidden" value="{{ user.id }}" id="otherUserId" name="otherUserId">
-                        <input type="submit"  class=" text-sm cursor-pointer px-4 py-3 mt-2 shadow rounded-md hover:text-white hover:bg-red-800 duration-300" value="Discuter avec {{ user.userName }}">
+                        <input type="submit"  class=" text-sm cursor-pointer px-4 py-3 mt-4 shadow rounded-md hover:text-white hover:bg-red-800 duration-300" value="Discuter avec {{ user.userName }}">
                     </form>
                 </div>
             {% endif %}
             </div>
         </div>
-        {% if user.twitchUsername is not same as 'twitch.tv/' and user.twitchUsername is not null %}
-        <iframe class="mx-auto"
-        src="https://player.twitch.tv/?channel={{ user.twitchUsername[10:] }}&parent=127.0.0.1&muted=true"
-
-        width="720"
-        allowfullscreen>
-    </iframe> 
+        {% if user.twitchUsername is not same as 'twitch.tv/' and user.twitchUsername is not null and user.allowStream is same as true %}
+        <div x-data="{ showIframe: true }" class="text-center">
+            <button 
+                @click="showIframe = !showIframe" 
+                class="bg-red-700 text-xs text-white rounded-lg px-3 py-1 hover:bg-red-700 transition duration-300 mb-4">
+                Afficher/masquer le Stream
+            </button>
+        
+            <template x-if="showIframe">
+                <iframe class="mx-auto"
+                    src="https://player.twitch.tv/?channel={{ user.twitchUsername[10:] }}&parent=127.0.0.1&muted=true"
+                    width="720"
+                    height="360"
+                    allowfullscreen>
+                </iframe>
+            </template>
+        </div>
         {% endif %}
+
+
          
 
         <div class="flex flex-col text-center justify-center justify-items mx-auto shadow-md rounded-md p-8 min-w-52 my-auto">
@@ -204,15 +216,18 @@
 
 
 {% if app.user and app.user is same as user %}
+{% if app.user.globalChat is same as false or app.user.globalChat is same as null %}
+    
 
 {% if messages is defined %}
 
 
 <div class="flex w-full justify-center">
+
     <div class="w-4/5 m-8 space-y-4">      
-        
+        <button></button>
         <div x-data="{ isOpen: false }" 
-        {% if unreadCount > 0 %}    
+        {% if unread_count() > 0 %}    
         class="shadow p-6 rounded hover:shadow-lg w-[280px] bg-red-700 text-white relative hover:bg-white hover:text-red-700"
         {% else %}
         class="shadow p-6 rounded hover:shadow-lg w-[280px] bg-white text-black relative"
@@ -222,9 +237,9 @@
                 Conversations récentes
                 <span x-text="isOpen ? '▲' : '▼'" class="ml-2"></span> <!-- Toggle arrow -->
             </h2>
-            {% if unreadCount > 0 %}
+            {% if unread_count() > 0 %}
             <span class="italic text-xs absolute top-2 right-16 ">
-                    Vous avez {{ unreadCount }} message{{ unreadCount > 1 ? 's' : '' }} non-lu{{ unreadCount > 1 ? 's' : '' }}
+                    Vous avez {{ unread_count() }} message{{ unread_count() > 1 ? 's' : '' }} non-lu{{ unread_count() > 1 ? 's' : '' }}
             </span>
             {% endif %}
 
@@ -255,7 +270,7 @@
             
         <div x-data="{ isOpen: false }" class="shadow p-6 rounded hover:shadow-lg w-[280px]">
             {% if app.user.followingUsers is not empty %}
-                <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer pb-2">
+                <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer">
                     Démarrer une conversation
                     <span x-text="isOpen ? '▲' : '▼'" class="ml-2"></span> <!-- Toggle arrow -->
                 </h2>
@@ -276,7 +291,8 @@
 
     </div> 
 </div>
-{% endif %}    
+{% endif %}  
+{% endif %} 
 
 
 

@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class UserType extends AbstractType
@@ -53,6 +54,20 @@ class UserType extends AbstractType
                         'pattern' => '/^twitch\.tv\/.*$/',
                         'message' => 'Please provide a valid Twitch link starting with "twitch.tv/".',
                     ])
+                ],
+            ])
+            ->add('allowStream', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Afficher le live stream Twitch sur la page de profil',
+                'attr' => [
+                    'class' => 'form-check-input', // Add custom styling class if necessary (e.g., for Bootstrap/Tailwind)
+                ],
+            ])
+            ->add('globalChat', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Activer le chat sur tout le site',
+                'attr' => [
+                    'class' => 'form-check-input', // Add custom styling class if necessary
                 ],
             ])
             ->add('submit', SubmitType::class)

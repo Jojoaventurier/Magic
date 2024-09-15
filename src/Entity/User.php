@@ -117,6 +117,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'receiver', orphanRemoval: true)]
     private Collection $receivedMessages;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $allowStream = false;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $globalChat = false;
+
 
     /**
      * @var Collection<int, Deck>
@@ -563,6 +569,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $receivedMessage->setReceiver(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isAllowStream(): ?bool
+    {
+        return $this->allowStream;
+    }
+
+    public function setAllowStream(?bool $allowStream): static
+    {
+        $this->allowStream = $allowStream;
+
+        return $this;
+    }
+
+    public function isGlobalChat(): ?bool
+    {
+        return $this->globalChat;
+    }
+
+    public function setGlobalChat(?bool $globalChat): static
+    {
+        $this->globalChat = $globalChat;
 
         return $this;
     }

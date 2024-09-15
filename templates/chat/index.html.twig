@@ -4,17 +4,32 @@
 
 {% block body %}
 
-<div class="flex flex-col items-center justify-center w-full">
-    <div id="chat-box" class="w-[650px] max-h-[80vh] p-6 bg-white shadow-lg rounded-lg mt-10 flex flex-col overflow-hidden">
-        <h2 class="text-xl mb-6 text-center text-white bg-red-800 rounded-md px-4 py-2">Discussion avec {{ otherUser.userName }}</h2>
+<div x-data="{ isOpen: true }" class="relative flex flex-col items-center justify-center w-full">
+    <!-- Chat Box -->
+    <div x-show="isOpen" x-transition class="w-[650px] max-h-[80vh] p-6 bg-white shadow-lg rounded-lg mt-10 flex flex-col overflow-hidden">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl text-center text-white bg-red-800 rounded-md px-4 py-2">
+                Discussion avec 
+                <a href="{{ path('app_profile', {'user': otherUser.id}) }}" class="hover:underline">
+                    {{ otherUser.userName }}
+                </a>
+            </h2>
+            <button @click="isOpen = false" class="text-red-800 hover:text-red-600 transition duration-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
 
         <div id="messages-container" class="overflow-y-auto flex-1 border border-gray-200 rounded-lg p-4 mb-4">
             {% if messages is defined %}
                 {% for message in messages %}
-                    <div class="flex w-full {{ message.author.id == app.user.id ? 'justify-end text-end' : 'justify-start' }}">
-                        <div class="px-2 rounded-lg max-w-full {{ message.author.id == app.user.id ? 'bg-red-100' : 'bg-blue-100' }}">
+                    <div class="message-container flex w-full {{ message.author.id == app.user.id ? 'justify-end text-end' : 'justify-start' }}">
+                        <div class="message-content px-2 rounded-lg max-w-full {{ message.author.id == app.user.id ? 'bg-gray-100' : 'bg-blue-100' }}">
                             <strong class="text-xs text-slate-700">
-                                {{ message.author.username }}:
+                                <a class="hover:underline" href="{{ path('app_profile', {'user': message.author.id}) }}">
+                                    {{ message.author.username }}:
+                                </a>
                             </strong><br>
                             <p class="text-gray-800 rounded-md px-3 py-2 text-sm">{{ message.content }}</p>
                         </div>
@@ -28,11 +43,17 @@
         {{ form_start(form, {'attr': {'class': 'flex items-center'}}) }}
             {{ form_widget(form.content, {'attr': {'class': 'border border-gray-300 rounded-lg p-2 flex-1 mr-2'}}) }}
             <input type="hidden" name="otherUserId" id="otherUserId" value="{{ otherUser.id }}">
-            <button type="submit" class="bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 transition duration-300">Envoyer</button>
+            <button type="submit" class="bg-white border border-red-800 hover:text-white text-red-800 rounded-lg px-4 py-2 hover:bg-red-800 transition duration-300">Envoyer</button>
         {{ form_end(form) }}
     </div>
-</div>
 
+    <!-- Reopen Chat Button -->
+    <button x-show="!isOpen" @click="isOpen = true" class="fixed bottom-4 right-4 bg-red-800 text-white p-3 rounded-full shadow-lg hover:bg-red-700 transition duration-300">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h16"></path>
+        </svg>
+    </button>
+</div>
 
 {% block javascripts %}
 <script>
@@ -43,7 +64,9 @@
         if (messagesContainer) {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
+
     });
+
 </script>
 {% endblock %}
 {% endblock %}
