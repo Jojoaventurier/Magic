@@ -77,12 +77,14 @@ class GlobalDataService extends AbstractController
             return [
                 'messages' => $messageData,
                 'otherUser' => $otherUser->getUserName(),
+                'otherUserId' => $otherUser->getId()
             ];
         }
     
         return [
             'messages' => $messageData,
             'otherUser' => $otherUser->getUserName(),
+            'otherUserId' => $otherUser->getId()
         ];
     }
 }

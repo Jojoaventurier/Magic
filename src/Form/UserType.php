@@ -65,7 +65,14 @@ class UserType extends AbstractType
             ])
             ->add('globalChat', CheckboxType::class, [
                 'required' => false,
-                'label' => 'Activer le chat sur tout le site',
+                'label' => 'Activer le chat sur tout le site (oldschool version)',
+                'attr' => [
+                    'class' => 'form-check-input', // Add custom styling class if necessary
+                ],
+            ])
+            ->add('modernChat', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Version moderne :',
                 'attr' => [
                     'class' => 'form-check-input', // Add custom styling class if necessary
                 ],

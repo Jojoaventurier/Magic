@@ -123,6 +123,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?bool $globalChat = false;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $modernChat = false;
+
 
     /**
      * @var Collection<int, Deck>
@@ -593,6 +596,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setGlobalChat(?bool $globalChat): static
     {
         $this->globalChat = $globalChat;
+
+        return $this;
+    }
+
+    public function isModernChat(): ?bool
+    {
+        return $this->modernChat;
+    }
+
+    public function setModernChat(?bool $modernChat): static
+    {
+        $this->modernChat = $modernChat;
 
         return $this;
     }

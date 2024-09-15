@@ -4,16 +4,13 @@
 
 {% block body %}
 
-{# {% if otherUser is defined %}
-            <div x-show="isOpen" x-transition>
-                <!-- Embed the chat template if a conversation is selected -->
-                {% include 'chat/chat.html.twig' %}
-            </div>
-{% endif %} #}
-
-<div x-data="{ isOpen: true }" class="relative flex flex-col items-center justify-center w-full">
+<div class="relative flex flex-col items-center justify-center w-full" 
+{% if app.user.globalChat is same as true and app.user.modernChat is same as true %}
+x-data="chatBox()"
+{% endif %}
+>
     <!-- Chat Box -->
-    <div x-show="isOpen" x-transition class="w-[650px] max-h-[80vh] p-6 bg-white shadow-lg rounded-lg mt-10 flex flex-col overflow-hidden">
+    <div class="w-[650px] max-h-[80vh] p-6 bg-white shadow-lg rounded-lg mt-10 flex flex-col overflow-hidden">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-xl text-center text-white bg-red-800 rounded-md px-4 py-2">
                 Discussion avec 
@@ -21,11 +18,6 @@
                     {{ otherUser.userName }}
                 </a>
             </h2>
-            <button @click="isOpen = false" class="text-red-800 hover:text-red-600 transition duration-300">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
         </div>
 
         <div id="messages-container" class="overflow-y-auto flex-1 border border-gray-200 rounded-lg p-4 mb-4">
@@ -47,22 +39,17 @@
             {% endif %}
         </div>
 
-        {{ form_start(form, {'attr': {'class': 'flex items-center'}}) }}
+        {{ form_start(form, {'attr': {'class': 'chat-form flex items-center'}}) }}
             {{ form_widget(form.content, {'attr': {'class': 'border border-gray-300 rounded-lg p-2 flex-1 mr-2'}}) }}
             <input type="hidden" name="otherUserId" id="otherUserId" value="{{ otherUser.id }}">
             <button type="submit" class="bg-white border border-red-800 hover:text-white text-red-800 rounded-lg px-4 py-2 hover:bg-red-800 transition duration-300">Envoyer</button>
         {{ form_end(form) }}
     </div>
+</div>
 
-    <!-- Reopen Chat Button -->
-    <button x-show="!isOpen" @click="isOpen = true" class="fixed bottom-4 right-4 bg-red-800 text-white p-3 rounded-full shadow-lg hover:bg-red-700 transition duration-300">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h16"></path>
-        </svg>
-    </button>
-</div> 
 
- {% block javascripts %}
+{% if app.user.globalChat is same as false %}
+    
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const messagesContainer = document.getElementById('messages-container');
@@ -71,9 +58,10 @@
         if (messagesContainer) {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
-
+        
     });
-
+    
 </script>
-{% endblock %}
+{% endif %}
+
 {% endblock %}

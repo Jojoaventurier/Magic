@@ -115,31 +115,31 @@ class ChatController extends AbstractController
         ]);
     }
 
-    #[Route('/chatWith', name: 'chatWith', methods: ['GET', 'POST'])]
-    public function getChatMessages(Request $request): array
-    {
+    // #[Route('/chatWith', name: 'chatWith', methods: ['GET', 'POST'])]
+    // public function getChatMessages(Request $request): array
+    // {
 
-         // Get the current URI
-         $currentUri = $request->getRequestUri();
+    //      // Get the current URI
+    //      $currentUri = $request->getRequestUri();
          
-        $otherUserId = $request->get('otherUserId');
-        $otherUser = $this->userRepository->findBy(['id' => $otherUserId]);
-        $currentUser = $this->security->getUser();
-        if ($currentUser) {
-            $messages = $this->messageRepository->findByUsers($currentUser, $otherUser);
-            foreach ($messages as $message) {
-                // Mark as read if the current user is the receiver
-                if ($message->getReceiver() === $currentUser) {
-                    $message->setRead(true);
-                    $this->entityManager->persist($message);
-                }
-            }
-            $this->entityManager->flush();
+    //     $otherUserId = $request->get('otherUserId');
+    //     $otherUser = $this->userRepository->findBy(['id' => $otherUserId]);
+    //     $currentUser = $this->security->getUser();
+    //     if ($currentUser) {
+    //         $messages = $this->messageRepository->findByUsers($currentUser, $otherUser);
+    //         foreach ($messages as $message) {
+    //             // Mark as read if the current user is the receiver
+    //             if ($message->getReceiver() === $currentUser) {
+    //                 $message->setRead(true);
+    //                 $this->entityManager->persist($message);
+    //             }
+    //         }
+    //         $this->entityManager->flush();
 
-            return $this->RedirectToRoute($currentUri, ['messages' => $messages]);
-        }
-        return ['messages' => []];
-    }
+    //         return $this->RedirectToRoute($currentUri, ['messages' => $messages]);
+    //     }
+    //     return ['messages' => []];
+    // }
 
     /**
      * @Route("/chat/{otherUserId}", name="chat_form", methods={"GET", "POST"})
@@ -154,6 +154,51 @@ class ChatController extends AbstractController
         // Return a JSON response
         return new JsonResponse($result);
     }
+
+    #[Route('/chatting/ajax', name: 'chatting_ajax', methods: ['POST'])]
+public function chattingAjax(Request $request, MessageRepository $messageRepository): JsonResponse
+{
+    // Retrieve JSON data from the request
+    $data = json_decode($request->getContent(), true);
+
+    $otherUserId = $data['otherUserId'] ?? null;
+    $messageContent = $data['messageContent'] ?? null;
+
+    if (!$otherUserId || !$messageContent) {
+        return $this->json(['status' => 'error', 'message' => 'Missing parameters'], 400);
+    }
+
+    $currentUser = $this->getUser();
+    $otherUser = $this->userRepository->findOneBy(['id' => $otherUserId]);
+
+    if (!$otherUser) {
+        return $this->json(['status' => 'error', 'message' => 'User not found'], 404);
+    }
+
+    // Create and save the new message
+    $message = new Message();
+    $message->setAuthor($currentUser);
+    $message->setReceiver($otherUser);
+    $message->setContent($messageContent);
+    $message->setCreatedAt(new \DateTime());
+    $message->setRead(false);
+
+    $this->entityManager->persist($message);
+    $this->entityManager->flush();
+
+    // Return a JSON response with the new message details
+    return $this->json([
+        'status' => 'success',
+        'message' => [
+            'author' => $currentUser->getUserName(),
+            'content' => $message->getContent(),
+            'createdAt' => $message->getCreatedAt()->format('Y-m-d H:i:s'),
+            'receiverId' => $message->getReceiver()->getId()
+        ],
+    ]);
+}
+
+
 
 
 
