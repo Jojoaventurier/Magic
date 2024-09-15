@@ -11,8 +11,8 @@
         {% endblock %}
       </head>
       <body>
-
-        <nav class="flex justify-between py-5">
+      <section>
+          <nav class="flex justify-between py-5">
           <div class="row">
             <div class="row space-x-4 px-4">
               <a class="white hover:underline" href="{{ path('app_home') }}">Home</a>
@@ -28,7 +28,7 @@
               {% endif %}
             </div>
           </div>
-
+          <section></section>
           <div class="space-x-2 px-4">
             {% if app.user %}
               {% if app.user.globalChat is same as false and unread_count() > 0 %}
@@ -106,26 +106,114 @@
               <ul x-show="isOpen" x-transition class="bg-white text-gray-800 rounded-lg mt-2 max-h-60 overflow-y-auto">
                   {% for user in app.user.followingUsers %}
                       <li class="border-b border-gray-300 hover:bg-gray-100 px-2">
-                          <form action="{{ path('chatting') }}" method="POST">
+                        <form action="{{ path('chat_form') }}" class="baseChat" method="POST">
                               <input type="hidden" value="{{ user.id }}" id="otherUserId" name="otherUserId">
-                              <input type="submit" class="text-sm px-2 py-1 hover:text-red-700 hover:underline" value="{{ user.userName }}">
+                              <input type="submit" class="text-sm px-2 py-1 hover:text-red-700 hover:underline cursor-pointer">{{ user.userName }}</input>
                           </form>
                       </li>
                   {% endfor %}
               </ul>
           </div>
-      
-   
 
+          <div id="messages-container" class="flex flex-wrap max-w-3/5 max-h-3/5 flex-1 border border-gray-200 rounded-lg p-4 mb-4">
+            <!-- Messages will be dynamically inserted here -->
+          </div>
+{# 
+          <!--chatBoxSection-->
+          {% if otherUser is defined and form is defined and messages is defined %}
+          <div x-show="isOpen" x-transition class="w-[650px] max-h-[80vh] p-6 bg-white shadow-lg rounded-lg mt-10 flex flex-col overflow-hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl text-center text-white bg-red-800 rounded-md px-4 py-2">
+                    Discussion avec 
+                    <a href="{{ path('app_profile', {'user': otherUser.id}) }}" class="hover:underline">
+                        {{ otherUser.userName }}
+                    </a>
+                </h2>
+                <button @click="isOpen = false" class="text-red-800 hover:text-red-600 transition duration-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+    
+            <div id="messages-container" class="overflow-y-auto flex-1 border border-gray-200 rounded-lg p-4 mb-4">
+                {% if messages is defined %}
+                    {% for message in messages %}
+                        <div class="message-container flex w-full {{ message.author.id == app.user.id ? 'justify-end text-end' : 'justify-start' }}">
+                            <div class="message-content px-2 rounded-lg max-w-full {{ message.author.id == app.user.id ? 'bg-gray-100' : 'bg-blue-100' }}">
+                                <strong class="text-xs text-slate-700">
+                                    <a class="hover:underline" href="{{ path('app_profile', {'user': message.author.id}) }}">
+                                        {{ message.author.username }}:
+                                    </a>
+                                </strong><br>
+                                <p class="text-gray-800 rounded-md px-3 py-2 text-sm">{{ message.content }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-gray-500 text-center">Aucun message pour l'instant.</p>
+                {% endif %}
+            </div>
+          {% endif %} #}
+
+        </div>
+
+
+      
+
+        
+      </div>
+    </section>
+      
         
         {% endif %}
         {% endif %}
-      </div>
+        
 
         {% block body %}{% endblock %}
         {# {% block javascripts %} #}
         {# <script src="{{ asset('cardDetail.js') }}"></script> #}
         {# {% block importmap %}{{ importmap('app') }}{% endblock %}  #}
         {# {% endblock %} #}
+
+        <script>
+          document.querySelectorAll('.baseChat').forEach(form => {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submit
+        
+                const formData = new FormData(this);
+        
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data); // Log the data to inspect the structure
+        
+                    // Update the UI with the messages
+                    const messagesContainer = document.getElementById('messages-container');
+                    messagesContainer.innerHTML = ''; // Clear existing messages
+        
+                    data.messages.forEach(message => {
+                        const messageDiv = document.createElement('div');
+                        messageDiv.className = 'message-container flex w-full';
+                        //messageDiv.classList.add(message.author === '{{ app.user.username }}' ? 'justify-end text-end' : 'justify-start');
+        
+                        messageDiv.innerHTML = `
+                            <div class="message-content px-2 rounded-lg max-w-full ${message.author === '{{ app.user.username }}' ? 'bg-gray-100' : 'bg-blue-100'}">
+                                <strong class="text-xs text-slate-700">
+                                    ${message.author}:
+                                </strong><br>
+                                <p class="text-gray-800 rounded-md px-3 py-2 text-sm">${message.content}</p>
+                            </div>
+                        `;
+                        messagesContainer.appendChild(messageDiv);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+        </script>
     </body>
 </html>

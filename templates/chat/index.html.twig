@@ -4,6 +4,13 @@
 
 {% block body %}
 
+{# {% if otherUser is defined %}
+            <div x-show="isOpen" x-transition>
+                <!-- Embed the chat template if a conversation is selected -->
+                {% include 'chat/chat.html.twig' %}
+            </div>
+{% endif %} #}
+
 <div x-data="{ isOpen: true }" class="relative flex flex-col items-center justify-center w-full">
     <!-- Chat Box -->
     <div x-show="isOpen" x-transition class="w-[650px] max-h-[80vh] p-6 bg-white shadow-lg rounded-lg mt-10 flex flex-col overflow-hidden">
@@ -53,9 +60,9 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h16"></path>
         </svg>
     </button>
-</div>
+</div> 
 
-{% block javascripts %}
+ {% block javascripts %}
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const messagesContainer = document.getElementById('messages-container');

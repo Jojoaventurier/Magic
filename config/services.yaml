@@ -23,6 +23,12 @@ services:
     App\Twig\GlobalDataExtension:
         tags: ['twig.extension']
 
+    # App\Service\GlobalDataService:
+    #     arguments:
+    #         $messageRepository: '@App\Repository\MessageRepository'
+    #         $security: '@security.helper'
+    # You can configure a global Twig variable in services.yaml to pass data from the service to all Twig templates, including base.html.twig.
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 

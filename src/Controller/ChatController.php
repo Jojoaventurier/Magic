@@ -5,16 +5,18 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\Message;
 use App\Form\MessageType;
-use App\Entity\Conversation;
+use App\Twig\GlobalDataExtension;
 use App\Repository\UserRepository;
+use App\Service\GlobalDataService;
 use App\Repository\MessageRepository;
 use Symfony\Component\Mercure\Update;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\ConversationRepository;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -22,42 +24,19 @@ class ChatController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
     private UserRepository $userRepository;
+    private GlobalDataService $globalDataService;
+    private MessageRepository $messageRepository;
+    private Security $security;
 
-    public function __construct(EntityManagerInterface $entityManager, UserRepository $userRepository)
+    public function __construct(EntityManagerInterface $entityManager, UserRepository $userRepository, GlobalDataService $globalDataService, MessageRepository $messageRepository, Security $security)
     {
         $this->entityManager = $entityManager;
         $this->userRepository = $userRepository;
+        $this->globalDataService = $globalDataService;
+        $this->messageRepository = $messageRepository;
+        $this->security = $security;
     }
 
-    /**
-     * @Route("/start-conversation/{userId}", name="start_conversation", methods={"GET"})
-     */
-    // #[Route('/start-conversation/{userId}', name: 'start_conversation')]
-    // public function startConversation(int $userId): Response
-    // {
-    //     $currentUser = $this->getUser(); 
-    //     $otherUser = $this->userRepository->findOneBy(['id' => $userId]);
-
-    //     if (!$otherUser) {
-    //         throw $this->createNotFoundException('User not found');
-    //     }
-
-    //     // Check if a conversation already exists between the two users
-    //     $conversation = $this->conversationRepository->findConversationBetweenUsers($currentUser, $otherUser);
-
-    //     if (!$conversation) {
-    //         // If no conversation exists, create a new one
-    //         $conversation = new Conversation();
-    //         $conversation->addParticipant($currentUser);
-    //         $conversation->addParticipant($otherUser);
-
-    //         $this->entityManager->persist($conversation);
-    //         $this->entityManager->flush();
-    //     }
-
-    //     // Redirect to the chat page for the conversation
-    //     return $this->redirectToRoute('chatting', ['id' => $conversation->getId(), 'otherUser' => $otherUser]);
-    // }
 
     /**
      * @Route("/users", name="user_list", methods={"GET"})
@@ -135,6 +114,47 @@ class ChatController extends AbstractController
             'otherUser' => $otherUser,
         ]);
     }
+
+    #[Route('/chatWith', name: 'chatWith', methods: ['GET', 'POST'])]
+    public function getChatMessages(Request $request): array
+    {
+
+         // Get the current URI
+         $currentUri = $request->getRequestUri();
+         
+        $otherUserId = $request->get('otherUserId');
+        $otherUser = $this->userRepository->findBy(['id' => $otherUserId]);
+        $currentUser = $this->security->getUser();
+        if ($currentUser) {
+            $messages = $this->messageRepository->findByUsers($currentUser, $otherUser);
+            foreach ($messages as $message) {
+                // Mark as read if the current user is the receiver
+                if ($message->getReceiver() === $currentUser) {
+                    $message->setRead(true);
+                    $this->entityManager->persist($message);
+                }
+            }
+            $this->entityManager->flush();
+
+            return $this->RedirectToRoute($currentUri, ['messages' => $messages]);
+        }
+        return ['messages' => []];
+    }
+
+    /**
+     * @Route("/chat/{otherUserId}", name="chat_form", methods={"GET", "POST"})
+     */
+    #[Route('/chatForm', name: 'chat_form', methods: ['GET', 'POST'])]
+    public function chatForm(Request $request, EntityManagerInterface $entityManager)
+    {
+        $otherUser = $this->userRepository->find(['id' => $request->get('otherUserId')]);
+        
+        $result = $this->globalDataService->getChatForm($otherUser, $request, $entityManager);
+        
+        // Return a JSON response
+        return new JsonResponse($result);
+    }
+
 
 
 }

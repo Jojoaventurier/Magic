@@ -795,14 +795,16 @@
 
             const baseActionUrl = "{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'PLACEHOLDER'}) }}"; // The base action URL
 
-            stateSelector.addEventListener('change', function() {
-                const selectedState = stateSelector.value; // Get the selected value (Mainboard, Sideboard, etc.)
-                
-                // Update the form action dynamically based on the selected value
-                const newAction = baseActionUrl.replace('PLACEHOLDER', `${selectedState}`);
-                saveCardForm.setAttribute('action', newAction);
-                console.log(newAction);
-            });
+            if(stateSelector) {
+                stateSelector.addEventListener('change', function() {
+                    const selectedState = stateSelector.value; // Get the selected value (Mainboard, Sideboard, etc.)
+                    
+                    // Update the form action dynamically based on the selected value
+                    const newAction = baseActionUrl.replace('PLACEHOLDER', `${selectedState}`);
+                    saveCardForm.setAttribute('action', newAction);
+                    console.log(newAction);
+                });
+            }
 
             if(cardSelect) {
                 // Dynamic modification based on the user's selection in the select element
