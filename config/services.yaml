@@ -23,6 +23,10 @@ services:
     App\Twig\GlobalDataExtension:
         tags: ['twig.extension']
 
+    App\Controller\DeckManagerController:
+        arguments:
+            $httpClient: '@http_client'
+
     # App\Service\GlobalDataService:
     #     arguments:
     #         $messageRepository: '@App\Repository\MessageRepository'

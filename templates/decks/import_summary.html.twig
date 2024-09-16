@@ -1,0 +1,13 @@
+
+    <h2>Deck Import Summary</h2>
+    
+    <p>{{ addedCards }} cards were successfully added out of {{ submittedCards }} submitted.</p>
+
+    {% if notFound is not empty %}
+        <h3>Cards not found:</h3>
+        <ul>
+            {% for card in notFound %}
+                <li>{{ card }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}

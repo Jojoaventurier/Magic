@@ -440,54 +440,7 @@ class DeckBuilderController extends AbstractController
 
     }
 
-    #[Route('/user/{user}/deck/{deck}/export.csv', name: 'export_deck_csv', methods: ['GET'])]
-    public function exportDeckAsCsv(Deck $deck, DeckRepository $deckRepository, StateRepository $stateRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager) {
-
-        $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
-        $state = $stateRepository->findOneBy(['stateName' => "Mainboard"]);
-        $compositions = $compositionRepository->findBy(['deck' => $deck, 'state' => $state]);
-
-        $rows = [];
-        foreach($compositions as $composition) {
-            $card = $composition->getCard()->getData();
-            $cardName = $card['name'];
- 
-            $data = [$composition->getQuantity(), $cardName];
-
-            $rows[] = implode('x ', $data);
-        }
-
-        $content = implode("\n", $rows);
-        $response = new Response($content);
-        $response->headers->set('Content-Type', 'text/csv');
-
-        return $response;
-    }
-
-    #[Route('/user/{user}/deck/{deck}/export.txt', name: 'export_deck_txt', methods: ['GET'])]
-    public function exportDeckAsTxt(Deck $deck, DeckRepository $deckRepository, StateRepository $stateRepository, CompositionRepository $compositionRepository, EntityManagerInterface $entityManager) {
-
-        $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
-        $state = $stateRepository->findOneBy(['stateName' => "Mainboard"]);
-        $compositions = $compositionRepository->findBy(['deck' => $deck, 'state' => $state]);
-
-        $rows = [];
-        foreach($compositions as $composition) {
-            $card = $composition->getCard()->getData();
-            $cardName = $card['name'];
- 
-            $data = [$composition->getQuantity(), $cardName];
-
-            $rows[] = implode('x ', $data);
-        }
-
-        $content = implode("\n", $rows);
-        $response = new Response($content);
-        $response->headers->set('Content-Type', 'text/plain');
-        $response->headers->set('Content-Disposition', 'attachment; filename="export.txt"');
-
-        return $response;
-    }
+  
 
 
 }
