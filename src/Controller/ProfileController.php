@@ -122,7 +122,7 @@ class ProfileController extends AbstractController
        $entityManager->flush();
 
         
-        return $this->redirectToRoute('app_profile', ['user' => $followedUser->getId()]);
+        return $this->redirectToRoute('app_profile', ['user' => $followedUser->getUserName()]);
     }
 
     #[Route('/{location}/unfollow/{unfollowedUser}', name: 'app_user_unfollow')]
@@ -139,7 +139,7 @@ class ProfileController extends AbstractController
        if($location === 'list') {
             return $this->redirectToRoute('app_user_list', ['user' => $user->getId(), 'param' => 'followed']);
         } else {
-            return $this->redirectToRoute('app_profile', ['user' => $unfollowedUser->getId()]);
+            return $this->redirectToRoute('app_profile', ['user' => $unfollowedUser->getUserName()]);
         }
     }
 

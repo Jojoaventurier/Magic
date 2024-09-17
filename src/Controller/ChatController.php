@@ -59,6 +59,7 @@ class ChatController extends AbstractController
     #[Route('/chatting', name: 'chatting', methods: ['GET', 'POST'])]
     public function chatting(Request $request, MessageRepository $messageRepository, SessionInterface $session): Response
     {
+        $mostRecentMessage = 0;
         // Retrieve the `otherUserId` from the request or session
         $otherUserId = $request->get('otherUserId');
         if (!$otherUserId) {
