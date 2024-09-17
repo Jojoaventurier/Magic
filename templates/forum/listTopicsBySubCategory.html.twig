@@ -18,7 +18,9 @@
         Par {% if topic.user is same as null %}
             <span class="italic">[profil supprimé]</span>
             {% else %}
-            {{ topic.user.userName }}
+            <a href="{{ path('app_profile', {'user': topic.user.userName}) }}" class="hover:underline">
+                {{ topic.user.userName }}
+            </a>
             {% endif %}
         {% if topic.editDate is same as null %}
         posté le {{ topic.creationDate|date('d.m.Y H:i') }}<br>

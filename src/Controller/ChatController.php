@@ -115,31 +115,6 @@ class ChatController extends AbstractController
         ]);
     }
 
-    // #[Route('/chatWith', name: 'chatWith', methods: ['GET', 'POST'])]
-    // public function getChatMessages(Request $request): array
-    // {
-
-    //      // Get the current URI
-    //      $currentUri = $request->getRequestUri();
-         
-    //     $otherUserId = $request->get('otherUserId');
-    //     $otherUser = $this->userRepository->findBy(['id' => $otherUserId]);
-    //     $currentUser = $this->security->getUser();
-    //     if ($currentUser) {
-    //         $messages = $this->messageRepository->findByUsers($currentUser, $otherUser);
-    //         foreach ($messages as $message) {
-    //             // Mark as read if the current user is the receiver
-    //             if ($message->getReceiver() === $currentUser) {
-    //                 $message->setRead(true);
-    //                 $this->entityManager->persist($message);
-    //             }
-    //         }
-    //         $this->entityManager->flush();
-
-    //         return $this->RedirectToRoute($currentUri, ['messages' => $messages]);
-    //     }
-    //     return ['messages' => []];
-    // }
 
     /**
      * @Route("/chat/{otherUserId}", name="chat_form", methods={"GET", "POST"})
@@ -156,7 +131,7 @@ class ChatController extends AbstractController
     }
 
     #[Route('/chatting/ajax', name: 'chatting_ajax', methods: ['POST'])]
-public function chattingAjax(Request $request, MessageRepository $messageRepository): JsonResponse
+public function chattingAjax(Request $request): JsonResponse
 {
     // Retrieve JSON data from the request
     $data = json_decode($request->getContent(), true);

@@ -35,7 +35,9 @@
             Par {% if post.user is same as null %}
             <span class="italic">[profil supprimé]</span>
                 {% else %}
-                {{ post.user.userName }} <br>
+                <a href="{{ path('app_profile', {'user': topic.user.userName}) }}" class="hover:underline">
+                    {{ post.user.userName }} 
+                </a><br>
             {% endif %}
             {% if post.editDate is same as null %}
                 posté le {{ post.creationDate|date('d.m.Y H:i') }} ,

@@ -8,6 +8,7 @@ use App\Form\UserType;
 use App\Entity\Comment;
 use App\Form\CommentType;
 use App\Repository\DeckRepository;
+use App\Repository\UserRepository;
 use App\Repository\MessageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,12 +19,29 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ProfileController extends AbstractController
 {
-    #[Route('/{user}/profile', name: 'app_profile')]
-    public function profile(User $user, MessageRepository $messageRepository): Response
+    #[Route('/user/{user}/', name: 'app_profile')]
+    public function seePofile(String $user, UserRepository $userRepository): Response
+    {
+        $currentUser = $this->getUser();
+        $profileUser = $userRepository->findOneBy(['userName' => $user]);
+        
+        if ($currentUser === $profileUser) {
+        
+            return $this->redirectToRoute('app_profile_self');
+        } else {
+            return $this->render('home/profile.html.twig', [
+                'user' => $profileUser,
+            ]);
+        }
+    }
+
+    #[IsGranted("ROLE_USER")]
+    #[Route('/profile', name: 'app_profile_self')]
+    public function profile(MessageRepository $messageRepository): Response
     {
         $currentUser = $this->getUser();
         
-        if ($currentUser === $user) {
+        if ($currentUser) {
             // Retrieve the messages
             $messages = $messageRepository->findByMostRecentUser($currentUser);
     
@@ -40,14 +58,22 @@ class ProfileController extends AbstractController
         }
     
             return $this->render('home/profile.html.twig', [
-                'user' => $user,
                 'messages' => $uniqueConversations,
             ]);
         } else {
             return $this->render('home/profile.html.twig', [
-                'user' => $user,
             ]);
         }
+    }
+
+    #[Route('/alldecks', name: 'app_decks')]
+    public function decksIndex(DeckRepository $deckRepository): Response
+    {
+        $decks = $deckRepository->findBy(['status' => 1]);
+
+        return $this->render('decks/index.html.twig', [
+            'decks' => $decks,
+        ]);
     }
 
     #[Route('/{user}/profile/edit', name: 'app_profile_edit')]

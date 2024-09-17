@@ -15,7 +15,7 @@
             <ul class="list-none">
                 {% for el in user.followingUsers %}
                 <li class="py-1 border-b">
-                    <a href={{ path('app_profile', {'user': el.id}) }} class="hover:underline hover:text-red-800">
+                    <a href={{ path('app_profile', {'user': el.userName}) }} class="hover:underline hover:text-red-800">
                         {{ el.userName }}
                     </a>
                 </li>
@@ -32,7 +32,7 @@
             <ul class="list-none">
                 {% for el in user.followedUsers %}
                 <li>
-                    <a href={{ path('app_profile', {'user': el.id}) }} class="hover:underline hover:text-red-800">
+                    <a href={{ path('app_profile', {'user': el.userName}) }} class="hover:underline hover:text-red-800">
                         {{ el.userName }}
                     </a> 
                     {% if app.user is same as user %}

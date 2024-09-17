@@ -48,24 +48,7 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[IsGranted("ROLE_USER")]
-    #[Route('/profile', name: 'app_profile')]
-    public function seeProfile(): Response
-    {
-        return $this->render('profile/index.html.twig', [
-            'controller_name' => 'HomeController',
-        ]);
-    }
 
-    #[Route('/alldecks', name: 'app_decks')]
-    public function decksIndex(DeckRepository $deckRepository): Response
-    {
-        $decks = $deckRepository->findBy(['status' => 1]);
-
-        return $this->render('decks/index.html.twig', [
-            'decks' => $decks,
-        ]);
-    }
 
     #[Route('/{search}/search/{parameter}', name: 'app_search')]
     public function advancedSearch(String $search, String $parameter): Response

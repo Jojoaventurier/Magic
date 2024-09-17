@@ -40,7 +40,9 @@
                 Par {% if topic.user is same as null %}
                     <span class="italic">[profil supprimé]</span>
                     {% else %}
+                    <a href="{{ path('app_profile', {'user': topic.user.userName}) }}" class="hover:underline p-1 border rounded">
                     {{ topic.user.userName }} 
+                    </a>
                     {% endif %}
                     
                     {% if topic.editDate is same as null %}
@@ -49,14 +51,18 @@
                         modifié le {{ topic.editDate|date('d.m.Y H:i') }}
                     {% endif %}
             </p>
-            <p>
-                {{ topic.topicTitle }}
-            </p>
-            
-            {% if app.user is same as topic.user and topic.user is not same as null %}
-                <a href="{{ path('edit_topic', {'id': topic.id}) }}">Modifier</a>
-                {# <a href="{{ path('lock_topic', {id : topic.id}) }}">Verrouiller</a> #} 
-                {% endif %}
+            <a class="hover:bg-gray-100 border p-2" href="{{ path('app_forum_posts', {'id': topic.id}) }}">
+
+                    <h3>
+                        {{ topic.topicTitle }}
+                    </h3>
+                    
+                    {% if app.user is same as topic.user and topic.user is not same as null %}
+                    <a href="{{ path('edit_topic', {'id': topic.id}) }}">Modifier</a>
+                    {# <a href="{{ path('lock_topic', {id : topic.id}) }}">Verrouiller</a> #} 
+                    {% endif %}
+
+            </a>
             </div>
         {% endfor %}
     </div>

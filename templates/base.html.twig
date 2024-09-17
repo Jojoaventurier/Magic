@@ -38,7 +38,7 @@
                       message{{ unread_count() > 1 ? 's' : '' }}
                   </span>
               {% endif %}
-            <a class="white hover:underline" href="{{ path('app_profile', {'user': app.user.id}) }}">Mon profil</a>
+            <a class="white hover:underline" href="{{ path('app_profile_self') }}">Mon profil</a>
             <a class="white hover:underline" href="{{ path('app_logout') }}">Se déconnecter</a>
             {# <a href="{{ path('app_deck_manager', {'user': user.id})}}">MES DECKS</a> #}
             {% else %}
