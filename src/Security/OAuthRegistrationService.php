@@ -30,7 +30,7 @@ public function persist(ResourceOwnerInterface $resourceOwner): User
     ->setEmail($resourceOwner->getEmail())
     ->setGoogleId($resourceOwner->getId())
     ->setCreationDate($currentDateTime)
-    ->setUserName($resourceOwner->getEmail());
+    ->setUserName($resourceOwner->getName());
 
      $this->repository->add($user, flush: true);
      return $user;

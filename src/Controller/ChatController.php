@@ -59,7 +59,7 @@ class ChatController extends AbstractController
     #[Route('/chatting', name: 'chatting', methods: ['GET', 'POST'])]
     public function chatting(Request $request, MessageRepository $messageRepository, SessionInterface $session): Response
     {
-        $mostRecentMessage = 0;
+
         // Retrieve the `otherUserId` from the request or session
         $otherUserId = $request->get('otherUserId');
         if (!$otherUserId) {
@@ -75,10 +75,23 @@ class ChatController extends AbstractController
     
         // Check if the other user exists
         if (!$otherUser) {
-            throw $this->createNotFoundException('User not found');
+            $otherUser = null;
         }
     
         $messages = $messageRepository->findByUsers($currentUser, $otherUser);
+        $recentMessages = $messageRepository->findByMostRecentUser($currentUser);
+
+        // Filter out duplicates based on conversation between same users
+        $uniqueConversations = [];
+        foreach ($recentMessages as $message) {
+            // Use min and max to ensure a consistent key for each conversation
+            $key = min($message['authorId'], $message['receiverId']) . '-' . max($message['authorId'], $message['receiverId']);
+            
+            // Only add unique conversations
+            if (!isset($uniqueConversations[$key])) {
+                $uniqueConversations[$key] = $message;
+            }
+        }
 
         foreach($messages as $message) {
 
@@ -110,6 +123,7 @@ class ChatController extends AbstractController
         }
     
         return $this->render('chat/index.html.twig', [
+            'recentMessages' => $uniqueConversations,
             'messages' => $messages,
             'form' => $form->createView(),
             'otherUser' => $otherUser,

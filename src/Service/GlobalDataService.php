@@ -37,7 +37,6 @@ class GlobalDataService extends AbstractController
     {
         $currentUser = $this->security->getUser();
         $messages = $entityManager->getRepository(Message::class)->findByUsers($currentUser, $otherUser);
-        $recentMessages = $entityManager->getRepository(Message::class)->findByMostRecent($currentUser);
     
         // Mark messages as read
         foreach ($messages as $message) {
@@ -76,7 +75,6 @@ class GlobalDataService extends AbstractController
             $entityManager->flush();
     
             return [
-                'recentMessages' => $recentMessages,
                 'messages' => $messageData,
                 'otherUser' => $otherUser->getUserName(),
                 'otherUserId' => $otherUser->getId()
@@ -84,7 +82,6 @@ class GlobalDataService extends AbstractController
         }
     
         return [
-            'recentMessages' => $recentMessages,
             'messages' => $messageData,
             'otherUser' => $otherUser->getUserName(),
             'otherUserId' => $otherUser->getId()

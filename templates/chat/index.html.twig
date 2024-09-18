@@ -3,53 +3,146 @@
 {% block title %}Chat{% endblock %}
 
 {% block body %}
+<div class="w-full flex justify-center">
+    <div class="inline-flex">
+        <div class="flex flex-col pr-10">
+            <div x-data="{ isOpen: true }" 
+                {% if unread_count() > 0 %}    
+                class="mt-20 p-6 rounded hover:shadow-lg w-[280px] bg-red-700 text-white relative hover:bg-white hover:text-red-700"
+                {% else %}
+                class="mt-20 p-6 rounded hover:shadow-lg w-[280px] bg-white text-black relative"
+                {% endif %}
+                >
+                    <h2 @click="isOpen = !isOpen" class="text-sm font-semibold py-1 text-center cursor-pointer">
+                        Conversations récentes
+                        <span x-text="isOpen ? '▲' : '▼'" class="ml-2"></span> <!-- Toggle arrow -->
+                    </h2>
+                    {% if unread_count() > 0 %}
+                    <span class="italic text-xs absolute top-2 right-16 ">
+                            Vous avez {{ unread_count() }} message{{ unread_count() > 1 ? 's' : '' }} non-lu{{ unread_count() > 1 ? 's' : '' }}
+                    </span>
+                    {% endif %}
 
-<div class="relative flex flex-col items-center justify-center w-full" 
-{% if app.user.globalChat is same as true and app.user.modernChat is same as true %}
-x-data="chatBox()"
-{% endif %}
->
-    <!-- Chat Box -->
-    <div class="w-[650px] max-h-[80vh] p-6 bg-white shadow-lg rounded-lg mt-10 flex flex-col overflow-hidden">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl text-center text-white bg-red-800 rounded-md px-4 py-2">
-                Discussion avec 
-                <a href="{{ path('app_profile', {'user': otherUser.id}) }}" class="hover:underline">
-                    {{ otherUser.userName }}
-                </a>
-            </h2>
-        </div>
+                    <ul class="bg-white text-black rounded px-2 py-1" x-show="isOpen" x-transition>
+                        {% for message in recentMessages %}
+                            <li class="border-b border-red-800 hover:bg-slate-100">
+                                {% if message.authorId is same as app.user.id %}
+                                    <!-- Current user is the author, so show the receiver -->
+                                    <form action="{{ path('chatting') }}" method="POST">
+                                        <input type="hidden" value="{{ message.receiverId }}" id="otherUserId" name="otherUserId">
+                                        <input type="submit" class="text-sm px-4 py-1 hover:text-red-600 hover:underline cursor-pointer" value="{{ message.receiverName }}">
+                                    </form>
+                                {% else %}
+                                    <!-- Current user is the receiver, so show the author -->
+                                    <form action="{{ path('chatting') }}" method="POST">
+                                        <input type="hidden" value="{{ message.authorId }}" id="otherUserId" name="otherUserId">
+                                        <input type="submit" class="text-sm px-4 pt-1 hover:text-red-600 hover:underline cursor-pointer" value="{{ message.authorName }}">
+                                        {% if not message.isRead %}
+                                            <span class="italic text-red-500 text-xs pl-16 pb-1">vous a écrit</span>
+                                        {% endif %}
+                                    </form>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
 
-        <div id="messages-container" class="overflow-y-auto flex-1 border border-gray-200 rounded-lg p-4 mb-4">
-            {% if messages is defined %}
-                {% for message in messages %}
-                    <div class="message-container flex w-full {{ message.author.id == app.user.id ? 'justify-end text-end' : 'justify-start' }}">
-                        <div class="message-content px-2 rounded-lg max-w-full {{ message.author.id == app.user.id ? 'bg-gray-100' : 'bg-blue-100' }}">
-                            <strong class="text-xs text-slate-700">
-                                <a class="hover:underline" href="{{ path('app_profile', {'user': message.author.id}) }}">
-                                    {{ message.author.username }}:
-                                </a>
-                            </strong><br>
-                            <p class="text-gray-800 rounded-md px-3 py-2 text-sm">{{ message.content }}</p>
-                        </div>
+                </div>
+
+                
+                <div class="mt-4 p-6 rounded hover:shadow-lg w-[280px]" 
+                {% if app.user.globalChat is same as true and app.user.modernChat is same as true %}
+                x-data="chatBox()"
+                {% endif %}
+                >
+                    <h2 class="text-sm font-semibold py-1 text-center">Liste des contacts</h2>
+                    {% if app.user.followingUsers is empty %}
+                    <p class="text-xs italic">Vous ne pouvez lancer de discussion qu'avec les personnes qui vous suivent.</p>
                     </div>
-                {% endfor %}
-            {% else %}
-                <p class="text-gray-500 text-center">Aucun message pour l'instant.</p>
-            {% endif %}
-        </div>
+                    {% else %}
+                    <ul class="bg-white text-black rounded px-2 py-1 results-list" id="list">
+                        {% for user in app.user.followingUsers %}
+                        <li class="border-b border-red-800 hover:bg-slate-100">
+                            <form action="{{ path('chatting') }}" method="POST">
+                                <input type="hidden" value="{{ user.id }}" id="otherUserId" name="otherUserId">
+                                <input type="submit" class=" cursor-pointer text-sm px-4 py-1 hover:text-red-600 hover:underline" value="{{ user.userName }}">
+                            </form>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
 
-        {{ form_start(form, {'attr': {'class': 'chat-form flex items-center'}}) }}
-            {{ form_widget(form.content, {'attr': {'class': 'border border-gray-300 rounded-lg p-2 flex-1 mr-2'}}) }}
-            <input type="hidden" name="otherUserId" id="otherUserId" value="{{ otherUser.id }}">
-            <button type="submit" class="bg-white border border-red-800 hover:text-white text-red-800 rounded-lg px-4 py-2 hover:bg-red-800 transition duration-300">Envoyer</button>
-        {{ form_end(form) }}
+
+            <!-- Chat Box -->
+                
+        <div class="mt-10 p-6 bg-white shadow-lg rounded-lg flex flex-col justify-center  overflow-hidden  w-[650px] max-w-[650px] max-h-[80vh]">
+                    {% if otherUser is same as null %}
+                    <p class="text-sm italic text-center align-middle">Cliquez sur un nom pour lancer une discussion.</p>
+                        {% else %}
+                    
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl text-center text-white bg-red-800 rounded-md px-4 py-2">
+                            Discussion avec 
+                            <a href="{{ path('app_profile', {'user': otherUser.userName}) }}" class="hover:underline">
+                                {{ otherUser.userName }}
+                            </a>
+                        </h2>
+                    </div>
+
+                    <div id="messages-container" class="overflow-y-auto flex-1 border border-gray-200 rounded-lg p-4 mb-4">
+                        {% if messages is defined %}
+                            {% for message in messages %}
+                                <div class="message-container flex w-full {{ message.author.id == app.user.id ? 'justify-end text-end' : 'justify-start' }}">
+                                    <div class="message-content px-2 rounded-lg max-w-full {{ message.author.id == app.user.id ? 'bg-gray-100' : 'bg-blue-100' }}">
+                                        <strong class="text-xs text-slate-700">
+                                            <a class="hover:underline" href="{{ path('app_profile', {'user': message.author.userName}) }}">
+                                                {{ message.author.username }}:
+                                            </a>
+                                        </strong><br>
+                                        <p class="text-gray-800 rounded-md px-3 py-2 text-sm">{{ message.content }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-gray-500 text-center">Aucun message pour l'instant.</p>
+                        {% endif %}
+                    </div>
+
+                    {{ form_start(form, {'attr': {'class': 'chat-form flex items-center'}}) }}
+                        {{ form_widget(form.content, {'attr': {'class': 'border border-gray-300 rounded-lg p-2 flex-1 mr-2'}}) }}
+                        <input type="hidden" name="otherUserId" id="otherUserId" value="{{ otherUser.id }}">
+                        <button type="submit" class="bg-white border border-red-800 hover:text-white text-red-800 rounded-lg px-4 py-2 hover:bg-red-800 transition duration-300">Envoyer</button>
+                    {{ form_end(form) }}
+                </div>
+                {% endif %}
+
+        </div>
     </div>
 </div>
+    <div class="border m p-6 max-w-72">
+        <div class="form-container">
+            <form class="form">
+                <input id="search" type="text" class="input" placeholder="search..."/>
+                <button id="clear" class="clear-results">clear</button>
+            </form>
+        </div>
+    <div class="hidden">
+        {% for user in app.user.followingUsers %}
+            <li class="userLine" value="{{user.userName}}" type="hidden">{{user.userName}}</li>
+        {% endfor %}
+    </div>
+
+        <div class="hidden">
+            <ul class="results-list" id="list">
+
+            </ul>
+        </div>
+    </div>
 
 
-{% if app.user.globalChat is same as false %}
-    
+
+{# {% if app.user.globalChat is same as false %}
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const messagesContainer = document.getElementById('messages-container');
@@ -62,6 +155,78 @@ x-data="chatBox()"
     });
     
 </script>
-{% endif %}
+{% endif %} #}
+
+<script>
+
+
+    const searchInput = document.querySelector('.input');
+    const list = document.getElementById('list'); // Refers to the results container (the ul with id="list")
+    const clearButton = document.getElementById('clear');
+    
+    // Populate the persons array with usernames from the DOM
+    let userElements = document.getElementsByClassName('userLine');
+    let persons = [];
+    
+    for (let i = 0; i < userElements.length; i++) {
+        persons.push({
+            name: userElements[i].textContent.trim() // Store the person's name
+        });
+    }
+    
+    // Clear button functionality
+    clearButton.addEventListener("click", (e) => {
+        e.preventDefault(); // Prevent form submission
+        clearList();
+        searchInput.value = ''; // Clear the input field
+    });
+    
+    // Search input functionality
+    searchInput.addEventListener("input", (e) => {
+        let value = e.target.value;
+    
+        if (value && value.trim().length > 0) {
+            value = value.trim().toLowerCase();
+            const filteredResults = persons.filter(person => 
+                person.name.toLowerCase().includes(value)
+            );
+            setList(filteredResults); // Update the list with filtered results
+        } else {
+            clearList(); // Clear the list when input is empty
+        }
+    });
+    
+    // Clear the list of results
+    function clearList() {
+        list.innerHTML = ""; // Clear the inner HTML of the list element
+    }
+    
+    // Populate the list with filtered results
+    function setList(results) {
+        clearList(); // Clear the current list before adding new results
+    
+        for (const person of results) {
+            const resultItem = document.createElement('li');
+            resultItem.classList.add('result-item');
+            const text = document.createTextNode(person.name);
+            resultItem.appendChild(text);
+            list.appendChild(resultItem); // Append the result item to the list
+        }
+    
+        if (results.length === 0) {
+            noResults();
+        }
+    }
+    
+    // Display a "No results" message when no results are found
+    function noResults() {
+        const error = document.createElement('li');
+        error.classList.add('error-message');
+        const text = document.createTextNode('No results found. Sorry!');
+        error.appendChild(text);
+        list.appendChild(error);
+    }
+
+</script>
 
 {% endblock %}

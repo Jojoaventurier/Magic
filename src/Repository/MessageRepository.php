@@ -19,11 +19,30 @@ class MessageRepository extends ServiceEntityRepository
     public function findByMostRecent($author) {
 
         return $this->createQueryBuilder('m')
-            ->andWhere('(m.author = :author AND m.receiver = :receiver) OR (m.author = :receiver AND m.receiver = :author)')
+             ->innerJoin('m.author', 'a')
+            ->innerJoin('m.receiver', 'r')
+            ->select('a.userName AS authorName, r.userName AS receiverName, a.id AS authorId, r.id AS receiverId, m.isRead AS isRead, MAX(m.createdAt) as lastMessageDate')
+            ->andWhere('(m.author = :author OR m.receiver = :author)')
             ->setParameter('author', $author)
             ->setParameter('receiver', $author)
-            ->orderBy('m.createdAt', 'DESC')
+            ->groupBy('m.author', 'm.receiver', 'm.isRead')
+            ->orderBy('lastMessageDate', 'DESC')
+            ->setMaxResults(10)
             ->getQuery()
+            ->getResult();
+    }
+
+    public function findMostRecent($author) {
+        return $this->createQueryBuilder('m')
+            ->innerJoin('m.author', 'a')
+            ->innerJoin('m.receiver', 'r')
+            ->select('a.userName AS authorName, r.userName AS receiverName, a.id AS authorId, r.id AS receiverId, m.isRead AS isRead, MAX(m.createdAt) as lastMessageDate')
+            ->andWhere('(m.author = :author OR m.receiver = :author)')
+            ->setParameter('author', $author)
+            ->groupBy('m.author', 'm.receiver')
+            ->orderBy('MAX(m.createdAt)', 'DESC')
+            ->getQuery()
+            ->setMaxResults(10)
             ->getResult();
     }
 

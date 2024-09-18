@@ -33,7 +33,7 @@ class GoogleAuthenticator extends AbstractOAuthAuthenticator
 
         return $repository->findOneBy([
             'googleId' => $resourceOwner->getId(),
-            'email' => $resourceOwner->getEmail()
+            'email' => $resourceOwner->getEmail(),
         ]);
     }
 

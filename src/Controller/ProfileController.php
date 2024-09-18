@@ -43,11 +43,11 @@ class ProfileController extends AbstractController
         
         if ($currentUser) {
             // Retrieve the messages
-            $messages = $messageRepository->findByMostRecentUser($currentUser);
+            $recentMessages = $messageRepository->findByMostRecentUser($currentUser);
     
         // Filter out duplicates based on conversation between same users
         $uniqueConversations = [];
-        foreach ($messages as $message) {
+        foreach ($recentMessages as $message) {
             // Use min and max to ensure a consistent key for each conversation
             $key = min($message['authorId'], $message['receiverId']) . '-' . max($message['authorId'], $message['receiverId']);
             
@@ -100,7 +100,7 @@ class ProfileController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_profile', ['user' => $user->getId()]);
+            return $this->redirectToRoute('app_profile', ['user' => $user->getUserName()]);
        }
         
         return $this->render('home/editProfile.html.twig', [
