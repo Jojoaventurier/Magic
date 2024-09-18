@@ -29,13 +29,13 @@
             </div>
 
             <div class="space-y-2">
-                <label for="twitchUsername" class="text-sm font-medium text-gray-700"><span class="inline-flex space-x-2">Chaîne Twitch <img class="w-5 mx-2" src="https://img.icons8.com/?size=100&id=18104&format=png&color=000000"></span></label>
-                {{ form_widget(form.twitchUsername, {'attr': {'class': 'w-full px-4 py-2 border border-red-700 text-sm rounded focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 hover:shadow-md shadow duration-300'}}) }}
+                <label for="discordUsername" class="text-sm font-medium text-gray-700"><span class="inline-flex space-x-2">Serveur Discord<img class="w-5 mx-2" src="https://img.icons8.com/?size=300&id=YmmZ2YsHiv59&format=png&color=000000"></span></label>
+                {{ form_widget(form.discordUsername, {'attr': {'class': 'w-full px-4 py-2 border border-red-700 text-sm rounded focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 hover:shadow-md shadow duration-300'}}) }}
             </div>
 
             <div class="space-y-2">
-                <label for="discordUsername" class="text-sm font-medium text-gray-700"><span class="inline-flex space-x-2">Serveur Discord<img class="w-5 mx-2" src="https://img.icons8.com/?size=300&id=YmmZ2YsHiv59&format=png&color=000000"></span></label>
-                {{ form_widget(form.discordUsername, {'attr': {'class': 'w-full px-4 py-2 border border-red-700 text-sm rounded focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 hover:shadow-md shadow duration-300'}}) }}
+                <label for="twitchUsername" class="text-sm font-medium text-gray-700"><span class="inline-flex space-x-2">Chaîne Twitch <img class="w-5 mx-2" src="https://img.icons8.com/?size=100&id=18104&format=png&color=000000"></span></label>
+                {{ form_widget(form.twitchUsername, {'attr': {'class': 'w-full px-4 py-2 border border-red-700 text-sm rounded focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 hover:shadow-md shadow duration-300'}}) }}
             </div>
 
             {% if app.user.twitchUsername is not null or app.user.twitchUserName is same as 'twitch.tv/' %}
