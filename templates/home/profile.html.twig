@@ -225,10 +225,10 @@
     
 
 {% if messages is defined %}
-{# {% if user_messages is not empty %} #}
 <div class="flex w-full justify-center">
-
     <div class="w-4/5 m-8 space-y-4">   
+{% if messages is empty %}
+{% else %}
         <div x-data="{ isOpen: false }" 
         {% if unread_count() > 0 %}    
         class=" p-6 rounded hover:shadow-lg w-[280px] bg-red-700 text-white relative hover:bg-blue-100 hover:text-red-700"
@@ -270,6 +270,7 @@
             </ul>
         </div>
         {% endif %}
+        {% endif %}
 
         <div x-data="{ isOpen: false }" class="shadow p-6 rounded hover:shadow-lg hover:bg-blue-100 w-[280px]">
 
@@ -278,27 +279,6 @@
                 Toutes les conversations
             </a>
         </h2>
-{#   
-                <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer">
-                    Toutes les conversations
-                    <span x-text="isOpen ? '▲' : '▼'" class="ml-2"></span> <!-- Toggle arrow -->
-                </h2>
-            
-        
-            <ul x-show="isOpen" x-transition>
-                {% for user in app.user.followingUsers %}
-                    <li class="border-b border-red-800 hover:bg-slate-100">
-                        <form action="{{ path('chatting') }}" method="POST">
-                            <input type="hidden" value="{{ user.id }}" id="otherUserId" name="otherUserId">
-                            <input type="submit" class=" cursor-pointer text-sm px-4 py-1 hover:text-red-600 hover:underline" value="{{ user.userName }}">
-                        </form>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div> #}
- 
-
-
 
     </div> 
 </div>
@@ -307,27 +287,4 @@
 
 
 
-{# {% block javascripts %}
-
-    
-const url = new URL('http://localhost:3000/.well-known/mercure');
-url.searchParams.append('topic', 'conversation_{{ conversation.id }}');
-
-const eventSource = new EventSource(url);
-
-eventSource.onmessage = function(event) {
-    const data = JSON.parse(event.data);
-    const chatBox = document.getElementById('chat-box');
-    
-    const newMessage = document.createElement('div');
-    newMessage.classList.add('message');
-    newMessage.innerHTML = `<strong>${data.author}:</strong> ${data.content}`;
-    
-    chatBox.appendChild(newMessage);
-};
-
-
-
-
-{% endblock %} #}
 {% endblock %}

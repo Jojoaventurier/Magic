@@ -50,441 +50,474 @@
         </nav>
         
 {% if app.user %}
-  {% if app.user.globalChat is same as true %}
-  {% set user_messages = user_messages() %}
+    {% if app.user.globalChat is same as true %}
+        {% set user_messages = user_messages() %}
 
-{% if app.user.modernChat is same as null or app.user.modernChat is same as false %}
-  
+        {% if app.user.modernChat is same as null or app.user.modernChat is same as false %}
+    
 
-        {% if user_messages is empty %}
-            {% else %}
-        
+            {% if user_messages.messages is empty or user_messages.messages is same as null %}
         <div class="fixed right-4 bottom-12 z-50 space-y-4 mt-4">
-    
-          <!-- Recent Conversations Section -->
-          <div x-data="{ isOpen: false }"
-              class="p-4 rounded-lg hover:shadow-xl {{ unread_count() > 0 ? 'bg-red-700 text-white relative hover:bg-blue-100 hover:text-red-700' : 'border bg-white hover:bb-blue-100 text-gray-800' }}">
-              <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer flex items-center justify-between">
-                  Conversations récentes
-                  <span x-text="isOpen ? '▲' : '▼'" class="ml-2"></span> <!-- Toggle arrow -->
-              </h2>
-              
-              {% if unread_count() > 0 %}
-              <span class="italic text-xs absolute top-1 left-4">
-                  Vous avez {{ unread_count() }} message{{ unread_count() > 1 ? 's' : '' }} non-lu{{ unread_count() > 1 ? 's' : '' }}
-              </span>
-              {% endif %}
-      
-              <ul class="bg-white text-gray-800 rounded-lg mt-1 max-h-60 overflow-y-auto" x-show="isOpen" x-transition>
-                  {% for message in user_messages.messages %}
-                      <li class="border-b border-gray-300 hover:bg-gray-100 px-2">
-                          {% if message.authorId == app.user.id %}
-                              <!-- Current user is the author, so show the receiver -->
-                              <form action="{{ path('chatting') }}" method="POST">
-                                  <input type="hidden" value="{{ message.receiverId }}" id="otherUserId" name="otherUserId">
-                                  <input type="submit" class="text-sm px-2 py-1 hover:text-red-700 hover:underline cursor-pointer" value="{{ message.receiverName }}">
-                              </form>
-                          {% else %}
-                              <!-- Current user is the receiver, so show the author -->
-                              <form action="{{ path('chatting') }}" method="POST">
-                                  <input type="hidden" value="{{ message.authorId }}" id="otherUserId" name="otherUserId">
-                                  <input type="submit" class="text-sm px-2 py-1 hover:text-red-700 hover:underline cursor-pointer" value="{{ message.authorName }}">
-                                  {% if not message.isRead %}
-                                      <span class="italic text-red-500 text-xs pl-2">vous a écrit</span>
-                                  {% endif %}
-                              </form>
-                          {% endif %}
-                      </li>
-                  {% endfor %}
-              </ul>
-          </div>
-          {% endif %}
-          {% if app.user.followingUsers is empty %}
             {% else %}
-          <div x-data="{ isOpen: false }" class="border hover:bg-blue-100 p-4 rounded-lg hover:shadow-xl bg-white">
-            {% if app.user.followingUsers is not empty %}
-                <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer flex items-center justify-between">
-                    Ecrire à un contact
-                    <span x-text="isOpen ? '▲' : '▼'" class="ml-2"></span> <!-- Toggle arrow -->
-                </h2>
-            {% endif %}
+            
+            <div class="fixed right-4 bottom-12 z-50 space-y-4 mt-4">
         
-            <ul class="bg-white text-gray-800 rounded-lg mt-1 max-h-60 overflow-y-auto" x-show="isOpen" x-transition>
-                {% for user in app.user.followingUsers %}
-                    <li class="border-b border-red-800 hover:bg-slate-100">
-                        <form action="{{ path('chatting') }}" method="POST">
-                            <input type="hidden" value="{{ user.id }}" id="otherUserId" name="otherUserId">
-                            <input type="submit" class="text-sm px-4 py-1 hover:text-red-600 hover:underline" value="{{ user.userName }}">
-                        </form>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
-      </div>
-
-    </div>
-  </section>
-  {% elseif app.user.modernChat is same as true and user_messages is not empty %}
-      
-  <div class="fixed right-4 bottom-12 z-50 space-y-4 mt-4">
-    
-      <!-- Recent Conversations Section -->
-      <div x-data="{ isOpen: false }"
-          class="p-4 rounded-lg hover:shadow-xl {{ unread_count() > 0 ? 'bg-red-700 text-white relative hover:bg-blue-100 hover:text-red-700' : 'bg-white border hover:bg-blue-100 text-gray-800' }}">
-          <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer flex items-center justify-between">
-              Conversations récentes
-              <span x-text="isOpen ? '▲' : '▼'" class="ml-2 text-xs"></span> <!-- Toggle arrow -->
-          </h2>
-          
-          {% if unread_count() > 0 %}
-          <span class="italic text-xs absolute top-1 left-4">
-              Vous avez {{ unread_count() }} message{{ unread_count() > 1 ? 's' : '' }} non-lu{{ unread_count() > 1 ? 's' : '' }}
-          </span>
-          {% endif %}
-          <div x-show="isOpen" x-transition x-data="chatFormBis()">
-            <ul class="bg-white text-gray-800 rounded-lg mt-1 max-h-60 overflow-y-auto">
-                {% for message in user_messages.messages %}
-                    <li class="border-b border-gray-300 hover:bg-gray-100 px-2">
-                        {% if message.authorId == app.user.id %}
-                        <!-- Current user is the author, so show the receiver -->
-                        <div>
-                            <form @submit.prevent="submitChatForm($event)" action="{{ path('chat_form') }}" method="POST">
-                                <input type="hidden" value="{{ message.receiverId }}" id="otherUserId" name="otherUserId">
-                                <input type="submit" class="text-sm px-2 py-1 hover:text-red-700 hover:underline cursor-pointer" value="{{ message.receiverName }}">
-                            </form>
-                        </div>
-                        {% else %}
-                        <!-- Current user is the receiver, so show the author -->
-                        <div>
-                            <form @submit.prevent="submitChatForm($event)" action="{{ path('chat_form') }}" method="POST">
-                                <input type="hidden" value="{{ message.authorId }}" id="otherUserId" name="otherUserId">
-                                <input type="submit" class="text-sm px-2 py-1 hover:text-red-700 hover:underline cursor-pointer" value="{{ message.authorName }}">
-                                {% if not message.isRead %}
-                                    <span class="italic text-red-500 text-xs pl-2">vous a écrit</span>
+                <!-- Recent Conversations Section -->
+                <div x-data="{ isOpen: false }"
+                    class="p-4 rounded-lg hover:shadow-xl {{ unread_count() > 0 ? 'bg-red-700 text-white relative hover:bg-blue-100 hover:text-red-700' : 'border bg-white hover:bb-blue-100 text-gray-800' }}">
+                    <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer flex items-center justify-between">
+                        Conversations récentes
+                        <span x-text="isOpen ? '▲' : '▼'" class="ml-2"></span> <!-- Toggle arrow -->
+                    </h2>
+                    
+                    {% if unread_count() > 0 %}
+                    <span class="italic text-xs absolute top-1 left-4">
+                        Vous avez {{ unread_count() }} message{{ unread_count() > 1 ? 's' : '' }} non-lu{{ unread_count() > 1 ? 's' : '' }}
+                    </span>
+                    {% endif %}
+            
+                    <ul class="bg-white text-gray-800 rounded-lg mt-1 max-h-60 overflow-y-auto" x-show="isOpen" x-transition>
+                        {% for message in user_messages.messages %}
+                            <li class="border-b border-gray-300 hover:bg-gray-100 px-2">
+                                {% if message.authorId == app.user.id %}
+                                    <!-- Current user is the author, so show the receiver -->
+                                    <form action="{{ path('chatting') }}" method="POST">
+                                        <input type="hidden" value="{{ message.receiverId }}" id="otherUserId" name="otherUserId">
+                                        <input type="submit" class="text-sm px-2 py-1 hover:text-red-700 hover:underline cursor-pointer" value="{{ message.receiverName }}">
+                                    </form>
+                                {% else %}
+                                    <!-- Current user is the receiver, so show the author -->
+                                    <form action="{{ path('chatting') }}" method="POST">
+                                        <input type="hidden" value="{{ message.authorId }}" id="otherUserId" name="otherUserId">
+                                        <input type="submit" class="text-sm px-2 py-1 hover:text-red-700 hover:underline cursor-pointer" value="{{ message.authorName }}">
+                                        {% if not message.isRead %}
+                                            <span class="italic text-red-500 text-xs pl-2">vous a écrit</span>
+                                        {% endif %}
+                                    </form>
                                 {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            {% if app.user.followingUsers is empty %}
+            <div x-data="{ isOpen: false }" class="border hover:bg-blue-100 p-4 rounded-lg hover:shadow-xl bg-white">
+                <a href="{{path('chatting')}}" class="text-sm font-semibold text-center cursor-pointer flex items-center justify-between">
+                    Accéder au Chat
+                </a>
+
+                {% else %}
+            <div x-data="{ isOpen: false }" class="border hover:bg-blue-100 p-4 rounded-lg hover:shadow-xl bg-white">
+                {% if app.user.followingUsers is not empty %}
+                    <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer flex items-center justify-between">
+                        Ecrire à un contact<span x-text="isOpen ? '▲' : '▼'" class="ml-2"></span> <!-- Toggle arrow -->
+                    </h2>
+                {% endif %}
+                <ul id="list" class="bg-white text-gray-800 rounded-lg mt-1 max-h-60 overflow-y-auto" x-show="isOpen" x-transition>
+
+                    <input class="text-sm rounded text-center w-full border p-1 m-1 focus:outline-none" type="text" id="firstSearchBar" placeholder="Filtrer par nom" onkeyup="filterUsers()"/>
+                    {% for user in app.user.followingUsers %}
+                        <li class=" border-red-800 hover:bg-slate-100">
+                            <form action="{{ path('chatting') }}" class="userform border-b" method="POST">
+                                <input type="hidden" value="{{ user.id }}" id="otherUserId" name="otherUserId">
+                                <input type="submit" class="text-sm px-4 py-1 hover:text-red-600 hover:underline" value="{{ user.userName }}">
                             </form>
-                        </div>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-            <!-- Messages Box -->
-            <div x-show="showMessages" x-transition @click.outside="showMessages = false" class="fixed inset-0 flex items-center justify-center">
-              <div class="relative bg-white shadow-lg rounded-lg p-6 w-[350px] max-h-[400px] overflow-y-auto">
-                  <button @click="showMessages = false" class="sticky top-0 left-60 text-red-800 hover:text-red-600 bg-white p-1">
-                      X
-                  </button>
-                  <h2 class="text-xl mb-4 text-center">Messages</h2>
-      
-                  <div id="messages-container-bis" class="flex flex-wrap flex-1 border border-gray-200 rounded-lg p-4">
-                      <!-- Messages will be dynamically inserted here -->
-                  </div>
-              </div>
-              <div class="flex flex-wrap bg-purple-500 relative">
-                <form @submit.prevent="submitNewMessage($event)">
-                  <input id="receiverUserIdBis" type="hidden" name="receiverUserId">
-                  <input type="text" name="messageContent" placeholder="Write a message" class="border border-gray-300 rounded-lg px-2 py-1 mb-2 w-full">
-                  <input type="submit" value="Send" class="text-sm px-2 py-1 bg-blue-600 text-white hover:bg-blue-500 rounded-lg cursor-pointer">
-                </form>
-              </div>
-          </div>
-          </div>
-      </div>
-      {% if app.user.followingUsers is empty %}
-      <div x-data="{ isOpen: false }" class="hover:bg-blue-100 p-4 rounded-lg hover:shadow-xl bg-white border">
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
 
-                <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer flex items-center justify-between">
-                    <a href="{{path('chatting')}}">
-                        Démarrer une conversation
-                    </a>
-                </h2>
-
-      {% else %}
-          <!-- Start a Conversation Section -->
-          <div x-data="{ isOpen: false }" class="border hover:bg-blue-100 p-4 rounded-lg hover:shadow-xl bg-white">
-
-                <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer flex items-center justify-between">
-                    Ecrire à un contact
-                    <span x-text="isOpen ? '▲' : '▼'" class="ml-2 text-xs"></span> <!-- Toggle arrow -->
-                </h2>
-
-
-          <div x-show="isOpen" x-data="chatForm()">
-            <!-- List of users to start a conversation -->
-            <ul class="bg-white text-gray-800 rounded-lg mt-2 max-h-60 overflow-y-auto">
-                {% for user in app.user.followingUsers %}
-                    <li class="border-b border-gray-300 hover:bg-gray-100 px-2">
-                        <form @submit.prevent="submitChatForm($event)" action="{{ path('chat_form') }}" method="POST">
-                            <input type="hidden" value="{{ user.id }}" name="otherUserId">
-                            <input type="submit" class="text-sm px-2 py-1 hover:text-red-700 hover:underline cursor-pointer" value="{{ user.userName }}">
-                        </form>
-                    </li>
-                {% endfor %}
-            </ul>
+            </div>
+        </section>
+    {% elseif app.user.modernChat is same as true %}
         
-            <!-- Messages Box -->
-            <div x-show="showMessages" x-transition @click.outside="showMessages = false" class="fixed inset-0 flex items-center justify-center">
+    <div class="fixed right-4 bottom-12 z-50 space-y-4 mt-4">
+        {% if user_messages.messages is empty  %}
+            
+        {% else %}
+        <!-- Recent Conversations Section -->
+        <div x-data="{ isOpen: false }"
+            class="p-4 rounded-lg hover:shadow-xl {{ unread_count() > 0 ? 'bg-red-700 text-white relative hover:bg-blue-100 hover:text-red-700' : 'bg-white border hover:bg-blue-100 text-gray-800' }}">
+            <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer flex items-center justify-between">
+                Conversations récentes
+                <span x-text="isOpen ? '▲' : '▼'" class="ml-2 text-xs"></span> <!-- Toggle arrow -->
+            </h2>
+            
+            {% if unread_count() > 0 %}
+            <span class="italic text-xs absolute top-1 left-4">
+                Vous avez {{ unread_count() }} message{{ unread_count() > 1 ? 's' : '' }} non-lu{{ unread_count() > 1 ? 's' : '' }}
+            </span>
+            {% endif %}
+            <div x-show="isOpen" x-transition x-data="chatFormBis()">
+                <ul class="bg-white text-gray-800 rounded-lg mt-1 max-h-60 overflow-y-auto">
+                    {% for message in user_messages.messages %}
+                        <li class="border-b border-gray-300 hover:bg-gray-100 px-2">
+                            {% if message.authorId == app.user.id %}
+                            <!-- Current user is the author, so show the receiver -->
+                            <div>
+                                <form @submit.prevent="submitChatForm($event)" action="{{ path('chat_form') }}" method="POST">
+                                    <input type="hidden" value="{{ message.receiverId }}" id="otherUserId" name="otherUserId">
+                                    <input type="submit" class="text-sm px-2 py-1 hover:text-red-700 hover:underline cursor-pointer" value="{{ message.receiverName }}">
+                                </form>
+                            </div>
+                            {% else %}
+                            <!-- Current user is the receiver, so show the author -->
+                            <div>
+                                <form @submit.prevent="submitChatForm($event)" action="{{ path('chat_form') }}" method="POST">
+                                    <input type="hidden" value="{{ message.authorId }}" id="otherUserId" name="otherUserId">
+                                    <input type="submit" class="text-sm px-2 py-1 hover:text-red-700 hover:underline cursor-pointer" value="{{ message.authorName }}">
+                                    {% if not message.isRead %}
+                                        <span class="italic text-red-500 text-xs pl-2">vous a écrit</span>
+                                    {% endif %}
+                                </form>
+                            </div>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+                <!-- Messages Box -->
+                <div x-show="showMessages" x-transition @click.outside="showMessages = false" class="fixed inset-0 flex items-center justify-center">
                 <div class="relative bg-white shadow-lg rounded-lg p-6 w-[350px] max-h-[400px] overflow-y-auto">
                     <button @click="showMessages = false" class="sticky top-0 left-60 text-red-800 hover:text-red-600 bg-white p-1">
                         X
                     </button>
                     <h2 class="text-xl mb-4 text-center">Messages</h2>
         
-                    <div id="messages-container" class="flex flex-wrap flex-1 border border-gray-200 rounded-lg p-4">
+                    <div id="messages-container-bis" class="flex flex-wrap flex-1 border border-gray-200 rounded-lg p-4">
                         <!-- Messages will be dynamically inserted here -->
                     </div>
                 </div>
                 <div class="flex flex-wrap bg-purple-500 relative">
-                  <form @submit.prevent="submitNewMessage($event)">
-                    <input id="receiverUserId" type="hidden" name="receiverUserId">
+                    <form @submit.prevent="submitNewMessage($event)">
+                    <input id="receiverUserIdBis" type="hidden" name="receiverUserId">
                     <input type="text" name="messageContent" placeholder="Write a message" class="border border-gray-300 rounded-lg px-2 py-1 mb-2 w-full">
                     <input type="submit" value="Send" class="text-sm px-2 py-1 bg-blue-600 text-white hover:bg-blue-500 rounded-lg cursor-pointer">
-                  </form>
+                    </form>
                 </div>
             </div>
+            </div>
         </div>
-    {% endif %}
+        {% endif %}
+        {% if app.user.followingUsers is empty %}
+        <div x-data="{ isOpen: false }" class="hover:bg-blue-100 p-4 rounded-lg hover:shadow-xl bg-white border">
+
+                    <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer flex items-center justify-between">
+                        <a href="{{path('chatting')}}">
+                            Accéder au Chat
+                        </a>
+                    </h2>
+
+        {% else %}
+            <!-- Start a Conversation Section -->
+            <div x-data="{ isOpen: false }" class="border hover:bg-blue-100 p-4 rounded-lg hover:shadow-xl bg-white">
+
+                    <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer flex items-center justify-between">
+                        Ecrire à un contact
+                        <span x-text="isOpen ? '▲' : '▼'" class="ml-2 text-xs"></span> <!-- Toggle arrow -->
+                    </h2>
+
+
+            <div x-show="isOpen" x-data="chatForm()">
+
+                <input class="text-sm rounded text-center w-full border p-1 focus:outline-none" type="text" id="secondSearchBar" placeholder="Filtrer par nom" onkeyup="filterUsers()"/>
+                <!-- List of users to start a conversation -->
+                <ul id="list" class="bg-white text-gray-800 rounded-lg mt-2 max-h-60 overflow-y-auto">
+                    {% for user in app.user.followingUsers %}
+                        <li class="border-gray-300 hover:bg-gray-100 px-2">
+                            <form @submit.prevent="submitChatForm($event)" action="{{ path('chat_form') }}" class="userform border-b" method="POST">
+                                <input type="hidden" value="{{ user.id }}" name="otherUserId">
+                                <input type="submit" class="text-sm px-2 py-1 hover:text-red-700 hover:underline cursor-pointer" value="{{ user.userName }}">
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            
+                <!-- Messages Box -->
+                <div x-show="showMessages" x-transition @click.outside="showMessages = false" class="fixed inset-0 flex items-center justify-center">
+                    <div class="relative bg-white shadow-lg rounded-lg p-6 w-[350px] max-h-[400px] overflow-y-auto">
+                        <button @click="showMessages = false" class="sticky top-0 left-60 text-red-800 hover:text-red-600 bg-white p-1">
+                            X
+                        </button>
+                        <h2 class="text-xl mb-4 text-center">Messages</h2>
+            
+                        <div id="messages-container" class="flex flex-wrap flex-1 border border-gray-200 rounded-lg p-4">
+                            <!-- Messages will be dynamically inserted here -->
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap bg-purple-500 relative">
+                    <form @submit.prevent="submitNewMessage($event)">
+                        <input id="receiverUserId" type="hidden" name="receiverUserId">
+                        <input type="text" name="messageContent" placeholder="Write a message" class="border border-gray-300 rounded-lg px-2 py-1 mb-2 w-full">
+                        <input type="submit" value="Send" class="text-sm px-2 py-1 bg-blue-600 text-white hover:bg-blue-500 rounded-lg cursor-pointer">
+                    </form>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+            </div>
 
         </div>
+        </section>
 
-      </div>
-    </section>
-
-
-
-<script>
-          document.addEventListener('alpine:init', () => {
-            Alpine.data('chatBox', () => ({
-                init() {
-                    // Scroll to the bottom of the chat box when the component is initialized
-                    this.scrollToBottom();
-                },
-                
-                scrollToBottom() {
-                    const messagesContainer = document.getElementById('messages-container');
-                    if (messagesContainer) {
-                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        {% endif %}
+    <script>
+            document.addEventListener('alpine:init', () => {
+                Alpine.data('chatBox', () => ({
+                    init() {
+                        // Scroll to the bottom of the chat box when the component is initialized
+                        this.scrollToBottom();
+                    },
+                    
+                    scrollToBottom() {
+                        const messagesContainer = document.getElementById('messages-container');
+                        if (messagesContainer) {
+                            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        }
                     }
-                }
-            }));
-        });
+                }));
+            });
 
-          function chatForm() {
-            return {
-                showMessages: false,
-                
-                // Function to handle the form submission
-                submitChatForm(event) {
-                    event.preventDefault(); // Prevent default form submission
+            function chatForm() {
+                return {
+                    showMessages: false,
+                    
+                    // Function to handle the form submission
+                    submitChatForm(event) {
+                        event.preventDefault(); // Prevent default form submission
+                        const form = event.target;
+                        const formData = new FormData(form);
+                        const messagesContainer = document.getElementById('messages-container');
+            
+                        fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Clear previous messages
+                            messagesContainer.innerHTML = '';
+
+                            let receiverUserId = document.getElementById('receiverUserId');
+                            receiverUserId.value = data['otherUserId'];
+
+                            // Append new messages
+                            data.messages.forEach(message => {
+                                const messageDiv = document.createElement('div');
+                                
+                                messageDiv.innerHTML = `
+                                <div class="message-content px-2 rounded-lg max-w-full ${message.author === '{{ app.user.username }}' ? 'bg-gray-100' : 'bg-blue-100'}">
+                                    <strong class="text-xs text-slate-700">
+                                        ${message.author}:
+                                    </strong><br>
+                                    <p class="text-gray-800 rounded-md px-3 py-2 text-sm">${message.content}</p>
+                                </div>
+                            `;
+
+                                //messageDiv.textContent = `${message.author}: ${message.content}`;
+                                messageDiv.classList.add('p-2', 'rounded-lg', 'mb-2');
+                                messagesContainer.appendChild(messageDiv);
+                            });
+            
+                            // Show the message box
+                            this.showMessages = true;
+                            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        })
+                        .catch(error => console.error('Error:', error));
+                    },
+
+                    submitNewMessage(event) {
+                    event.preventDefault(); // Prevent the form from submitting the normal way
+        
                     const form = event.target;
                     const formData = new FormData(form);
                     const messagesContainer = document.getElementById('messages-container');
         
-                    fetch(form.action, {
+                    // Retrieve form values
+                    const messageContent = formData.get('messageContent');
+                    const otherUserId = formData.get('receiverUserId');
+                    console.log(otherUserId);
+                    // Check if both fields are present
+                    if (!messageContent || !otherUserId) {
+                        console.error('Missing required fields');
+                        return;
+                    }
+        
+                    // Send AJAX request
+                    fetch('/chatting/ajax', {
                         method: 'POST',
-                        body: formData,
+                        body: JSON.stringify({
+                            messageContent: messageContent,
+                            otherUserId: otherUserId
+                        }),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
                     })
                     .then(response => response.json())
                     .then(data => {
-                        // Clear previous messages
-                        messagesContainer.innerHTML = '';
-
-                        let receiverUserId = document.getElementById('receiverUserId');
-                        receiverUserId.value = data['otherUserId'];
-
-                        // Append new messages
-                        data.messages.forEach(message => {
+                        if (data.status === 'success') {
+                            // Create a new message element and append it to the messages container
                             const messageDiv = document.createElement('div');
-                            
                             messageDiv.innerHTML = `
-                            <div class="message-content px-2 rounded-lg max-w-full ${message.author === '{{ app.user.username }}' ? 'bg-gray-100' : 'bg-blue-100'}">
-                                <strong class="text-xs text-slate-700">
-                                    ${message.author}:
-                                </strong><br>
-                                <p class="text-gray-800 rounded-md px-3 py-2 text-sm">${message.content}</p>
-                            </div>
-                        `;
-
-                            //messageDiv.textContent = `${message.author}: ${message.content}`;
-                            messageDiv.classList.add('p-2', 'rounded-lg', 'mb-2');
+                                <div class="message-content px-2 rounded-lg max-w-full bg-blue-100">
+                                    <strong class="text-xs text-slate-700">${data.message.author}:</strong><br>
+                                    <p class="text-gray-800 rounded-md px-3 py-2 text-sm">${data.message.content}</p>
+                                </div>
+                            `;
                             messagesContainer.appendChild(messageDiv);
-                        });
         
-                        // Show the message box
-                        this.showMessages = true;
-                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                            // Optionally scroll to the bottom
+                            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+                            // Clear the input field
+                            form.querySelector('input[name="messageContent"]').value = '';
+                        } else {
+                            console.error('Error:', data.message);
+                        }
                     })
                     .catch(error => console.error('Error:', error));
-                },
-
-                submitNewMessage(event) {
-                  event.preventDefault(); // Prevent the form from submitting the normal way
-      
-                  const form = event.target;
-                  const formData = new FormData(form);
-                  const messagesContainer = document.getElementById('messages-container');
-      
-                  // Retrieve form values
-                  const messageContent = formData.get('messageContent');
-                  const otherUserId = formData.get('receiverUserId');
-                  console.log(otherUserId);
-                  // Check if both fields are present
-                  if (!messageContent || !otherUserId) {
-                      console.error('Missing required fields');
-                      return;
-                  }
-      
-                  // Send AJAX request
-                  fetch('/chatting/ajax', {
-                      method: 'POST',
-                      body: JSON.stringify({
-                          messageContent: messageContent,
-                          otherUserId: otherUserId
-                      }),
-                      headers: {
-                          'Content-Type': 'application/json'
-                      }
-                  })
-                  .then(response => response.json())
-                  .then(data => {
-                      if (data.status === 'success') {
-                          // Create a new message element and append it to the messages container
-                          const messageDiv = document.createElement('div');
-                          messageDiv.innerHTML = `
-                              <div class="message-content px-2 rounded-lg max-w-full bg-blue-100">
-                                  <strong class="text-xs text-slate-700">${data.message.author}:</strong><br>
-                                  <p class="text-gray-800 rounded-md px-3 py-2 text-sm">${data.message.content}</p>
-                              </div>
-                          `;
-                          messagesContainer.appendChild(messageDiv);
-      
-                          // Optionally scroll to the bottom
-                          messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      
-                          // Clear the input field
-                          form.querySelector('input[name="messageContent"]').value = '';
-                      } else {
-                          console.error('Error:', data.message);
-                      }
-                  })
-                  .catch(error => console.error('Error:', error));
-              }
-            };
-        }
-
-
-
-
-          function chatFormBis() {
-      return {
-          showMessages: false,
-          
-          // Function to handle the form submission
-          submitChatForm(event) {
-              event.preventDefault(); // Prevent default form submission
-              const form = event.target;
-              const formData = new FormData(form);
-              const messagesContainerBis = document.getElementById('messages-container-bis');
-  
-              fetch(form.action, {
-                  method: 'POST',
-                  body: formData,
-              })
-              .then(response => response.json())
-              .then(data => {
-                  // Clear previous messages
-                  messagesContainerBis.innerHTML = '';
-
-                  let receiverUserIdBis = document.getElementById('receiverUserIdBis');
-                  receiverUserIdBis.value = data['otherUserId'];
-  
-                  // Append new messages
-                  data.messages.forEach(message => {
-                      const messageDiv = document.createElement('div');
-                      
-                      messageDiv.innerHTML = `
-                      <div class="message-content px-2 rounded-lg max-w-full ${message.author === '{{ app.user.username }}' ? 'bg-gray-100' : 'bg-blue-100'}">
-                          <strong class="text-xs text-slate-700">
-                              ${message.author}:
-                          </strong><br>
-                          <p class="text-gray-800 rounded-md px-3 py-2 text-sm">${message.content}</p>
-                      </div>
-                  `;
-
-                      //messageDiv.textContent = `${message.author}: ${message.content}`;
-                      messageDiv.classList.add('p-2', 'rounded-lg', 'mb-2');
-                      messagesContainerBis.appendChild(messageDiv);
-                  });
-  
-                  // Show the message box
-                  this.showMessages = true;
-              })
-              .catch(error => console.error('Error:', error));
-          },
-
-
-          submitNewMessage(event) {
-            event.preventDefault(); // Prevent the form from submitting the normal way
-
-            const form = event.target;
-            const formData = new FormData(form);
-            const messagesContainerBis = document.getElementById('messages-container-bis');
-
-            // Retrieve form values
-            const messageContent = formData.get('messageContent');
-            const otherUserId = formData.get('receiverUserId');
-
-            // Check if both fields are present
-            if (!messageContent || !otherUserId) {
-                console.error('Missing required fields');
-                return;
+                }
+                };
             }
 
-            // Send AJAX request
-            fetch('/chatting/ajax', {
-                method: 'POST',
-                body: JSON.stringify({
-                    messageContent: messageContent,
-                    otherUserId: otherUserId
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    // Create a new message element and append it to the messages container
-                    const messageDiv = document.createElement('div');
-                    messageDiv.innerHTML = `
-                        <div class="message-content px-2 rounded-lg max-w-full bg-blue-100">
-                            <strong class="text-xs text-slate-700">${data.message.author}:</strong><br>
-                            <p class="text-gray-800 rounded-md px-3 py-2 text-sm">${data.message.content}</p>
+
+
+
+            function chatFormBis() {
+        return {
+            showMessages: false,
+            
+            // Function to handle the form submission
+            submitChatForm(event) {
+                event.preventDefault(); // Prevent default form submission
+                const form = event.target;
+                const formData = new FormData(form);
+                const messagesContainerBis = document.getElementById('messages-container-bis');
+    
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Clear previous messages
+                    messagesContainerBis.innerHTML = '';
+
+                    let receiverUserIdBis = document.getElementById('receiverUserIdBis');
+                    receiverUserIdBis.value = data['otherUserId'];
+    
+                    // Append new messages
+                    data.messages.forEach(message => {
+                        const messageDiv = document.createElement('div');
+                        
+                        messageDiv.innerHTML = `
+                        <div class="message-content px-2 rounded-lg max-w-full ${message.author === '{{ app.user.username }}' ? 'bg-gray-100' : 'bg-blue-100'}">
+                            <strong class="text-xs text-slate-700">
+                                ${message.author}:
+                            </strong><br>
+                            <p class="text-gray-800 rounded-md px-3 py-2 text-sm">${message.content}</p>
                         </div>
                     `;
-                    messagesContainerBis.appendChild(messageDiv);
 
-                    // Optionally scroll to the bottom
-                    messagesContainerBis.scrollTop = messagesContainerBis.scrollHeight;
+                        //messageDiv.textContent = `${message.author}: ${message.content}`;
+                        messageDiv.classList.add('p-2', 'rounded-lg', 'mb-2');
+                        messagesContainerBis.appendChild(messageDiv);
+                    });
+    
+                    // Show the message box
+                    this.showMessages = true;
+                })
+                .catch(error => console.error('Error:', error));
+            },
 
-                    // Clear the input field
-                    form.querySelector('input[name="messageContent"]').value = '';
-                } else {
-                    console.error('Error:', data.message);
+
+            submitNewMessage(event) {
+                event.preventDefault(); // Prevent the form from submitting the normal way
+
+                const form = event.target;
+                const formData = new FormData(form);
+                const messagesContainerBis = document.getElementById('messages-container-bis');
+
+                // Retrieve form values
+                const messageContent = formData.get('messageContent');
+                const otherUserId = formData.get('receiverUserId');
+
+                // Check if both fields are present
+                if (!messageContent || !otherUserId) {
+                    console.error('Missing required fields');
+                    return;
                 }
-            })
-            .catch(error => console.error('Error:', error));
+
+                // Send AJAX request
+                fetch('/chatting/ajax', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        messageContent: messageContent,
+                        otherUserId: otherUserId
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Create a new message element and append it to the messages container
+                        const messageDiv = document.createElement('div');
+                        messageDiv.innerHTML = `
+                            <div class="message-content px-2 rounded-lg max-w-full bg-blue-100">
+                                <strong class="text-xs text-slate-700">${data.message.author}:</strong><br>
+                                <p class="text-gray-800 rounded-md px-3 py-2 text-sm">${data.message.content}</p>
+                            </div>
+                        `;
+                        messagesContainerBis.appendChild(messageDiv);
+
+                        // Optionally scroll to the bottom
+                        messagesContainerBis.scrollTop = messagesContainerBis.scrollHeight;
+
+                        // Clear the input field
+                        form.querySelector('input[name="messageContent"]').value = '';
+                    } else {
+                        console.error('Error:', data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        };
+    }
+
+        function filterUsers() {
+            // Get the search query
+            if(document.getElementById('firstSearchBar')) {
+                var query = document.getElementById('firstSearchBar').value.toLowerCase();
+            } else if(document.getElementById('secondSearchBar'))
+                var query = document.getElementById('secondSearchBar').value.toLowerCase();
+            // Get all the user forms
+            var forms = document.querySelectorAll('.userform');
+            
+            forms.forEach(function(form) {
+                // Get the input field with the user's name
+                var input = form.querySelector('input[type="submit"]');
+                var name = input.value.toLowerCase();
+                
+                // Check if the name contains the search query
+                if (name.includes(query)) {
+                    form.style.display = 'block';  // Show the form if it matches
+                } else {
+                    form.style.display = 'none';   // Hide the form if it doesn't match
+                }
+            });
         }
-      };
-  }
 
 
-</script>
 
-{% endif %}
+    </script>
 
-     
+
 {% endif %}
 {% endif %}
 

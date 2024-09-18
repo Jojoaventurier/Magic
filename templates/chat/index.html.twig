@@ -5,6 +5,9 @@
 {% block body %}
 <div class="w-full flex justify-center">
     <div class="inline-flex">
+        {% if recentMessages is empty %}
+            {% else %}
+        
         <div class="flex flex-col pr-10">
             <div x-data="{ isOpen: true }" 
                 {% if unread_count() > 0 %}    
@@ -47,7 +50,7 @@
                     </ul>
 
                 </div>
-
+                {% endif %}
                 
                 <div class="mt-4 p-6 rounded hover:shadow-lg w-[280px]" 
                 {% if app.user.globalChat is same as true and app.user.modernChat is same as true %}
@@ -59,10 +62,12 @@
                     <p class="text-xs italic">Vous ne pouvez lancer de discussion qu'avec les personnes qui vous suivent.</p>
                     </div>
                     {% else %}
-                    <ul class="bg-white text-black rounded px-2 py-1 results-list" id="list">
+                    <input class="text-sm rounded text-center w-full border p-1 focus:outline-none" type="text" id="search-bar" placeholder="Filtrer par nom" onkeyup="filterUsers()"/>
+
+                    <ul class="bg-white text-black rounded px-2 py-1" id="list">
                         {% for user in app.user.followingUsers %}
-                        <li class="border-b border-red-800 hover:bg-slate-100">
-                            <form action="{{ path('chatting') }}" method="POST">
+                        <li class=" hover:bg-slate-100">
+                            <form action="{{ path('chatting') }}" class="user-form border-b border-red-800" method="POST">
                                 <input type="hidden" value="{{ user.id }}" id="otherUserId" name="otherUserId">
                                 <input type="submit" class=" cursor-pointer text-sm px-4 py-1 hover:text-red-600 hover:underline" value="{{ user.userName }}">
                             </form>
@@ -120,43 +125,52 @@
         </div>
     </div>
 </div>
-    <div class="border m p-6 max-w-72">
-        <div class="form-container">
-            <form class="form">
-                <input id="search" type="text" class="input" placeholder="search..."/>
-                <button id="clear" class="clear-results">clear</button>
-            </form>
-        </div>
-    <div class="hidden">
+
+
+<div>
+    <!-- Search bar -->
+    
+
+    {# <!-- Filtered user list -->
+    <div id="user-list">
         {% for user in app.user.followingUsers %}
-            <li class="userLine" value="{{user.userName}}" type="hidden">{{user.userName}}</li>
+            <form action="{{ path('chatting') }}" method="POST" class="user-form">
+                <input type="hidden" value="{{ user.id }}" name="otherUserId">
+                <input type="submit" class="text-sm px-4 py-1 hover:text-red-600 hover:underline cursor-pointer" value="{{ user.userName }}">
+            </form>
         {% endfor %}
     </div>
+</div> #}
 
-        <div class="hidden">
-            <ul class="results-list" id="list">
-
-            </ul>
-        </div>
-    </div>
-
-
-
-{# {% if app.user.globalChat is same as false %}
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const messagesContainer = document.getElementById('messages-container');
+    function filterUsers() {
+        // Get the search query
+        var query = document.getElementById('search-bar').value.toLowerCase();
+        // Get all the user forms
+        var forms = document.querySelectorAll('.user-form');
         
-        // Scroll to the bottom of the chat box
-        if (messagesContainer) {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-        
-    });
-    
+        forms.forEach(function(form) {
+            // Get the input field with the user's name
+            var input = form.querySelector('input[type="submit"]');
+            var name = input.value.toLowerCase();
+            
+            // Check if the name contains the search query
+            if (name.includes(query)) {
+                form.style.display = 'block';  // Show the form if it matches
+            } else {
+                form.style.display = 'none';   // Hide the form if it doesn't match
+            }
+        });
+    }
 </script>
-{% endif %} #}
 
+
+
+
+
+
+
+{# 
 <script>
 
 
@@ -227,6 +241,6 @@
         list.appendChild(error);
     }
 
-</script>
+</script> #}
 
 {% endblock %}
