@@ -18,7 +18,7 @@
               <a class="white hover:underline" href="{{ path('app_home') }}">Home</a>
               <a class="white hover:underline" href="{{ path('app_search', {'search': 'basic', 'parameter': 'none'}) }}">Recherche avancée</a>
               <a class="white hover:underline" href="{{ path('all_sets') }}">Tous les sets/extensions</a> <!--path('app_all_sets')-->
-              <a class="white hover:underline" href="{{ path('app_decks') }}">Tous les Decks</a>
+              <a class="white hover:underline" href="{{ path('app_decks', {'param': 'all'}) }}">Tous les Decks</a>
               <a class="white hover:underline" href="{{ path('app_forum') }}">Forum</a>
             </div>
             <div class="row space-x-2 px-4">
@@ -41,7 +41,6 @@
             <a class="white hover:underline" href="{{ path('chatting') }}">Mes Conversations</a>
             <a class="white hover:underline" href="{{ path('app_profile_self') }}">Mon profil</a>
             <a class="white hover:underline" href="{{ path('app_logout') }}">Se déconnecter</a>
-            {# <a href="{{ path('app_deck_manager', {'user': user.id})}}">MES DECKS</a> #}
             {% else %}
             <a class="white hover:underline" href="{{ path('app_login') }}">Se connecter</a>
             <a class="white hover:underline" href="{{ path('app_register') }}">S'inscrire</a>
@@ -151,6 +150,8 @@
                 Vous avez {{ unread_count() }} message{{ unread_count() > 1 ? 's' : '' }} non-lu{{ unread_count() > 1 ? 's' : '' }}
             </span>
             {% endif %}
+
+            
             <div x-show="isOpen" x-transition x-data="chatFormBis()">
                 <ul class="bg-white text-gray-800 rounded-lg mt-1 max-h-60 overflow-y-auto">
                     {% for message in user_messages.messages %}
@@ -178,6 +179,7 @@
                         </li>
                     {% endfor %}
                 </ul>
+
                 <!-- Messages Box -->
                 <div x-show="showMessages" x-transition @click.outside="showMessages = false" class="fixed inset-0 flex items-center justify-center">
                     <div class="relative bg-white shadow-lg rounded-lg p-6 w-[500px] h-[50vh] max-h-[70vh] overflow-y-auto">
@@ -433,7 +435,7 @@
                     `;
 
                         //messageDiv.textContent = `${message.author}: ${message.content}`;
-                        messageDiv.classList.add('p-2', 'rounded-lg', 'mb-2');
+                        //messageDiv.classList.add('p-2', 'rounded-lg', 'mb-2');
                         messagesContainerBis.appendChild(messageDiv);
                     });
     

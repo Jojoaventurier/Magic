@@ -66,15 +66,7 @@ class ProfileController extends AbstractController
         }
     }
 
-    #[Route('/alldecks', name: 'app_decks')]
-    public function decksIndex(DeckRepository $deckRepository): Response
-    {
-        $decks = $deckRepository->findBy(['status' => 1]);
 
-        return $this->render('decks/index.html.twig', [
-            'decks' => $decks,
-        ]);
-    }
 
     #[Route('/{user}/profile/edit', name: 'app_profile_edit')]
     public function editProfile(User $user, Request $request, EntityManagerInterface $entityManager): Response

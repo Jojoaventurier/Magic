@@ -12,12 +12,14 @@
     <div class="max-w-10/12 px-40 py-10">
         <div class="flex justify-evenly items-center ml-8 mr-12">
                 <div class="flex flex-row ml-8 space-x-4">
-                    <button class="border-2 inline-flex justify-center px-2 py-2 rounded-lg  text-black font-semibold bg-white  hover:bg-red-900 hover:text-white transition duration-300 ease-in-out">Tous les decks</button>
-                    <button class="border-2 inline-flex justify-center px-2 py-2 rounded-lg  text-black font-semibold bg-white  hover:bg-red-900 hover:text-white transition duration-300 ease-in-out">Mes decks</button>
-                    <button class="border-2 inline-flex justify-center px-2 py-2 rounded-lg  text-black font-semibold bg-white  hover:bg-red-900 hover:text-white transition duration-300 ease-in-out">
+                    <a href="{{ path('app_decks', {'param': 'all'}) }}" class="border-2 inline-flex justify-center px-2 py-2 rounded-lg  text-black font-semibold bg-white  hover:bg-red-900 hover:text-white transition duration-300 ease-in-out">Tous les decks</a>
+                    {% if app.user %}
+                    <a href="{{ path('app_decks', {'param': 'myDecks'}) }}" class="border-2 inline-flex justify-center px-2 py-2 rounded-lg  text-black font-semibold bg-white  hover:bg-red-900 hover:text-white transition duration-300 ease-in-out">Mes decks</a>
+                    <a href="{{ path('app_decks', {'param': 'decksLiked'}) }}" class="border-2 inline-flex justify-center px-2 py-2 rounded-lg  text-black font-semibold bg-white  hover:bg-red-900 hover:text-white transition duration-300 ease-in-out">
                         Decks favoris
                         <img class="h-4 mt-1 w-auto ml-2" src="https://img.icons8.com/material-rounded/24/like--v1.png" alt="like--v1"/>
-                    </button>
+                    </a>
+                    {% endif %}
                 </div>
 
                 <div id="center" class="">
@@ -42,9 +44,9 @@
 
             {% for deck in decks %}
 
-            <div class="deck-card mx-2 mb-8 p-4 w-full sm:w-64 md:w-64 lg:w-64 border-spacing-2 space-y-4 border bg-white">
+            <div class="deck-card mx-2 mb-8 py-2 px-4 w-full sm:w-64 md:w-64 lg:w-64 border-spacing-2 space-y-4 border bg-white rounded-lg transform transition duration-300 hover:scale-105">
                 <input class="deck-name" type="hidden" value="{{deck.deckName}}" >
-                <span class="ml-2 pr-2 text-xs italic flex justify-end">
+                <span class="ml-2 pr-2 pb-1 text-xs italic flex justify-end">
                 {% if deck.updateDate is same as null %}
                 créé le {{ deck.creationDate|date('d.m.Y à H:i')}}
                 {% else %}
@@ -53,24 +55,32 @@
                 </span>
 
                 {% if deck.commander is not null %}
-                    <div class="flex justify-center border px-2 py-2 w-full">
-                        <img class="h-36 object-cover" src="{{ deck.commander.image_uris.art_crop }}">
-                    </div>
+                    <a href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Mainboard'}) }}"> 
+                        <div class="flex justify-center border px-2 py-2 w-full">
+                            <img class="h-36 object-cover" src="{{ deck.commander.image_uris.art_crop }}">
+                        </div>
+                    </a>
                 {% else %}
                     {% if deck.format.formatName is same as "Legacy" %}
+                    <a href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Mainboard'}) }}">
                         <div class="flex justify-center border px-2 py-2 w-full">
                             <img class="h-36 object-cover" src='{{ asset('img/placeholder-legacy.png')}}'>
                         </div>
+                    </a>
                     {% endif %}
                     {% if deck.format.formatName is same as "Standard" %}
-                        <div class="flex justify-center border px-2 py-2 w-full">
-                            <img class="h-36 object-cover" src='{{ asset('img/placeholder-standard.png')}}'>
-                        </div>
+                        <a href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Mainboard'}) }}">
+                            <div class="flex justify-center border px-2 py-2 w-full">
+                                <img class="h-36 object-cover" src='{{ asset('img/placeholder-standard.png')}}'>
+                            </div>
+                        </a>
                     {% endif %}
                     {% if deck.format.formatName is same as "Commander / EDH" %}
-                        <div class="flex justify-center border px-2 py-2 w-full">
-                            <img class="h-36 object-cover" src='{{ asset('img/placeholder-edh.png')}}'>
-                        </div>
+                        <a href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Mainboard'}) }}">
+                            <div class="flex justify-center border px-2 py-2 w-full">
+                                <img class="h-36 object-cover" src='{{ asset('img/placeholder-edh.png')}}'>
+                            </div>
+                        </a>
                     {% endif %}
                 {% endif %}
 

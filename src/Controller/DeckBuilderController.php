@@ -4,10 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Card;
 use App\Entity\Deck;
-use App\Entity\User;
 use App\Entity\Comment;
 use App\Form\CommentType;
-use App\Form\DeckFormType;
 use App\Entity\Composition;
 use App\Repository\CardRepository;
 use App\Repository\DeckRepository;
@@ -47,6 +45,7 @@ class DeckBuilderController extends AbstractController
         $typeCount = [];
         $subtypeCount = [];
         $colorCount = [];
+        $cmcCount = []; // Initialize an empty array to hold CMC counts
         $count = 0;
 
         // Process each card in the Mainboard composition.
@@ -102,21 +101,35 @@ class DeckBuilderController extends AbstractController
                 }
             }
             
+
             // Process and count colors.
-            if (isset($cardData['colors'])) {
-                foreach ($cardData['colors'] as $color) {
+            if (isset($cardData['color_identity'])) {
+                foreach ($cardData['color_identity'] as $color) {
                     if (!isset($colorCount[$color])) {
                         $colorCount[$color] = 0;
                     }
                     $colorCount[$color] += $quantity;
                 }
             }
+
+
+            // Check if the card data contains CMC information
+            if (isset($cardData['cmc'])) {
+                $cmc = (int) $cardData['cmc']; // Convert the CMC to an integer
+
+                // Ensure there's an entry in the array for this CMC, starting from 0 upwards
+                if (!isset($cmcCount[$cmc])) {
+                    $cmcCount[$cmc] = 0; // Initialize the count for this specific CMC if not already set
+                }
+
+                // Add the card's quantity to the count for this CMC
+                $cmcCount[$cmc] += $quantity;
+            }
         }
 
-        $comments = $commentRepository->findBy(['deck' => $deck]);
 
+        $comments = $commentRepository->findBy(['deck' => $deck]);
         $comment = new Comment();
-        
         $form = $this->createForm(CommentType::class);
 
         // Handle the request
@@ -155,7 +168,8 @@ class DeckBuilderController extends AbstractController
                 'comment' => $comment,
                 'typeCount' => $typeCount, // Pass types count
                 'subtypeCount' => $subtypeCount, // Pass subtypes count
-                'colorCount' => $colorCount // Pass colors count
+                'colorCount' => $colorCount, // Pass colors count
+                'cmcCount' => $cmcCount
             ]);
 
         } else if ($state == 'Sideboard') {
@@ -174,7 +188,8 @@ class DeckBuilderController extends AbstractController
                 'comment' => $comment,
                 'typeCount' => $typeCount, // Pass types count
                 'subtypeCount' => $subtypeCount, // Pass subtypes count
-                'colorCount' => $colorCount // Pass colors count
+                'colorCount' => $colorCount, // Pass colors count
+                'cmcCount' => $cmcCount
             ]);
 
         } else if ($state == 'Maybeboard') {
@@ -193,7 +208,8 @@ class DeckBuilderController extends AbstractController
                 'comment' => $comment,
                 'typeCount' => $typeCount, // Pass types count
                 'subtypeCount' => $subtypeCount, // Pass subtypes count
-                'colorCount' => $colorCount // Pass colors count
+                'colorCount' => $colorCount, // Pass colors count
+                'cmcCount' => $cmcCount
             ]);
 
         } else {
@@ -210,7 +226,8 @@ class DeckBuilderController extends AbstractController
                 'comment' => $comment,
                 'typeCount' => $typeCount, // Pass types count
                 'subtypeCount' => $subtypeCount, // Pass subtypes count
-                'colorCount' => $colorCount // Pass colors count
+                'colorCount' => $colorCount, // Pass colors count
+                'cmcCount' => $cmcCount
             ]);
         }
     }

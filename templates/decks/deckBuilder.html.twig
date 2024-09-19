@@ -594,11 +594,17 @@
         <input id="colorCount" type="hidden" value="{{ colorCount|json_encode }}">
         <input id="typeCount" type="hidden" value="{{ typeCount|json_encode }}">
         <input id="subtypeCount" type="hidden" value="{{ subtypeCount|json_encode }}">
+        <input id="cmcCount" type="hidden" value="{{ cmcCount|json_encode }}">
 
-        <div class="w-full inline-flex h-72 min-h-72 max-h-72 space-x-6 justify-center">
-            <canvas id="manaColorChart"></canvas>
-            <canvas id="typeChart"></canvas>
-            <canvas id="subtypeChart"></canvas>
+        <div class="w-full flex flex-col space-x-6 justify-center items-center">
+            <div class="h-72 min-h-72 max-h-72 inline-flex mb-4 space-x-4">
+                <canvas id="manaColorChart"></canvas>
+                <canvas id="cmcChart"></canvas>
+                <canvas id="typeChart"></canvas>
+            </div>
+            <div class="h-72 min-h-72 max-h-72 inline-flex space-x-4">
+                <canvas id="subtypeChart"></canvas>
+            </div>
         </div>
     </section>
 
@@ -914,6 +920,7 @@
             const manaColorCount = JSON.parse(document.getElementById('colorCount').value);
             const typeCount = JSON.parse(document.getElementById('typeCount').value);
             const subtypeCount = JSON.parse(document.getElementById('subtypeCount').value);
+            const cmcCount = JSON.parse(document.getElementById('cmcCount').value);
             console.log(manaColorCount);
 
             const manaColorCtx = document.getElementById('manaColorChart').getContext('2d');
@@ -1018,6 +1025,43 @@
                 }
             }
         });
+
+            // Extracting labels (CMC values) and quantities from the cmcCount array
+            const cmcLabels = Object.keys(cmcCount); // CMC values (e.g., 0, 1, 2, 3, etc.)
+            const cmcData = Object.values(cmcCount); // Quantities for each CMC value
+
+            // Rendering the chart
+            const ctx = document.getElementById('cmcChart').getContext('2d');
+            const cmcChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: cmcLabels, // CMC values as labels
+                    datasets: [{
+                        label: 'CMC Distribution',
+                        data: cmcData, // Quantities for each CMC
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Cards'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'CMC (Converted Mana Cost)'
+                            }
+                        }
+                    }
+                }
+            });
 
         });
 

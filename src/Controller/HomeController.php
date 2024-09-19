@@ -13,7 +13,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class HomeController extends AbstractController
@@ -30,12 +29,9 @@ class HomeController extends AbstractController
 
     #[Route('/allsets', name: 'all_sets')]
     public function allSets(): Response
-    {
-        $user = $this->getUser();
+    {   
 
-        return $this->render('cardSearch/allSets.html.twig', [
-            'user' => $user,
-        ]);
+        return $this->render('cardSearch/allSets.html.twig');
     }
 
     #[Route('/set/{setCode}', name: 'show_set')]
@@ -90,6 +86,38 @@ class HomeController extends AbstractController
         return $this->render('cardSearch/cardDetail.html.twig', [
             'cardId' => $cardId
         ]);
+    }
+
+    #[Route('/alldecks/{param}', name: 'app_decks')]
+    public function decksIndex(DeckRepository $deckRepository, $param): Response
+    {
+
+        if($param === 'decksLiked') {
+            $user = $this->getUser();
+            $decks = $user->getDecksLiked();
+
+            return $this->render('decks/index.html.twig', [
+                'decks' => $decks,
+            ]);
+        }
+
+        if($param === 'myDecks') {
+            $user = $this->getUser();
+            $decks = $deckRepository->findBy(['user' => $user]);
+
+            return $this->render('decks/index.html.twig', [
+                'decks' => $decks,
+            ]);
+        }
+
+        else {
+
+            $decks = $deckRepository->findBy(['status' => 1]);
+
+            return $this->render('decks/index.html.twig', [
+                'decks' => $decks,
+            ]);
+        }
     }
 
     
