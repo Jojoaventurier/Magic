@@ -30,6 +30,12 @@
                 <span class="pl-2"> a rejoint le</span> {{ user.creationDate|date('d/m/Y') }}
             </p>
 
+            {% if (user.youtubeChannel is null or user.youtubeChannel == 'youtube.com/') and
+                (user.twitchUserName is null or user.twitchUserName == 'twitch.tv/') and
+                (user.discordUserName is null or user.discordUserName == 'discord.gg/')  %} 
+
+                {% else %}
+                
             <div class="border rounded-md p-4 space-y-2">
                 <div class="text-sm inline-flex">
                     {% if user.youtubeChannel is same as 'youtube.com/' %}
@@ -60,6 +66,7 @@
                     {% endif %}
                 </div>
             </div>
+            {% endif %}
 
             <div class="flex flex-col justify-end items-center h-full">
                 {% if app.user %}
