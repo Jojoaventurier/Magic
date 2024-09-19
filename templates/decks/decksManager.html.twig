@@ -26,7 +26,24 @@
                     </a>
                 </td>
                 <td class="px-4 py-3 text-center">
-                    <span class="text-gray-700 text-sm">couleurs</span>
+                      {% set colorCount = deck.colorCount %}
+                        <span class="inline-flex space-x-1">
+                            {% set colorImageMap = {
+                                'W': '/img/colors/soleil.webp',
+                                'U': '/img/colors/goutte.webp',
+                                'B': '/img/colors/mortmort.webp',
+                                'R': '/img/colors/flamme.webp',
+                                'G': '/img/colors/arbreuh.webp'
+                            } %}
+                        
+                            {% for color, count in colorCount %}
+                                {% if colorImageMap[color] is defined %}
+                                    <img class="h-4 mt-1 w-auto" 
+                                         src="{{ colorImageMap[color] }}" 
+                                         alt="{{ color }}"/>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
                 </td>
                 <td class="px-4 py-3 text-center">
                     <span class="text-gray-700 text-sm">{{ deck.format.formatName }}</span>
