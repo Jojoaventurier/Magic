@@ -3,6 +3,24 @@
 {% block title %}Toutes les extensions{% endblock %}
 
 {% block body %}
+
+{# <div class="gradient-adapt flex flex-col h-60 w-full items-center justify-end space-y-6 mb-6 p-10">
+    <div class="space-y-2 border border-white p-4 rounded">
+        <h1 class="px-6 text-3xl font-medium text-white w-prose">Tous les sets</h1>
+    </div>
+</div> #}
+
+<div class="w-full flex flex-col justify-center items-center mt-10">
+    
+    <input id="set-search-bar" 
+            name="set-search-bar"
+           class="w-[300px] text-sm px-4 py-2 border rounded-lg focus:outline focus:outline-red-800" 
+           placeholder="Exemple : Phyrexia" 
+           type="text" 
+           onkeyup="filterSets()">
+    <label for="set-search-bar" class="text-sm italic">Vous pouvez filtrer par nom de l'extension</label>
+</div>
+
 <div class="w-full flex justify-center">
     <div id="detailBoard" class="flex justify-center elesh-norn m-16 max-w-[1124px] rounded-lg">
         <table id="setTable" class="w-[1124px] bg-white bg-opacity-90 shadow-md rounded-lg overflow-hidden">
@@ -92,6 +110,21 @@
                 });
         }
     });
+
+    function filterSets() {
+        // Get the search query
+        const query = document.getElementById('set-search-bar').value.toLowerCase();
+        const rows = document.querySelectorAll("#setList tr");
+    
+        rows.forEach(row => {
+            const setName = row.querySelector('td a span').textContent.toLowerCase();
+            if (setName.includes(query)) {
+                row.style.display = '';  // Show the row if it matches
+            } else {
+                row.style.display = 'none';  // Hide the row if it doesn't match
+            }
+        });
+    }
 </script>
 
 {% endblock %}

@@ -230,7 +230,26 @@
                         <tbody>
                             {% for deck in app.user.decksLiked %}
                             <tr class="hover:bg-gray-100">
-                                <td class="border px-4 py-2">couleurs</td>
+                                <td class="border px-4 py-2">
+                                    {% set colorCount = deck.colorCount %}
+                                    <span class="inline-flex space-x-1">
+                                        {% set colorImageMap = {
+                                            'W': '/img/colors/soleil.webp',
+                                            'U': '/img/colors/goutte.webp',
+                                            'B': '/img/colors/mortmort.webp',
+                                            'R': '/img/colors/flamme.webp',
+                                            'G': '/img/colors/arbreuh.webp'
+                                        } %}
+                                    
+                                        {% for color, count in colorCount %}
+                                            {% if colorImageMap[color] is defined %}
+                                                <img class="h-4 mt-1 w-auto" 
+                                                        src="{{ colorImageMap[color] }}" 
+                                                        alt="{{ color }}"/>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </span>
+                                </td>
                                 <td class="border px-4 py-2">
                                     <a class="hover:underline hover:text-red-700" href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Main'}) }}">
                                         {{ deck.deckName }}
