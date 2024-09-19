@@ -8,21 +8,20 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Entity\Comment;
 use App\Form\CommentType;
+use App\Form\DeckFormType;
 use App\Entity\Composition;
+use App\Form\ImportDeckFormType;
 use App\Repository\CardRepository;
 use App\Repository\DeckRepository;
 use App\Repository\StateRepository;
 use App\Repository\FormatRepository;
-use App\Repository\MessageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CompositionRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;    
-use App\Form\DeckFormType;
     
     
    
@@ -163,7 +162,7 @@ class DeckManagerController extends AbstractController
     }
 
     #[Route('/user/{user}/deck/import', name: 'import_deck_txt', methods: ['POST'])]
-public function importDeck(DeckRepository $deckRepository, StateRepository $stateRepository, CompositionRepository $compositionRepository, FormatRepository $formatRepository, EntityManagerInterface $entityManager, CardRepository $cardRepository, Request $request): Response
+public function importDeck(StateRepository $stateRepository, CompositionRepository $compositionRepository, FormatRepository $formatRepository, EntityManagerInterface $entityManager, CardRepository $cardRepository, Request $request): Response
 {
     $deck = new Deck();
     $deckFormat = $formatRepository->findOneBy(['formatName' => 'Commander / EDH']);
@@ -258,6 +257,8 @@ public function importDeck(DeckRepository $deckRepository, StateRepository $stat
         }
 
         $form = $this->createForm(DeckFormType::class);
+        $importForm = $this->createForm(ImportDeckFormType::class);
+        $importForm->handleRequest($request);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) { // si le formulaire est soumis et valide
@@ -274,9 +275,14 @@ public function importDeck(DeckRepository $deckRepository, StateRepository $stat
             return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
         }
 
+        if($importForm->isSubmitted() && $importForm->isValid()) {
+            return $this->redirectToRoute('import_deck_text');
+        }
+
         return $this->render('decks/decksManager.html.twig', [
             'form' => $form,
-            'userDecks' => $userDecks
+            'userDecks' => $userDecks,
+            'importDeckForm' => $importForm
         ]);
 }
 
