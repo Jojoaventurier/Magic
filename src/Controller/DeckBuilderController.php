@@ -28,14 +28,10 @@ class DeckBuilderController extends AbstractController
 
         $deck = $deckRepository->findOneBy(['id' => $deck->getId()]);
 
-        //$composition = $compositionRepository->findBy(['deck' => $deck]);
-
         $stateMain = $stateRepository->findOneBy(['stateName' => "Mainboard"]);
         $stateSide = $stateRepository->findOneBy(['stateName' => "Sideboard"]);
         $stateMaybe = $stateRepository->findOneBy(['stateName' => "Maybeboard"]);
         $stateToken = 'Main';
-
-        
 
         $compositionMain = $compositionRepository->findByState($deck, $stateMain);
         $compositionSide = $compositionRepository->findByState($deck, $stateSide);
@@ -112,7 +108,6 @@ class DeckBuilderController extends AbstractController
                 }
             }
 
-
             // Check if the card data contains CMC information
             if (isset($cardData['cmc'])) {
                 $cmc = (int) $cardData['cmc']; // Convert the CMC to an integer
@@ -127,6 +122,9 @@ class DeckBuilderController extends AbstractController
             }
         }
 
+        $deck->setColorCount($colorCount);
+        $entityManager->persist($deck);
+        $entityManager->flush();
 
         $comments = $commentRepository->findBy(['deck' => $deck]);
         $comment = new Comment();

@@ -90,4 +90,5 @@ class Card
 
         return $this;
     }
+
 }

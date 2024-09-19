@@ -95,8 +95,25 @@
                         par <span class="font-semibold hover:underline hover:text-red-800"><a href="{{ path('app_profile', {'user': deck.user.username}) }}">{{ deck.user.userName }}</a></span>
                     </span>
 
-
+                    {% set colorCount = deck.colorCount %}
                     <div class="inline-flex justify-end space-x-2 mt-3">
+                        <span class="inline-flex space-x-1">
+                            {% set colorImageMap = {
+                                'W': '/img/colors/soleil.webp',
+                                'U': '/img/colors/goutte.webp',
+                                'B': '/img/colors/mortmort.webp',
+                                'R': '/img/colors/flamme.webp',
+                                'G': '/img/colors/arbreuh.webp'
+                            } %}
+                        
+                            {% for color, count in colorCount %}
+                                {% if colorImageMap[color] is defined %}
+                                    <img class="h-4 mt-1 w-auto" 
+                                         src="{{ colorImageMap[color] }}" 
+                                         alt="{{ color }}"/>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
                         <span class="flex text-sm mt-1">
                             <img class="h-4 mt-1 w-auto" src="https://img.icons8.com/material-outlined/24/comments--v1.png" alt="like--v1"/>
                             {{ deck.comments|length }}</span> 

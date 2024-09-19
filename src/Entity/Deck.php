@@ -34,6 +34,9 @@ class Deck
     #[ORM\Column(nullable: true)]
     private ?bool $isLegal = null;
 
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $colorCount = null;
+
     /**
      * @var Collection<int, Composition>
      */
@@ -266,4 +269,45 @@ class Deck
 
         return $this;
     }
+
+    // public function setColorCount(): static
+    // {
+    //     $colorCount = [];
+    
+    //     // Loop through all compositions
+    //     foreach ($this->getCompositions() as $composition) {
+    //         $card = $composition->getCard(); // Retrieve the Card entity
+    //         $cardData = $card->getData(); // Retrieve card data
+    
+    //         // Check if card data has color_identity
+    //         if (isset($cardData['color_identity'])) {
+    //             foreach ($cardData['color_identity'] as $color) {
+    //                 // Initialize color count if not set
+    //                 if (!isset($colorCount[$color])) {
+    //                     $colorCount[$color] = 0;
+    //                 }
+    //                 // Accumulate the quantity for each color
+    //                 $colorCount[$color] += $composition->getQuantity(); // Assuming getQuantity() returns the quantity of the card
+    //             }
+    //         }
+    //     }
+    
+    //     $this->colorCount = $colorCount;
+    
+    //     return $this;
+    // }
+
+    public function setColorCount(?array $colorCount): static 
+    {
+        $this->colorCount = $colorCount;
+
+        return $this;
+    }
+
+        public function getColorCount()
+    {
+
+        return $this->colorCount;
+    }
+    
 }
