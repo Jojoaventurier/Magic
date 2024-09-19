@@ -23,41 +23,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DeckBuilderController extends AbstractController
 {
-    #[Route('/{id}/deck/manager', name: 'app_deck_manager')]
-    public function index(Deck $deck = null, EntityManagerInterface $entityManager, Request $request, DeckRepository $deckRepository, User $user): Response
-    {
-        $currentDate = new \DateTime();// récupère la date actuelle
-        $user = $this->getUser(); // récupère le user en session
-
-        $userDecks = $deckRepository->findBy(['user' => $user ]);
-
-        if(!$deck) {
-            $deck = new Deck;
-        }
-
-        $form = $this->createForm(DeckFormType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) { // si le formulaire est soumis et valide
-            // dd($topicForm->get('forumPost')->getData());
-            $deck = $form->getData(); // on récupère les données du formulaire pour le titre du sujet qu'on stocke dans la variable $newTopic
-
-            $deck->setCreationDate($currentDate); 
-            $deck->setUser($user); // définit le user en tant
-       
-
-            $entityManager->persist($deck); // on prépare la requête d'ajout à la BDD
-            $entityManager->flush(); // on exécute la requête
-
-            return $this->redirectToRoute('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']);
-        }
-
-        return $this->render('decks/decksManager.html.twig', [
-            'form' => $form,
-            'userDecks' => $userDecks
-        ]);
-}
-
+    
     #[Route('/build/deck/{id}/{state}', name: 'app_deck_builder')]
     public function deckBuild(Deck $deck, String $state, DeckRepository $deckRepository, CompositionRepository $compositionRepository, StateRepository $stateRepository, CommentRepository $commentRepository, EntityManagerInterface $entityManager, Request $request): Response
     {

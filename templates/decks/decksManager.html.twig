@@ -57,7 +57,8 @@
     </button>
   </span>
 
-  <div id="deck-form-container" class="hidden grid grid-cols-1 lg:grid-cols-1 ">
+<div id="deck-form-container" class="hidden grid grid-cols-1 lg:grid-cols-1">
+  <div class="inline-flex">
     <div class="relative max-w-md mx-auto rounded-lg bg-white p-8 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 lg:max-w-lg lg:p-8">
       <button id="close-form-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-2 py-1 rounded-md">
         &times;
@@ -79,7 +80,39 @@
       {{ form_row(form.Valider, { 'attr': {'class': "inline-block w-full rounded-lg bg-red-800 hover:bg-red-900 px-5 py-3 font-medium text-white sm:w-auto hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300"}}) }}
 
       {{ form_end(form) }}
-  </div>
+   </div>
+
+    <div class="flex flex-col rounded-md p-4" x-data="{ isLoading: false }">
+      <div class="relative max-w-md mx-auto rounded-lg bg-white p-8 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 lg:max-w-lg lg:p-8">
+        <form  action="{{ path('import_deck_txt', {'user': app.user.id}) }}" method="POST" x-on:submit.prevent="isLoading = true; fetch($event.target.action, {
+            method: 'POST',
+            body: new FormData($event.target),
+            headers: {
+                'Accept': 'text/html'
+            }
+        }).then(response => response.text())
+          .then(data => { 
+              isLoading = false;
+              
+              document.getElementById('import-summary').innerHTML = data;
+          }).catch(() => isLoading = false)">
+            <label for="deckName">Veuillez saisir un nom de deck</label>
+            <input class="w-full rounded-lg border border-gray-400 p-3 text-sm focus:outline-none focus:border-red-800 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" type="text" name="deckName">
+            <textarea name="deckList" rows="10" cols="50" placeholder="Enter deck list in 'quantity card_name' format"></textarea>
+            <button type="submit">Import Deck</button>
+        </form>
+      </div>
+    
+      <!-- Loading animation -->
+      <div x-show="isLoading" class="fixed inset-0 flex justify-center items-center bg-opacity-75 bg-gray-800 z-50">
+          <div class="spinner"></div>
+          <p class="text-white">Importing deck, please wait...</p>
+      </div>
+    
+      <!-- Summary section (where the response will be displayed) -->
+      <div id="import-summary"></div>
+    </div>
+</div>
 </section>
 
 {# <form action="{{ path('import_deck_txt', {'user': app.user.id}) }}" method="POST">
@@ -87,34 +120,7 @@
   <button type="submit">Import Deck</button>
 </form> #}
 
-<div x-data="{ isLoading: false }">
-  <form  action="{{ path('import_deck_txt', {'user': app.user.id}) }}" method="POST" x-on:submit.prevent="isLoading = true; fetch($event.target.action, {
-      method: 'POST',
-      body: new FormData($event.target),
-      headers: {
-          'Accept': 'text/html'
-      }
-  }).then(response => response.text())
-    .then(data => { 
-        isLoading = false;
-        
-        document.getElementById('import-summary').innerHTML = data;
-    }).catch(() => isLoading = false)">
-      <label for="deckName">Veuillez saisir un nom de deck</label>
-      <input class="border" type="text" name="deckName">
-      <textarea name="deckList" rows="10" cols="50" placeholder="Enter deck list in 'quantity card_name' format"></textarea>
-      <button type="submit">Import Deck</button>
-  </form>
 
-  <!-- Loading animation -->
-  <div x-show="isLoading" class="fixed inset-0 flex justify-center items-center bg-opacity-75 bg-gray-800 z-50">
-      <div class="spinner"></div>
-      <p class="text-white">Importing deck, please wait...</p>
-  </div>
-
-  <!-- Summary section (where the response will be displayed) -->
-  <div id="import-summary"></div>
-</div>
 
 
 {% block javascript %}
