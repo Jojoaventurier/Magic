@@ -16,33 +16,34 @@ class MessageRepository extends ServiceEntityRepository
         parent::__construct($registry, Message::class);
     }
 
-    public function findByMostRecent($author) {
+    // public function findByMostRecent($author) {
 
-        return $this->createQueryBuilder('m')
-             ->innerJoin('m.author', 'a')
-            ->innerJoin('m.receiver', 'r')
-            ->select('a.userName AS authorName, r.userName AS receiverName, a.id AS authorId, r.id AS receiverId, m.isRead AS isRead, MAX(m.createdAt) as lastMessageDate')
-            ->andWhere('(m.author = :author OR m.receiver = :author)')
-            ->setParameter('author', $author)
-            ->setParameter('receiver', $author)
-            ->groupBy('m.author', 'm.receiver', 'm.isRead')
-            ->orderBy('lastMessageDate', 'DESC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult();
-    }
+    //     return $this->createQueryBuilder('m')
+    //          ->innerJoin('m.author', 'a')
+    //         ->innerJoin('m.receiver', 'r')
+    //         ->select('a.userName AS authorName, r.userName AS receiverName, a.id AS authorId, r.id AS receiverId, m.isRead AS isRead, MAX(m.createdAt) as lastMessageDate')
+    //         ->andWhere('(m.author = :author OR m.receiver = :author)')
+    //         ->setParameter('author', $author)
+    //         ->setParameter('receiver', $author)
+    //         ->groupBy('m.author', 'm.receiver', 'm.isRead')
+    //         ->orderBy('lastMessageDate', 'DESC')
+    //         ->setMaxResults(10)
+    //         ->getQuery()
+    //         ->getResult();
+    // }
 
-    public function findMostRecent($author) {
+    public function findByMostRecent($currentUser)
+    {
         return $this->createQueryBuilder('m')
             ->innerJoin('m.author', 'a')
             ->innerJoin('m.receiver', 'r')
             ->select('a.userName AS authorName, r.userName AS receiverName, a.id AS authorId, r.id AS receiverId, m.isRead AS isRead, MAX(m.createdAt) as lastMessageDate')
-            ->andWhere('(m.author = :author OR m.receiver = :author)')
-            ->setParameter('author', $author)
-            ->groupBy('m.author', 'm.receiver')
-            ->orderBy('MAX(m.createdAt)', 'DESC')
-            ->getQuery()
+            ->andWhere('(m.author = :currentUser OR m.receiver = :currentUser)')
+            ->setParameter('currentUser', $currentUser)
+            ->groupBy('a.id, r.id, m.isRead') // Include read in group by
+            ->orderBy('lastMessageDate', 'DESC')
             ->setMaxResults(10)
+            ->getQuery()
             ->getResult();
     }
 

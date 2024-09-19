@@ -20,7 +20,7 @@
                     </button>
                 </div>
 
-                <div id="center" class="flex flex-col items-center justify-center">
+                <div id="center" class="">
                     <div class="inline-flex text-sm space-x-2 space-y-2">
                         <select class="text-sm" name="format" id="format">Format
                             <option value="Commander">Commander</option>
@@ -32,9 +32,9 @@
                         <span>Green</span>
                         <span>Black</span>
                         <span>Blue</span>
-                        <input class="w-full px-4 py-2 border rounded-lg focus:outline focus:outline-black">
+                        <input id="deck-search-bar" class="w-full px-4 py-2 border rounded-lg focus:outline focus:outline-red-800" placeholder="Filtrer par nom de deck" type="text" onkeyup="filterUsers()">
                     </div>
-                    <button class="flex-end text-sm underline">Plus de filtres</button>
+                    {# <button class="flex-end text-sm underline">Plus de filtres</button> #}
                 </div>
         </div>
 
@@ -43,6 +43,7 @@
             {% for deck in decks %}
 
             <div class="deck-card mx-2 mb-8 p-4 w-full sm:w-64 md:w-64 lg:w-64 border-spacing-2 space-y-4 border bg-white">
+                <input class="deck-name" type="hidden" value="{{deck.deckName}}" >
                 <span class="ml-2 pr-2 text-xs italic flex justify-end">
                 {% if deck.updateDate is same as null %}
                 créé le {{ deck.creationDate|date('d.m.Y à H:i')}}
@@ -105,5 +106,27 @@
 
 
 {% block javascripts %} 
+
+<script>
+    function filterUsers() {
+        // Get the search query
+        var query = document.getElementById('deck-search-bar').value.toLowerCase();
+        // Get all the user forms
+        var cards = document.querySelectorAll('.deck-card');
+        
+        cards.forEach(function(card) {
+            // Get the input field with the user's name
+            var input = card.querySelector('.deck-name');
+            var name = input.value.toLowerCase();
+            
+            // Check if the name contains the search query
+            if (name.includes(query)) {
+                card.style.display = 'block';  // Show the form if it matches
+            } else {
+                card.style.display = 'none';   // Hide the form if it doesn't match
+            }
+        });
+    }
+</script>
 {% endblock %}
 {% endblock %}

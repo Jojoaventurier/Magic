@@ -79,7 +79,7 @@
             </div>
 
 
-            <!-- Chat Box -->
+        <!-- Chat Box -->
                 
         <div class="mt-10 p-6 bg-white shadow-lg rounded-lg flex flex-col justify-center  overflow-hidden  w-[650px] max-w-[650px] max-h-[80vh]">
                     {% if otherUser is same as null %}
@@ -121,7 +121,38 @@
                     {{ form_end(form) }}
                 </div>
                 {% endif %}
+        </div>
 
+        <div class="flex flex-col pl-10">
+            <div x-data="{ isOpen: false }" class="shadow mt-20 p-6 rounded hover:shadow-lg w-[280px] bg-white text-black relative">
+                    <h2 @click="isOpen = !isOpen" class="text-sm font-semibold py-1 text-center cursor-pointer">
+                        Toutes les conversations
+                        <span x-text="isOpen ? '▲' : '▼'" class="ml-2"></span> <!-- Toggle arrow -->
+                    </h2>
+
+
+            <ul class="bg-white text-black rounded px-2 py-1" x-show="isOpen" x-transition>
+                {% for conversation in allConversations %}
+                    <li class="border-b border-red-800 hover:bg-slate-100">
+                        {% if conversation.authorId is same as app.user.id %}
+                            <!-- Current user is the author, so show the receiver -->
+                            <form action="{{ path('chatting') }}" method="POST">
+                                <input type="hidden" value="{{ conversation.receiverId }}" id="otherUserId" name="otherUserId">
+                                <input type="submit" class="text-sm px-4 py-1 hover:text-red-600 hover:underline cursor-pointer" value="{{ conversation.receiverName }}">
+                            </form>
+                        {% else %}
+                            <!-- Current user is the receiver, so show the author -->
+                            <form action="{{ path('chatting') }}" method="POST">
+                                <input type="hidden" value="{{ conversation.authorId }}" id="otherUserId" name="otherUserId">
+                                <input type="submit" class="text-sm px-4 pt-1 hover:text-red-600 hover:underline cursor-pointer" value="{{ conversation.authorName }}">
+                                {# {% if not conversation.isRead %}
+                                    <span class="italic text-red-500 text-xs pl-16 pb-1">vous a écrit</span>
+                                {% endif %} #}
+                            </form>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 </div>

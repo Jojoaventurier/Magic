@@ -37,6 +37,11 @@
   height: 100vh;
 }
 
+.elesh-norn {
+  background-image: url("/tests/marta-nael-atraxa.jpg");
+  width:100%;
+}
+
 .light-white {
   background-color: rgba(240, 240, 240, 0.3);
 }

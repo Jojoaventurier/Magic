@@ -79,9 +79,22 @@ class ChatController extends AbstractController
         }
     
         $messages = $messageRepository->findByUsers($currentUser, $otherUser);
-        $recentMessages = $messageRepository->findByMostRecentUser($currentUser);
+        $recentMessages = $messageRepository->findByMostRecent($currentUser);
+        $allMessages = $messageRepository->findByMostRecentUser($currentUser);
+
 
         // Filter out duplicates based on conversation between same users
+        $allUniqueConversations = [];
+        foreach ($allMessages as $message) {
+            // Use min and max to ensure a consistent key for each conversation
+            $key = min($message['authorId'], $message['receiverId']) . '-' . max($message['authorId'], $message['receiverId']);
+            
+            // Only add unique conversations
+            if (!isset($allUniqueConversations[$key])) {
+                $allUniqueConversations[$key] = $message;
+            }
+        }
+
         $uniqueConversations = [];
         foreach ($recentMessages as $message) {
             // Use min and max to ensure a consistent key for each conversation
@@ -125,6 +138,7 @@ class ChatController extends AbstractController
         return $this->render('chat/index.html.twig', [
             'recentMessages' => $uniqueConversations,
             'messages' => $messages,
+            'allConversations' => $allUniqueConversations,
             'form' => $form->createView(),
             'otherUser' => $otherUser,
         ]);

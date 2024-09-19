@@ -3,29 +3,30 @@
 {% block title %}Toutes les extensions{% endblock %}
 
 {% block body %}
-
-<div id="detailBoard" class="flex justify-center  m-16">
-    <table id="setTable" class="w-[1124px] bg-white shadow-md rounded-lg overflow-hidden">
-        <thead class="bg-gray-100 border-b">
-            <tr>
-                <th class="px-8 py-2 text-left text-sm font-medium text-gray-600">
-                    Nom de l'extension
-                </th>
-                <th class="py-2 text-sm font-medium text-gray-600 w-[60px] w-max-[60px]">
-                    Set Code
-                </th>
-                <th class="px-10 py-2 text-right text-sm font-medium text-gray-600">
-                    Total cartes
-                </th>
-                <th class="px-8 py-2 text-right text-sm font-medium text-gray-600">
-                    Date de sortie
-                </th>
-            </tr>
-        </thead>
-        <tbody id="setList">
-            <!-- The sets will be populated here -->
-        </tbody>
-    </table>
+<div class="w-full flex justify-center">
+    <div id="detailBoard" class="flex justify-center elesh-norn m-16 max-w-[1124px] rounded-lg">
+        <table id="setTable" class="w-[1124px] bg-white bg-opacity-90 shadow-md rounded-lg overflow-hidden">
+            <thead class="bg-gray-100 border-b">
+                <tr>
+                    <th class="px-8 py-2 text-left text-sm font-medium text-gray-600">
+                        Nom de l'extension
+                    </th>
+                    <th class="py-2 text-sm font-medium text-gray-600 w-[60px] w-max-[60px]">
+                        Set Code
+                    </th>
+                    <th class="px-10 py-2 text-right text-sm font-medium text-gray-600">
+                        Total cartes
+                    </th>
+                    <th class="px-8 py-2 text-right text-sm font-medium text-gray-600">
+                        Date de sortie
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="setList">
+                <!-- The sets will be populated here -->
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script>
