@@ -37,7 +37,7 @@ class ImportDeckFormType extends AbstractType
                 'attr' => [
                     'rows' => 10,
                     'cols' => 50,
-                    'placeholder' => "Format: '1 Elesh Norn, Mother of Machines'"
+                    'placeholder' => "'1 Elesh Norn, Mother of Machines'"
                 ]
             ])
             ->add('importer', SubmitType::class);
