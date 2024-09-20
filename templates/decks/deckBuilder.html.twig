@@ -239,7 +239,7 @@
     </div>
 </div>
 {% endif %}
-
+<div id="responseMessage" class="hidden"></div> <!-- For displaying response messages -->
 
 <div id="cardBoard" class="flex justify-center w-full mb-4">
     <div class="hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 shadow">
@@ -802,6 +802,7 @@
             }
 
             const stateSelector = document.getElementById('stateSelector');
+            let saveCardForm = null
 
             if(document.getElementById('saveCardWithColorsForm')) {
                 saveCardForm = document.getElementById('saveCardWithColorsForm');
@@ -1091,6 +1092,49 @@
                     }
                 }
             });
+
+
+            const saveCardButton = document.getElementById('save');
+            //const saveCardForm = document.getElementById('saveCardForm'); // Make sure this line is uncommented
+            const responseMessage = document.getElementById('responseMessage');
+
+            if(saveCardForm) {
+                
+                saveCardButton.addEventListener('click', function(event) {
+                    // Prevent the default form submission
+                    event.preventDefault();
+                
+                    const formData = new FormData(saveCardForm);
+                
+                    fetch(saveCardForm.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest' // Optional: Useful for detecting AJAX in Symfony
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        throw new Error('Network response was not ok.');
+                    })
+                    .then(data => {
+                        // Display success message or update UI accordingly
+                        responseMessage.textContent = data.message; // Expecting a message in the JSON response
+                        responseMessage.classList.remove('hidden');
+                        responseMessage.classList.add('bg-green-500', 'text-white', 'p-2', 'rounded'); // Tailwind classes for styling
+                        // Optionally clear or update form inputs
+                        saveCardForm.reset();
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                        responseMessage.textContent = 'An error occurred while saving the card.';
+                        responseMessage.classList.remove('hidden');
+                        responseMessage.classList.add('bg-red-500', 'text-white', 'p-2', 'rounded');
+                    });
+                });
+            }
 
         });
 

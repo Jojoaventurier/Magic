@@ -161,92 +161,93 @@ class DeckManagerController extends AbstractController
         return $response;
     }
 
-    #[Route('/user/{user}/deck/import', name: 'import_deck_txt', methods: ['POST'])]
-    public function importDeck(StateRepository $stateRepository, CompositionRepository $compositionRepository, FormatRepository $formatRepository, EntityManagerInterface $entityManager, CardRepository $cardRepository, Request $request): Response
-    {
-        $deck = new Deck();
-        $deckFormat = $formatRepository->findOneBy(['formatName' => 'Commander / EDH']);
-        $state = $stateRepository->findOneBy(['stateName' => 'MainBoard']);
-        $deckForm = $request->get('import_deck_form');
-        $deckName = $deckForm['deckName'];
+    // #[Route('/user/{user}/deck/import', name: 'import_deck_txt', methods: ['POST'])]
+    // public function importDeck(StateRepository $stateRepository, CompositionRepository $compositionRepository, FormatRepository $formatRepository, EntityManagerInterface $entityManager, CardRepository $cardRepository, Request $request): Response
+    // {
+    //     $deck = new Deck();
+    //     $deckFormat = $formatRepository->findOneBy(['formatName' => 'Commander / EDH']);
+    //     $state = $stateRepository->findOneBy(['stateName' => 'MainBoard']);
+    //     $deckForm = $request->get('import_deck_form');
+    //     $deckName = $deckForm['deckName'];
     
-        $deck->setCreationDate(new \DateTime());
-        $deck->setFormat($deckFormat);
-        $deck->setStatus(true);
-        $deck->setDeckName($deckName);
-        $deck->setUser($this->getUser());
+    //     $deck->setCreationDate(new \DateTime());
+    //     $deck->setFormat($deckFormat);
+    //     $deck->setStatus(true);
+    //     $deck->setDeckName($deckName);
+    //     $deck->setUser($this->getUser());
     
-        $entityManager->persist($deck);
+    //     $entityManager->persist($deck);
     
-        // Retrieve the text input from the textarea
-        $deckList = $deckForm['deckList'];
+    //     // Retrieve the text input from the textarea
+    //     $deckList = $deckForm['deckList'];
     
-        $lines = explode("\n", $deckList);
+    //     $lines = explode("\n", $deckList);
     
-        $notFound = [];
-        $addedCards = 0;
-        $submittedCards = 0;
+    //     $notFound = [];
+    //     $addedCards = 0;
+    //     $submittedCards = 0;
     
-        foreach ($lines as $line) {
-            $submittedCards++;
+    //     foreach ($lines as $line) {
+    //         $submittedCards++;
     
-            // Match 'quantity card_name' format using regex
-            if (preg_match('/^(\d+)\s+(.+)$/', trim($line), $matches)) {
-                $quantity = (int) $matches[1];
-                $cardName = $matches[2];
+    //         // Match 'quantity card_name' format using regex
+    //         if (preg_match('/^(\d+)\s+(.+)$/', trim($line), $matches)) {
+    //             $quantity = (int) $matches[1];
+    //             $cardName = $matches[2];
     
-                // Fetch the card from Scryfall API
-                $cardData = $this->fetchCardFromScryfall($cardName);
+    //             // Fetch the card from Scryfall API
+    //             $cardData = $this->fetchCardFromScryfall($cardName);
     
-                if ($cardData) {
-                    // Find or create the card
-                    $card = $cardRepository->findOneBy(['scryfallId' => $cardData['id']]);
-                    $composition = $compositionRepository->findOneBy(['deck' => $deck, 'card' => $card, 'state' => $state]);
+    //             if ($cardData) {
+    //                 // Find or create the card
+    //                 $card = $cardRepository->findOneBy(['scryfallId' => $cardData['id']]);
+    //                 $composition = $compositionRepository->findOneBy(['deck' => $deck, 'card' => $card, 'state' => $state]);
+    //                 $card->saveCard();
+    //                 // if (!$card) {
+    //                 //     $card = new Card();
+    //                 //     $card->setScryfallId($cardData['id']);
+    //                 //     $card->setData($cardData);
+    //                 //     $entityManager->persist($card);
     
-                    if (!$card) {
-                        $card = new Card();
-                        $card->setScryfallId($cardData['id']);
-                        $card->setData($cardData);
-                        $entityManager->persist($card);
+    //                 //     $composition = new Composition();
+    //                 //     $composition->setDeck($deck);
+    //                 //     $composition->setCard($card);
+    //                 //     $composition->setQuantity($quantity);
+    //                 //     $composition->setState($state);
+    //                 //     $entityManager->persist($composition);
+    //                 //     $addedCards++;
     
-                        $composition = new Composition();
-                        $composition->setDeck($deck);
-                        $composition->setCard($card);
-                        $composition->setQuantity($quantity);
-                        $composition->setState($state);
-                        $entityManager->persist($composition);
-                        $addedCards++;
+    //                 // } else if ($card && !$composition) {
+    //                 //     // Add composition for existing card
+    //                 //     $composition = new Composition();
+    //                 //     $composition->setQuantity($quantity);
+    //                 //     $composition->setDeck($deck);
+    //                 //     $composition->setCard($card);
+    //                 //     $composition->setState($state);
+    //                 //     $entityManager->persist($composition);
+    //                 //     $addedCards++;
     
-                    } else if ($card && !$composition) {
-                        // Add composition for existing card
-                        $composition = new Composition();
-                        $composition->setQuantity($quantity);
-                        $composition->setDeck($deck);
-                        $composition->setCard($card);
-                        $composition->setState($state);
-                        $entityManager->persist($composition);
-                        $addedCards++;
+    //                 // } else if ($card && $composition) {
+    //                 //     // Update quantity for existing composition
+    //                 //     $composition->setQuantity($composition->getQuantity() + $quantity);
+    //                 //     $entityManager->persist($composition);
+    //                 //     $addedCards++;
+    //                 // }
+    //             } else {
+    //                 $notFound[] = $cardName; // Add unfound card to list
+    //             }
+    //         }
+    //     }
+    //     // Save changes to the database
+    //     $entityManager->flush();
     
-                    } else if ($card && $composition) {
-                        // Update quantity for existing composition
-                        $composition->setQuantity($composition->getQuantity() + $quantity);
-                        $entityManager->persist($composition);
-                        $addedCards++;
-                    }
-                } else {
-                    $notFound[] = $cardName; // Add unfound card to list
-                }
-            }
-        }
-        // Save changes to the database
-        $entityManager->flush();
-    
-        return $this->json([
-            'status' => 'success',
-            // 'redirect' => $this->generateUrl('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']),
-            'redirect' => $this->generateUrl('app_deck_manager', ['id' => $this->getUser()->getId()]),
-        ]);
-    }
+    //     return $this->json([
+    //         'status' => 'success',
+    //         // 'redirect' => $this->generateUrl('app_deck_builder', ['id' => $deck->getId(), 'state' => 'Mainboard']),
+    //         'redirect' => $this->generateUrl('app_deck_manager', ['id' => $this->getUser()->getId()]),
+    //     ]);
+    // }
+
 
 
 #[Route('/{id}/deck/manager', name: 'app_deck_manager')]
@@ -291,28 +292,6 @@ class DeckManagerController extends AbstractController
         ]);
 }
 
-// Helper function to fetch card data from Scryfall using Symfony's HttpClient
-private function fetchCardFromScryfall(string $cardName): ?array
-{
-    try {
 
-        // Add a delay to avoid overloading the Scryfall API (e.g., 1 second between requests)
-        usleep(1000000); // 1 second delay (1,000,000 microseconds)
-
-
-        $response = $this->httpClient->request('GET', 'https://api.scryfall.com/cards/named', [
-            'query' => ['exact' => $cardName]
-        ]);
-
-        if ($response->getStatusCode() === 200) {
-            $data = $response->toArray(); // Convert JSON response to array
-            return $data;
-        }
-    } catch (\Exception $e) {
-        // Log errors if needed
-    }
-
-    return null; // Return null if card not found or any other issue
-}
 
 }
