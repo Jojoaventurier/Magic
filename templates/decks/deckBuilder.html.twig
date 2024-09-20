@@ -938,14 +938,28 @@
             const cmcCount = JSON.parse(document.getElementById('cmcCount').value);
             console.log(manaColorCount);
 
+            // Create a mapping of mana symbols to their corresponding names and colors
+            const manaColorDetails = {
+                'W': { name: 'Blanc', color: '#fff7d6' }, // Light Yellow for White
+                'U': { name: 'Bleu', color: '#87ceeb' },  // Light Blue for Blue
+                'B': { name: 'Noir', color: '#000000' },  // Black for Black
+                'R': { name: 'Rouge', color: '#ff4500' }, // Red for Red
+                'G': { name: 'Vert', color: '#228b22' }   // Green for Green
+            };
+
+            // Replace the mana color symbols with the mapped labels and colors
+            const labels = Object.keys(manaColorCount).map(color => manaColorDetails[color]?.name || color);
+            const backgroundColors = Object.keys(manaColorCount).map(color => manaColorDetails[color]?.color || '#cccccc'); // Default to gray if no color found
+
+
             const manaColorCtx = document.getElementById('manaColorChart').getContext('2d');
             new Chart(manaColorCtx, {
                 type: 'pie',
                 data: {
-                    labels: Object.keys(manaColorCount),
+                    labels: labels, // Use the mapped labels
                     datasets: [{
                         data: Object.values(manaColorCount),
-                        backgroundColor: ['#fff7d6', '#87ceeb', '#000000', '#ff4500', '#228b22'], // Example colors
+                        backgroundColor: backgroundColors, // Use the specific color for each mana type
                         borderWidth: 1
                     }]
                 },
@@ -953,7 +967,7 @@
                     responsive: true,
                     title: {
                         display: true,
-                        text: 'Répartition du mana'
+                        text: 'Répartition des couleurs de mana'
                     }
                 }
             });
@@ -987,7 +1001,7 @@
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Compte'
+                            text: 'Nombre de cartes'
                         }
                     }
                 },
@@ -1028,7 +1042,7 @@
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Compte'
+                            text: 'Nombre de cartes'
                         }
                     }
                 },
@@ -1052,7 +1066,7 @@
                 data: {
                     labels: cmcLabels, // CMC values as labels
                     datasets: [{
-                        label: 'CMC Distribution',
+                        label: 'Répartition du CMC',
                         data: cmcData, // Quantities for each CMC
                         backgroundColor: 'rgba(54, 162, 235, 0.2)',
                         borderColor: 'rgba(54, 162, 235, 1)',
@@ -1065,13 +1079,13 @@
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: 'Number of Cards'
+                                text: 'Nombre de cartes'
                             }
                         },
                         x: {
                             title: {
                                 display: true,
-                                text: 'CMC (Converted Mana Cost)'
+                                text: 'CMC (Coût converti de mana)'
                             }
                         }
                     }
