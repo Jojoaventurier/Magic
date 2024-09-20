@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}QR Code>{% endblock %}
+
+{% block body %}
+    {# Add the QR code image here #}
+    <img src="{{ path('app_qr_code', { 'slug': slug }) }}" alt="QR Code">
+{% endblock %}

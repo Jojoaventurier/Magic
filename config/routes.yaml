@@ -11,3 +11,8 @@ chat:
     controller: App\Controller\ChatController::chat
     requirements:
         id: \d+
+
+app_qr_code:
+    path: /qr-code/{slug}
+    controller: App\Controller\QrCodeController::generateQrCode
+    methods: GET

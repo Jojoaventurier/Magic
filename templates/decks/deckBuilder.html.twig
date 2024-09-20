@@ -8,9 +8,23 @@
 
 <div class="gradient-adapt flex flex-wrap justify-center items-center space-x-8 w-full pb-8" > <!--style="background: url(' deck.commander.image_uris.art_crop ') no-repeat center center;"-->
 
-    <div class="space-y-2 block max-w-sm p-6 m-6 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
-        <h2><span class='bold'>{{ deck.deckName }}</span></h2>
-        <h2 class="text-sm hover:underline">par <a href="{{ path('app_profile', {'user': deck.user.username}) }}">{{ deck.user.username }}</a></h2>
+
+    <div class="space-y-2 relative block max-w-sm p-6 m-6 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+        
+        <a class="absolute bg-white text-white p-2 mx-6 my-7 rounded top-0 right-0 hover:border hover:bg-gray-100" 
+        href="{{ path('app_qr_code', { 'slug': 'lien vers le deck' }) }}" 
+        target="_blank" 
+        title="Générer un QR code pour ce deck">
+            <img class="h-12 w-auto" src="\icons\mana\image.png" alt="external-qr-code"/>
+        </a>
+
+            <h2>
+                <span class='bold'>
+                    {{ deck.deckName }}
+                </span>
+            </h2>
+
+            <h2 class="text-sm hover:underline">par <a href="{{ path('app_profile', {'user': deck.user.username}) }}">{{ deck.user.username }}</a></h2>
         <span class="pl-4">
             <p class="font-normal text-sm italic text-gray-700 dark:text-gray-400">
                 créé le <span class="font-semibold">{{ deck.creationDate|date('d.m.Y à H:i') }}</span>
@@ -90,8 +104,9 @@
             <a class="mb-4 bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4" href="{{ path('export_deck_txt', {'user': deck.user.id, 'deck': deck.id}) }}">.txt</a><br>
             <a class="mb-4 bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4" href="{{ path('export_deck_csv', {'user': deck.user.id, 'deck': deck.id}) }}">.csv</a><br>
         </div>
-    </div>
 
+    </div>
+    
 {% if deck.format.formatName is same as 'Commander / EDH'%}
             {% if deck.commander is not null %}
             <div class="py-8 opacity-50">
