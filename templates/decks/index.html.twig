@@ -24,16 +24,37 @@
 
                 <div id="center" class="">
                     <div class="inline-flex text-sm space-x-2 space-y-2">
-                        <select class="text-sm" name="format" id="format">Format
+                        <select class="text-sm" name="format" id="format">
+                            <option value="">Tous les formats</option>
                             <option value="Commander">Commander</option>
                             <option value="Standard">Standard</option>
                             <option value="Legacy">Legacy</option>
                         </select>
-                        <span>Red</span>
-                        <span>White</span>
-                        <span>Green</span>
-                        <span>Black</span>
-                        <span>Blue</span>
+                        <div>
+                            <div class="flex flex-col space-y-4 mx-2">
+                                <select id="filter-mode">
+                                    <option value="contains">Contains Any</option>
+                                    <option value="exact">Exact Match</option>
+                                </select>
+                                <div class="inline-flex space-x-2">
+                                    <label for="filter-mana-red">Red</label>
+                                    <input id="filter-mana-red" type="checkbox" class="filter-mana" value="R">
+                                    
+                                    <label for="filter-mana-blue">Blue</label>
+                                    <input id="filter-mana-blue" type="checkbox" class="filter-mana" value="U">
+                                    
+                                    <label for="filter-mana-white">White</label>
+                                    <input id="filter-mana-white" type="checkbox" class="filter-mana" value="W">
+                                    
+                                    <label for="filter-mana-green">Green</label>
+                                    <input id="filter-mana-green" type="checkbox" class="filter-mana" value="G">
+                                    
+                                    <label for="filter-mana-black">Black</label>
+                                    <input id="filter-mana-black" type="checkbox" class="filter-mana" value="B">
+                                </div>
+                            </div>
+                        </div>
+                        
                         <input id="deck-search-bar" class="w-full px-4 py-2 border rounded-lg focus:outline focus:outline-red-800" placeholder="Filtrer par nom de deck" type="text" onkeyup="filterUsers()">
                     </div>
                     {# <button class="flex-end text-sm underline">Plus de filtres</button> #}
@@ -44,7 +65,7 @@
 
             {% for deck in decks %}
 
-            <div class="deck-card mx-2 mb-8 py-2 px-4 w-full sm:w-64 md:w-64 lg:w-64 border-spacing-2 space-y-4 border bg-white rounded-lg transform transition duration-300 hover:scale-105">
+            <div data-color-count="{{ deck.colorCount | json_encode }}"  class="deck-card mx-2 mb-8 py-2 px-4 w-full sm:w-64 md:w-64 lg:w-64 border-spacing-2 space-y-4 border bg-white rounded-lg transform transition duration-300 hover:scale-105">
                 <input class="deck-name" type="hidden" value="{{deck.deckName}}" >
                 <span class="ml-2 pr-2 pb-1 text-xs italic flex justify-end">
                 {% if deck.updateDate is same as null %}
@@ -156,6 +177,84 @@
             }
         });
     }
+
+       // Function to filter decks by format using the dropdown
+       function filterFormat() {
+        // Get the selected format
+        var selectedFormat = document.getElementById('format').value;
+
+        // Get all the deck cards
+        var cards = document.querySelectorAll('.deck-card');
+
+        cards.forEach(function(card) {
+            // Find the format text in the card
+            var formatText = card.querySelector('span.text-gray-500').innerText;
+
+            // Check if the card's format matches the selected format
+            if (formatText.includes(selectedFormat) || selectedFormat === "") {
+                card.style.display = 'block';  // Show the card if it matches or if no format is selected
+            } else {
+                card.style.display = 'none';   // Hide the card if it doesn't match
+            }
+        });
+    }
+
+    // Trigger the filterFormat function when the format dropdown changes
+    document.getElementById('format').addEventListener('change', filterFormat);
+    
+    // Existing code for mana filter and search functionality
+    document.querySelectorAll('.filter-mana').forEach(function(checkbox) {
+        checkbox.addEventListener('change', filterMana);
+    });
+
+// Trigger the mana filter whenever a checkbox or the mode selector is changed
+document.querySelectorAll('.filter-mana').forEach(function(checkbox) {
+    checkbox.addEventListener('change', filterMana);
+});
+
+document.getElementById('filter-mode').addEventListener('change', filterMana);
+
+function filterMana() {
+    // Get the selected filter mode (either 'contains' or 'exact')
+    var filterMode = document.getElementById('filter-mode').value;
+    
+    // Get all selected mana colors
+    var selectedColors = Array.from(document.querySelectorAll('.filter-mana:checked'))
+                              .map(function(checkbox) {
+                                  return checkbox.value;
+                              });
+    
+    // Get all the deck cards
+    var cards = document.querySelectorAll('.deck-card');
+    
+    cards.forEach(function(card) {
+        // Assuming `deck-color-count` contains the JSON string of colorCount
+        var colorCount = JSON.parse(card.getAttribute('data-color-count'));
+        var deckColors = Object.keys(colorCount);
+
+        let matches = false;
+
+        if (filterMode === 'contains') {
+            // "Contains Any" mode: deck must contain at least one of the selected colors
+            matches = selectedColors.some(function(color) {
+                return colorCount.hasOwnProperty(color);
+            });
+        } else if (filterMode === 'exact') {
+            // "Exact Match" mode: deck must have exactly the selected colors (ignores counts)
+            matches = (selectedColors.length === deckColors.length) &&
+                      selectedColors.every(function(color) {
+                          return deckColors.includes(color);
+                      });
+        }
+
+        // Show or hide the card based on the match
+        if (matches || selectedColors.length === 0) {
+            card.style.display = 'block';  // Show if it matches or no color is selected
+        } else {
+            card.style.display = 'none';   // Hide if no match
+        }
+    });
+}
 </script>
 {% endblock %}
 {% endblock %}
