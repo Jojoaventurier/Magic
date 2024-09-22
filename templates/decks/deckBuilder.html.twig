@@ -146,9 +146,9 @@
     {% if app.user is same as deck.user %}
     {% if count >= deck.format.maxNbOfCards %}
     <div class="inline-flex justify-center w-full m-6">
-        <p class="text-center text-red-600 italic border border-red-600 p-2">Vous avez trop de carte dans le deck, veuillez en supprimer pour pouvoir en ajouter d'autres.</p>
+        <p class="text-center text-red-600 italic font-semibold border border-red-600 p-2">Vous avez trop de carte dans le deck, veuillez en supprimer pour pouvoir en ajouter d'autres.</p>
     </div>
-        {% else %}
+    {% else %}
 
     <div class="flex flex-wrap justify-center items-center space-x-4 p-2">
 
@@ -284,9 +284,13 @@
         <div class="px-8 mt-3 mb-5 w-full">
         <!--<div class="container mt-3 mb-5">-->
             <!-- Toggle View Buttons -->
+
+
+
+
             <div class="flex justify-between mb-4 mr-4">
                 <div>
-                    <p class="inline-flex">Nombre de cartes dans le deck : 
+                    <p class="inline-flex border bg-white px-2 py-1 rounded-lg text-sm">Nombre de cartes dans le deck : 
                         {{ count }}
                         {% if deck.format.formatName is same as 'Commander / EDH' %}
                             {% if count < 100 %}
@@ -312,7 +316,9 @@
             </div>
 
 
+
             <article class="deckView flex justify-center ml-8">
+
                 <div id="zoom" class="md:w-72 lg:w-96 lg:min-w-96 mr-6 ">
                     <div class="sticky top-48">
                         <img id="placeholder" class="w-full h-auto object-contain sticky top-36 rounded-xl" src="{{ asset('img/Magic_the_gathering-card_back.jpg') }}">
@@ -325,6 +331,13 @@
                 {# TODO ajouter les cartes doubles faces #}
 
         <div id="listView" class="flex flex-wrap border hover:shadow transition-all p-8 rounded duration-300 bg-white w-prose">
+
+            {% if composition is same as null or composition is empty %}
+            <div class="w-full flex justify-center items-center">
+                <p class="text-sm px-2 py-2 border rounded-lg bg-white">Vous n'avez pas encore de cartes dans le deck ! Ajoutez des cartes avec la recherche ci-dessus !</p>
+            <div>
+            {% else %}
+            {% endif %}
             {% for type in card_types %}
                 {% set type_count = 0 %}
                 {% for element in composition %}
@@ -487,7 +500,9 @@
                     {% endfor %}
                 </div>
             </article>
+
         </div>
+
 
         <div id="sideboard" class="shadow p-4 mx-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 transform rounded-lg bg-white transition">
             {% if stateToken is same as 'Main' %}
@@ -609,8 +624,8 @@
                         </li>
                 {% endfor %}
             </ul>
-        </div>
 
+        </div>
     </div>
 
     <section id="graphSection" class="flex flex-wrap w-screen max-w-screen justify-center my-10">
