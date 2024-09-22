@@ -372,10 +372,15 @@
                             // Create a new message element and append it to the messages container
                             const messageDiv = document.createElement('div');
                             messageDiv.innerHTML = `
-                                <div class="message-content px-2 rounded-lg max-w-full bg-gray-100 flex flex-col justify-end text-end">
-                                    <strong class="text-xs text-slate-700">${data.message.author}:</strong>
-                                    <p class="text-gray-800 rounded-md px-2  text-sm">${data.message.content}</p>
-                                </div>
+                            <div class="message-container flex w-full  ${data.message.author === '{{ app.user.username }}'  ? 'justify-end text-end' : 'justify-start'}">
+                            <div class="message-content max-w-full px-2 py-1 rounded-lg ${data.message.author === '{{ app.user.username }}' ? 'bg-gray-100 text-end' : 'bg-blue-100'}">
+                                <strong class="text-xs text-slate-700">
+                                    ${data.message.author}:
+                                </strong><br>
+                                <p class="text-gray-800 rounded-md px-2 text-sm">${data.message.content}</p>
+                            </div>
+                        </div>
+                              
                             `;
                             messagesContainer.appendChild(messageDiv);
         
@@ -480,10 +485,14 @@
                         // Create a new message element and append it to the messages container
                         const messageDiv = document.createElement('div');
                         messageDiv.innerHTML = `
-                             <div class="message-content px-2 rounded-lg max-w-full bg-gray-100 flex flex-col justify-end text-end">
-                                    <strong class="text-xs text-slate-700">${data.message.author}:</strong>
-                                    <p class="text-gray-800 rounded-md px-2  text-sm">${data.message.content}</p>
-                                </div>
+                             <div class="message-container flex w-full  ${data.message.author === '{{ app.user.username }}'  ? 'justify-end text-end' : 'justify-start'}">
+                            <div class="message-content max-w-full px-2 py-1 rounded-lg ${data.message.author === '{{ app.user.username }}' ? 'bg-gray-100 text-end' : 'bg-blue-100'}">
+                                <strong class="text-xs text-slate-700">
+                                    ${data.message.author}:
+                                </strong><br>
+                                <p class="text-gray-800 rounded-md px-2 text-sm">${data.message.content}</p>
+                            </div>
+                        </div>
                         `;
                         messagesContainerBis.appendChild(messageDiv);
 

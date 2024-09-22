@@ -40,7 +40,7 @@
 
             {% if app.user.twitchUsername is not null or app.user.twitchUserName is same as 'twitch.tv/' %}
             <div class="space-y-2 align-middle">
-                <label for="allowStream" class="text-sm font-medium text-gray-700 pr-1">Afficher le stream Twitch sur sa page profil</label>
+                <label for="allowStream" class="text-sm font-medium text-gray-700 pr-1">Afficher le live stream de sa chaîne Twitch sur sa page profil</label>
                 {{ form_widget(form.allowStream, {'attr': {'class': 'form-checkbox px-4 py-2 text-red-600 border border-red-700 rounded focus:ring-2 focus:outline-none hover:shadow-md shadow duration-300'}}) }}
             </div>
             {% else %}
@@ -53,6 +53,9 @@
             <div class="space-y-2 align-middle">
                 <label for="globalChat" class="text-sm font-medium text-gray-700 pr-1">Activer le Chat sur tout le site</label>
                 {{ form_widget(form.globalChat, {'attr': {'class': 'form-checkbox px-4 py-2 text-red-600 border border-red-700 rounded focus:ring-2 focus:outline-none hover:shadow-md shadow duration-300'}}) }}
+
+                <label for="globalChat" class="text-sm font-medium text-gray-700 pr-1">version moderne</label>
+                {{ form_widget(form.modernChat, {'attr': {'class': 'form-checkbox px-4 py-2 text-red-600 border border-red-700 rounded focus:ring-2 focus:outline-none hover:shadow-md shadow duration-300'}}) }}
             </div>
 
             <div class="mt-4">
