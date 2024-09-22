@@ -103,7 +103,7 @@
                                         <strong class="text-xs text-slate-700">
                                             <a class="hover:underline" href="{{ path('app_profile', {'user': message.author.userName}) }}">
                                                 {{ message.author.username }}:
-                                            </a>
+                                            </a><span class="text-xs italic font-normal text-gray-800">{{ message.createdAt|date("d/m/y h:i") }}</span>
                                         </strong><br>
                                         <p class="text-gray-800 rounded-md px-3 py-1 text-sm">{{ message.content }}</p>
                                     </div>

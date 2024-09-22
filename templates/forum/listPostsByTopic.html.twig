@@ -19,13 +19,18 @@
         <p>posté par {% if topic.user is same as null %}
             <span class="italic">[profil supprimé]</span>
             {% else %}
-            {{ topic.user.userName }} le {{ topic.creationDate|date('d.m.Y H:i') }} </p>
+            <a href="{{ path('app_profile', {'user': topic.user.userName}) }}" class="hover:underline">
+                {{ topic.user.userName }}
+            </a>
+             le {{ topic.creationDate|date('d.m.y H:i') }} 
+        </p>
+            
             {% endif %}
         {% else %}
         {% if topic.user is same as null %}
             <span class="italic">[profil supprimé]</span>
             {% else %}
-        <p>posté par {{ topic.user.userName }} le {{ topic.creationDate|date('d.m.Y H:i') }} et modifié le {{ topic.editDate|date('d.m.Y H:i') }} </p>
+        <p>posté par {{ topic.user.userName }} le {{ topic.creationDate|date('d.m.y H:i') }} et modifié le {{ topic.editDate|date('d.m.y H:i') }} </p>
         {% endif %}
     {% endif %}
 
@@ -40,9 +45,9 @@
                 </a><br>
             {% endif %}
             {% if post.editDate is same as null %}
-                posté le {{ post.creationDate|date('d.m.Y H:i') }} ,
+                posté le {{ post.creationDate|date('d.m.y H:i') }} ,
                 {% else %}
-                modifié le {{ post.editDate|date('d.m.Y H:i') }}
+                modifié le {{ post.editDate|date('d.m.y H:i') }}
             {% endif %}
         </p>
         <p>
