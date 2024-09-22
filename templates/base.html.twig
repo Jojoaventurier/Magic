@@ -320,7 +320,7 @@
                                     <div class="message-content max-w-full px-2 py-1 rounded-lg ${message.author === '{{ app.user.username }}' ? 'bg-gray-100 text-end' : 'bg-blue-100'}">
                                         <strong class="text-xs text-slate-700">
                                             ${message.author}:
-                                        </strong><br>
+                                        </strong><span class="text-xs italic text-gray-800">${message.createdAt}</span><br>
                                         <p class="text-gray-800 rounded-md px-2 text-sm">${message.content}</p>
                                     </div>
                                 </div>
@@ -376,7 +376,7 @@
                             <div class="message-content max-w-full px-2 py-1 rounded-lg ${data.message.author === '{{ app.user.username }}' ? 'bg-gray-100 text-end' : 'bg-blue-100'}">
                                 <strong class="text-xs text-slate-700">
                                     ${data.message.author}:
-                                </strong><br>
+                                </strong><span class="text-xs italic text-gray-800">${data.message.createdAt}</span><br>
                                 <p class="text-gray-800 rounded-md px-2 text-sm">${data.message.content}</p>
                             </div>
                         </div>
@@ -433,7 +433,7 @@
                             <div class="message-content max-w-full px-2 py-1 rounded-lg ${message.author === '{{ app.user.username }}' ? 'bg-gray-100 text-end' : 'bg-blue-100'}">
                                 <strong class="text-xs text-slate-700">
                                     ${message.author}:
-                                </strong><br>
+                                </strong><span class="text-xs italic text-gray-800">${message.createdAt}</span><br>
                                 <p class="text-gray-800 rounded-md px-2 text-sm">${message.content}</p>
                             </div>
                         </div>
@@ -489,7 +489,7 @@
                             <div class="message-content max-w-full px-2 py-1 rounded-lg ${data.message.author === '{{ app.user.username }}' ? 'bg-gray-100 text-end' : 'bg-blue-100'}">
                                 <strong class="text-xs text-slate-700">
                                     ${data.message.author}:
-                                </strong><br>
+                                </strong><span class="text-xs italic text-gray-800">${data.message.createdAt}</span><br>
                                 <p class="text-gray-800 rounded-md px-2 text-sm">${data.message.content}</p>
                             </div>
                         </div>
