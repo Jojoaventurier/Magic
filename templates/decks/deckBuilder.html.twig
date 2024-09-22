@@ -281,7 +281,7 @@
                     <p>Nombre de cartes dans le deck : 
                         {{ count }}
                         {% if deck.format.formatName is same as 'Commander / EDH' %}
-                            {% if count < 99 %}
+                            {% if count < 100 %}
                             / 99 <span class=" mx-1 text-xs text-red-600 italic">(non-légal)</span></p>
                             {% else %}
                             / 99</p><span class=" mx-1 text-xs text-breen-600 italic">(légal)</span></p>    

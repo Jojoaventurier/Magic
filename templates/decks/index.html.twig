@@ -32,7 +32,7 @@
                         </select>
                     <div>
                             <div class="flex flex-col space-y-4 mx-2">
-                                <select id="filter-mode m-2">
+                                <select id="filter-mode" class="p-2">
                                     <option value="contains">Contient</option>
                                     <option value="exact">Correspond exactement</option>
                                 </select>
@@ -158,6 +158,9 @@
 {% block javascripts %} 
 
 <script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+
     function filterUsers() {
         // Get the search query
         var query = document.getElementById('deck-search-bar').value.toLowerCase();
@@ -255,6 +258,7 @@ function filterMana() {
         }
     });
 }
+    });
 </script>
 {% endblock %}
 {% endblock %}

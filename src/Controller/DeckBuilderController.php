@@ -564,6 +564,8 @@ public function importDeck(
     $deck->setDeckName($deckName);
     $deck->setUser($this->getUser());
 
+    //handle deckformat
+
     $entityManager->persist($deck);
     
     // Process the deck list
@@ -573,22 +575,52 @@ public function importDeck(
     $addedCards = 0;
     $submittedCards = 0;
 
+    // foreach ($lines as $line) {
+    //     $submittedCards++;
+    //     if (preg_match('/^(\d+)\s+(.+)$/', trim($line), $matches)) {
+    //         $quantity = (int) $matches[1];
+    //         $cardName = $matches[2];
+
+    //         // Fetch the card from Scryfall API
+    //         $cardData = $this->fetchCardFromScryfall($cardName);
+
+    //         if ($cardData) {
+    //             // Process card saving to deck
+    //             $this->processCard($cardData, $deck, $quantity, $state, $compositionRepository, $entityManager);
+    //             $addedCards++;
+    //         } else {
+    //             $notFound[] = $cardName; // Card not found
+    //         }
+    //     }
+    // }
+
+    // First, aggregate the quantities for each card
     foreach ($lines as $line) {
         $submittedCards++;
         if (preg_match('/^(\d+)\s+(.+)$/', trim($line), $matches)) {
             $quantity = (int) $matches[1];
             $cardName = $matches[2];
 
-            // Fetch the card from Scryfall API
-            $cardData = $this->fetchCardFromScryfall($cardName);
-
-            if ($cardData) {
-                // Process card saving to deck
-                $this->processCard($cardData, $deck, $quantity, $state, $compositionRepository, $entityManager);
-                $addedCards++;
+            // Aggregate card quantities
+            if (isset($cardQuantities[$cardName])) {
+                $cardQuantities[$cardName] += $quantity;
             } else {
-                $notFound[] = $cardName; // Card not found
+                $cardQuantities[$cardName] = $quantity;
             }
+        }
+    }
+
+    // Now process the aggregated card list
+    foreach ($cardQuantities as $cardName => $quantity) {
+        // Fetch the card from Scryfall API
+        $cardData = $this->fetchCardFromScryfall($cardName);
+
+        if ($cardData) {
+            // Process card saving to deck
+            $this->processCard($cardData, $deck, $quantity, $state, $compositionRepository, $entityManager);
+            $addedCards++;
+        } else {
+            $notFound[] = $cardName; // Card not found
         }
     }
 
