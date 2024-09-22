@@ -143,89 +143,96 @@
     {% set format = deck.format.formatName|lower %}
 {% endif %}
 
-{% if app.user is same as deck.user %}
-<div class="flex flex-wrap justify-center items-center space-x-4 p-2">
+    {% if app.user is same as deck.user %}
+    {% if count >= deck.format.maxNbOfCards %}
+    <div class="inline-flex justify-center w-full m-6">
+        <p class="text-center text-red-600 italic border border-red-600 p-2">Vous avez trop de carte dans le deck, veuillez en supprimer pour pouvoir en ajouter d'autres.</p>
+    </div>
+        {% else %}
 
-    {% if deck.format.formatName is same as 'Commander / EDH' and deck.commander is same as null %}
-    
-        <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
-            <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
-                <label for="searchId" class="sr-only">Rechercher un commandant</label>
-                <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
-                <label for="cardSelect" class="sr-only">Choisir une carte</label>
+    <div class="flex flex-wrap justify-center items-center space-x-4 p-2">
+
+        {% if deck.format.formatName is same as 'Commander / EDH' and deck.commander is same as null %}
+        
+            <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
+                <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
+                    <label for="searchId" class="sr-only">Rechercher un commandant</label>
+                    <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
+                    <label for="cardSelect" class="sr-only">Choisir une carte</label>
+                </div>
+                <select class="card" name="cardName" id="cardSelect"></select>
+                <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out" type="button" id="researchStart">Rechercher</button><br>
             </div>
-            <select class="card" name="cardName" id="cardSelect"></select>
-            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out" type="button" id="researchStart">Rechercher</button><br>
-        </div>
 
-        <form id="saveCommanderForm" method="post" action="{{ path('save_commander_deck', {'user': deck.user.id, 'deck': deck.id}) }}">
-            <input type="hidden" id="cardIdInput" name="cardId">
-            <input type="hidden" id="cardData" name="cardData">
-            <button id="save" class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter en tant que commandant</button>
-        </form>
+            <form id="saveCommanderForm" method="post" action="{{ path('save_commander_deck', {'user': deck.user.id, 'deck': deck.id}) }}">
+                <input type="hidden" id="cardIdInput" name="cardId">
+                <input type="hidden" id="cardData" name="cardData">
+                <button id="save" class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter en tant que commandant</button>
+            </form>
 
-    {% elseif deck.format.formatName is same as 'Commander / EDH' and deck.commander is not null %}
-        <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
-            <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
-                <label for="searchId" class="sr-only">Rechercher une carte</label>
-                <input type="text" class="inline-flex tracking-wide bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
-                <label for="cardSelect" class="sr-only">Choisir une carte</label>
+        {% elseif deck.format.formatName is same as 'Commander / EDH' and deck.commander is not null %}
+            <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
+                <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
+                    <label for="searchId" class="sr-only">Rechercher une carte</label>
+                    <input type="text" class="inline-flex tracking-wide bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
+                    <label for="cardSelect" class="sr-only">Choisir une carte</label>
+                </div>
+                <select class="card" name="cardName" id="cardSelect"></select>
+                <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out" type="button" id="researchStart">Rechercher</button><br>
             </div>
-            <select class="card" name="cardName" id="cardSelect"></select>
-            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out" type="button" id="researchStart">Rechercher</button><br>
-        </div>
 
-        <form id="saveCardWithColorsForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
-            <input type="hidden" id="cardIdInput" name="cardId">
-            <input type="hidden" id="cardData" name="cardData">
-            <input type="hidden" id="colors" value="{{ deck.commander.color_identity|join('') }}">
-            <button id="save" class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter la carte</button>
-        </form>
-        <div class="p-1 m-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 rounded">
-            <input type="checkbox" id="noRestrictions" name="noRestrictions">
-            <label for="noRestrictions" class="text-sm italic text-red-700">Ignorer les restrictions du format pour la recherche</label>
-        </div>
-    {% elseif deck.format.formatName is not same as 'Commander / EDH' %}
-
-        <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
-            <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
-                <label for="searchId" class="sr-only">Rechercher une carte</label>
-                <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
-                <label for="cardSelect" class="sr-only">Choisir une carte</label>
+            <form id="saveCardWithColorsForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
+                <input type="hidden" id="cardIdInput" name="cardId">
+                <input type="hidden" id="cardData" name="cardData">
+                <input type="hidden" id="colors" value="{{ deck.commander.color_identity|join('') }}">
+                <button id="save" class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter la carte</button>
+            </form>
+            <div class="p-1 m-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 rounded">
+                <input type="checkbox" id="noRestrictions" name="noRestrictions">
+                <label for="noRestrictions" class="text-sm italic text-red-700">Ignorer les restrictions du format pour la recherche</label>
             </div>
-            <select class="card" name="cardName" id="cardSelect"></select>
-            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out " type="button" id="researchStart">Rechercher</button><br>
-        </div>
+        {% elseif deck.format.formatName is not same as 'Commander / EDH' %}
 
-        <form id="saveCardFormatForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
-            <input type="hidden" id="format" value="{{ format }}">
-            <input type="hidden" id="cardIdInput" name="cardId">
-            <input type="hidden" id="cardData" name="cardData">
-            <button id="save" class="border border-red-700  bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter la carte</button>
-        </form>
-        <div class="p-1 m-4rounded hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
-            <input type="checkbox" id="noRestrictions" name="noRestrictions">
-            <label for="noRestrictions" class="text-sm italic text-red-700">Ignorer les restrictions du format pour la recherche</label>
-        </div>
-    {% else %}
-
-        <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
-            <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
-                <label for="searchId" class="sr-only">Rechercher une carte</label>
-                <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
-                <label for="cardSelect" class="sr-only">Choisir une carte</label>
+            <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
+                <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
+                    <label for="searchId" class="sr-only">Rechercher une carte</label>
+                    <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
+                    <label for="cardSelect" class="sr-only">Choisir une carte</label>
+                </div>
+                <select class="card" name="cardName" id="cardSelect"></select>
+                <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out " type="button" id="researchStart">Rechercher</button><br>
             </div>
-            <select class="card" name="cardName" id="cardSelect"></select>
-            <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out" type="button" id="researchStart">Rechercher</button><br>
-        </div>
 
-        <form id="saveCardForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
-            <input type="hidden" id="cardIdInput" name="cardId">
-            <input type="hidden" id="cardData" name="cardData">
-            <button id="save" class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter la carte</button>
-        </form>
-    {% endif %}
-</div>
+            <form id="saveCardFormatForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
+                <input type="hidden" id="format" value="{{ format }}">
+                <input type="hidden" id="cardIdInput" name="cardId">
+                <input type="hidden" id="cardData" name="cardData">
+                <button id="save" class="border border-red-700  bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter la carte</button>
+            </form>
+            <div class="p-1 m-4rounded hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+                <input type="checkbox" id="noRestrictions" name="noRestrictions">
+                <label for="noRestrictions" class="text-sm italic text-red-700">Ignorer les restrictions du format pour la recherche</label>
+            </div>
+        {% else %}
+
+            <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
+                <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
+                    <label for="searchId" class="sr-only">Rechercher une carte</label>
+                    <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
+                    <label for="cardSelect" class="sr-only">Choisir une carte</label>
+                </div>
+                <select class="card" name="cardName" id="cardSelect"></select>
+                <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out" type="button" id="researchStart">Rechercher</button><br>
+            </div>
+
+            <form id="saveCardForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
+                <input type="hidden" id="cardIdInput" name="cardId">
+                <input type="hidden" id="cardData" name="cardData">
+                <button id="save" class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter la carte</button>
+            </form>
+        </div>
+        {% endif %}
+
 
 
 <div class="flex justify-center m-4">
@@ -239,7 +246,8 @@
     </div>
 </div>
 {% endif %}
-<div id="responseMessage" class="hidden"></div> <!-- For displaying response messages -->
+{% endif %}
+<div id="responseMessage" class="hidden text-center"></div> <!-- For displaying response messages -->
 
 <div id="cardBoard" class="flex justify-center w-full mb-4">
     <div class="hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 shadow">
@@ -278,13 +286,13 @@
             <!-- Toggle View Buttons -->
             <div class="flex justify-between mb-4 mr-4">
                 <div>
-                    <p>Nombre de cartes dans le deck : 
+                    <p class="inline-flex">Nombre de cartes dans le deck : 
                         {{ count }}
                         {% if deck.format.formatName is same as 'Commander / EDH' %}
                             {% if count < 100 %}
-                            / 99 <span class=" mx-1 text-xs text-red-600 italic">(non-légal)</span></p>
+                            / 100 <span class=" mx-1 text-xs text-red-600 italic">(non-légal)</span></p>
                             {% else %}
-                            / 99</p><span class=" mx-1 text-xs text-breen-600 italic">(légal)</span></p>    
+                            / 100</p><span class=" mx-1 text-xs text-green-600 italic">(légal)</span></p>    
                             {% endif %}
                         {% else %}
                             {% if count < 60 %}
@@ -313,7 +321,7 @@
                 </div>
             
 
-                {% set card_types = ["Creature", "Sorcery", "Instant", "Enchantment", "Artifact", "Planeswalker", "Land", "Battle"] %} 
+                {% set card_types = ["Creature", "Sorcery", "Instant", "Enchantment", "Artifact", "Planeswalker", "Land", "Battle", "Plane", "Background", "Scheme"] %} 
                 {# TODO ajouter les cartes doubles faces #}
 
         <div id="listView" class="flex flex-wrap border hover:shadow transition-all p-8 rounded duration-300 bg-white w-prose">
@@ -1123,15 +1131,15 @@
                         // Display success message or update UI accordingly
                         responseMessage.textContent = data.message; // Expecting a message in the JSON response
                         responseMessage.classList.remove('hidden');
-                        responseMessage.classList.add('bg-green-500', 'text-white', 'p-2', 'rounded'); // Tailwind classes for styling
+                        responseMessage.classList.add('bg-green-500', 'text-white', 'p-2', 'rounded', 'text-center'); // Tailwind classes for styling
                         // Optionally clear or update form inputs
                         saveCardForm.reset();
                     })
                     .catch(error => {
                         console.error('There was a problem with the fetch operation:', error);
-                        responseMessage.textContent = 'An error occurred while saving the card.';
+                        responseMessage.textContent = 'Une erreur est survenue lors de la sauvegarde de la carte.';
                         responseMessage.classList.remove('hidden');
-                        responseMessage.classList.add('bg-red-500', 'text-white', 'p-2', 'rounded');
+                        responseMessage.classList.add('bg-red-500', 'text-white', 'p-2', 'rounded', 'text-center');
                     });
                 });
             }

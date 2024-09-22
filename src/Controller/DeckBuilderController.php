@@ -526,7 +526,7 @@ public function saveCard(
     // Flush to save changes to the database
     $entityManager->flush();
 
-    return new JsonResponse(['message' => 'Card saved successfully!']);
+    return new JsonResponse(['message' => 'La carte a été ajoutée avec succès!']);
 }
 
 public function saveCardToDeck(Deck $deck, Card $card = null, Composition $composition = null, int $quantity, State $state, EntityManagerInterface $entityManager, CardRepository $cardRepository): void {
