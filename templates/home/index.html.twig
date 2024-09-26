@@ -5,51 +5,67 @@
 {% block body %}
 
 
-<div class="row-container dragon"> <!--gradient-->
+<div class="flex w-full justify-center dragon"> <!--gradient-->
+    <div class="flex flex-wrap w-4/5 justify-between">
 
-    <div class="column">
-        <h1 class='white title-homepage justify-center'>Bienvenue sur <br><span class="bold">Magic-Hub</span></h1>
-        <div id='mana-homepage' class="row space-x-4">
-            <img class="big-mana low-opacity" src='{{ asset('img/arbreuh.webp')}}'>
-            <img class="big-mana low-opacity"  src='{{ asset('img/flamme.webp')}}'>
-            <img class="big-mana low-opacity"  src='{{ asset('img/goutte.webp')}}'>
-            <img class="big-mana low-opacity"  src='{{ asset('img/mortmort.webp')}}'>
-            <img class="big-mana low-opacity"  src='{{ asset('img/soleil.webp')}}'>
-        </div>
-        
-    </div>
-    <div class="column">
-        <div>
-            <div id='mana-homepage' class="row space-x-2 p-4">
-                <img class="low-opacity small-mana" src='{{ asset('img/arbreuh.webp')}}'>
-                <img class="low-opacity small-mana"  src='{{ asset('img/flamme.webp')}}'>
-                <img class="low-opacity small-mana"  src='{{ asset('img/goutte.webp')}}'>
-                <img class="low-opacity small-mana"  src='{{ asset('img/mortmort.webp')}}'>
-                <img class="low-opacity small-mana"  src='{{ asset('img/soleil.webp')}}'>
+        <div class="flex flex-col justify-center">
+            {# <div class="inline-flex space-x-6 text-white averia-serif-libre-light">
+                <h2 class="">[ Constructeur de deck</h2>
+                <span>|</span>
+                <h2>Recherche de carte</h2>
+                <span>|</span>
+                <h2>Communauté ]</h2>
+            </div> #}
+            <h1 class='white title-homepage justify-center averia-serif-libre-regular'>Bienvenue sur <br><span class="bold">Magic-Hub</span></h1>
+            <div id='mana-homepage' class="row space-x-4 mt-4">
+                <img class="big-mana low-opacity" src='{{ asset('img/arbreuh.webp')}}'>
+                <img class="big-mana low-opacity"  src='{{ asset('img/flamme.webp')}}'>
+                <img class="big-mana low-opacity"  src='{{ asset('img/goutte.webp')}}'>
+                <img class="big-mana low-opacity"  src='{{ asset('img/mortmort.webp')}}'>
+                <img class="big-mana low-opacity"  src='{{ asset('img/soleil.webp')}}'>
             </div>
+            
         </div>
-        <div>
-            <p class="py-2"><a class='white slim'>Découvrir...</a></p>
-            <p class="py-2"><a class='white slim'>Chercher...</a></p>
-            <p class="pt-2 pb-6"><a class='white slim'>Construire...</a></p>
-        </div>
+        <div class="flex flex-col justify-center items-end space-y-10">
 
-        <div class="ninety">
-            <div class="flex justify-center">
-
-                <input type="text" class="search-field w-1/2 rounded-md border-gray-200 p-2 py-2.5 pe-10 shadow-sm sm:text-sm focus:outline-none" name="search" id="searchId" placeholder="Cherchez une carte...">
-                <a id="searchUrl" href="#" class="text-white border ml-2 p-2 border-white rounded-md hover:bg-white hover:text-red-700 duration-300">
-                    GO
-                </a>
-
+            <div>
+                {# <div id='mana-homepage' class="row space-x-2 p-4">
+                    <img class="low-opacity small-mana" src='{{ asset('img/arbreuh.webp')}}'>
+                    <img class="low-opacity small-mana"  src='{{ asset('img/flamme.webp')}}'>
+                    <img class="low-opacity small-mana"  src='{{ asset('img/goutte.webp')}}'>
+                    <img class="low-opacity small-mana"  src='{{ asset('img/mortmort.webp')}}'>
+                    <img class="low-opacity small-mana"  src='{{ asset('img/soleil.webp')}}'>
+                </div> #}
+            </div>
+            <div class="space-y-2">
+                <div class="inline-flex space-x-4 text-white averia-serif-libre-light">
+                    <h2 class="">[ Constructeur de deck</h2>
+                    <span>|</span>
+                    <h2>Recherche de cartes</h2>
+                    <span>|</span>
+                    <h2>Communauté ]</h2>
+                </div>
+                <p class="text-center text-white averia-serif-libre-light">100% dédié à Magic The Gathering</p>
             </div>
 
-            <div class="row center">
-                <a href="{{ path('app_search', {'search': 'basic', 'parameter': 'none'}) }}" class="text-white border ml-2 p-2 border-white rounded-md hover:bg-white hover:text-red-700 duration-300 mx-6 my-3 sm:text-sm">RECHERCHE AVANCEE</a>
-                <a href="{{ path('all_sets') }}" class="text-white border ml-2 p-2 border-white rounded-md hover:bg-white hover:text-red-700 duration-300 mx-6 my-3 sm:text-sm">TOUS LES SETS</a>
+
+            <div class="ninety">
+                <div class="flex justify-center">
+
+                    <input type="text" class="search-field w-4/5 rounded-md border-gray-200 p-2 py-2.5 pe-10 shadow-sm sm:text-sm focus:outline-none" name="search" id="searchId" placeholder="Cherchez une carte...">
+                    <a id="searchUrl" href="#" class="text-white font-semibold border-2 ml-2 p-2 border-white rounded-md hover:bg-white hover:text-red-700 duration-300">
+                        GO
+                    </a>
+
+                </div>
+
+                {# <div class="row center mt-4">
+                    <a href="{{ path('app_search', {'search': 'basic', 'parameter': 'none'}) }}" class="text-white font-semibold border-2 bg-red-900 bg-opacity-10 border ml-2 p-2 border-white rounded-md hover:bg-white hover:text-red-700 duration-300 mx-6 my-3 sm:text-sm">RECHERCHE AVANCEE</a>
+                    <a href="{{ path('all_sets') }}" class="text-white font-semibold border-2 bg-red-900 bg-opacity-10 border ml-2 p-2 border-white rounded-md hover:bg-white hover:text-red-700 duration-300 mx-6 my-3 sm:text-sm">TOUS LES SETS</a>
+                </div> #}
             </div>
+            
         </div>
-        
     </div>
 
 </div>

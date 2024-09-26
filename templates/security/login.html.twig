@@ -13,24 +13,25 @@
                 Vous êtes connectés en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
             </div>
         {% endif %}
+  <div class="hydra">
 
-    <div class="mx-auto h-full sm:w-max">
+    <div class="mx-auto h-full sm:w-max last:">
         <div class="m-auto  py-12">
           <div class="space-y-4">
-            <a href="">
+            {# <a href="">
               <img src="images/tailus.svg" class="w-40 dark:hidden" alt="Magic-Hub logo" />
               <img src="images/logo.svg" class="w-40 hidden dark:block" alt="Magic-Hub logo" />
-            </a>
+            </a> #}
           </div>
 
-        <div class="mt-12 rounded-3xl border bg-gray-50 dark:border-gray-700 dark:bg-gray-800 -mx-6 sm:-mx-10 p-8 sm:p-10">
-          <h1 class="text-2xl font-semibold text-gray-700 dark:text-white">Connection à votre compte</h1>
+        <div class=" mt-32 rounded-3xl bg-white bg-opacity-10 -mx-6 sm:-mx-10 p-8 sm:p-10">
+          <h1 class="text-xl text-center font-semibold text-white averia-serif-libre-regular">Connection à Magic-hub</h1>
           <div class="mt-12 flex flex-wrap sm:grid gap-6 grid-cols-1">
             <a href="{{ path('auth_magichub_connect', {service: 'google'}) }}">
                 <button
                 class="w-full h-11 rounded-full border border-gray-300/75 bg-white px-6 transition active:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-800 dark:hover:border-gray-700">
                 <div class="w-max mx-auto flex items-center justify-center space-x-4">
-                    <img src="public\img\google.svg" class="w-5"   alt="logo Google" />
+                    <img src="img\google.svg" class="w-5"   alt="logo Google" />
                     <span class="block w-max text-sm font-semibold tracking-wide text-cyan-700 dark:text-white">Connection avec Google</span>
                 </div>
                 </button>
@@ -39,33 +40,33 @@
     
           <form method="post" class="mt-10 space-y-8 dark:text-white">
             <div>
-                <div class="relative before:absolute before:bottom-0 before:h-0.5 before:left-0 before:origin-right focus-within:before:origin-left before:right-0 before:scale-x-0 before:m-auto before:bg-sky-400 dark:before:bg-sky-800 focus-within:before:!scale-x-100 focus-within:invalid:before:bg-red-400 before:transition before:duration-300">
+                <div class="relative before:absolute before:bottom-0 before:h-0.5 before:left-0 before:origin-right focus-within:before:origin-left before:right-0 before:scale-x-0 before:m-auto before:bg-white focus-within:before:!scale-x-100 focus-within:invalid:before:bg-red-400 before:transition before:duration-300">
                     <input type="email" value="{{ last_username }}" name="_username" id="username" placeholder="Votre adresse email" class="form-control w-full bg-transparent pb-3  border-b border-gray-300 dark:placeholder-gray-300 dark:border-gray-600 outline-none  invalid:border-red-400 transition" autocomplete="email" required autofocus>
                 </div>
             </div>
     
             <div class="flex flex-col items-end">
-                <div class="w-full relative before:absolute before:bottom-0 before:h-0.5 before:left-0 before:origin-right focus-within:before:origin-left before:right-0 before:scale-x-0 before:m-auto before:bg-sky-400 dark:before:bg-sky-800 focus-within:before:!scale-x-100 focus-within:invalid:before:bg-red-400 before:transition before:duration-300">
-                    <input type="password" name="_password" id="password" placeholder="Mot de passe" class="form-control w-full bg-transparent pb-3  border-b border-gray-300 dark:placeholder-gray-300 dark:border-gray-600 outline-none  invalid:border-red-400 transition" autocomplete="current-password" required>
+                <div class="w-full relative before:absolute before:bottom-0 before:h-0.5 before:left-0 before:origin-right focus-within:before:origin-left before:right-0 before:scale-x-0 before:m-auto before:bg-white focus-within:before:!scale-x-100 focus-within:invalid:before:bg-red-400 before:transition before:duration-300">
+                    <input type="password" name="_password" id="password" placeholder="Mot de passe" class="form-control w-full bg-transparent pb-3  border-b border-gray-300 dark:placeholder-gray-300 dark:border-gray-300 outline-none  invalid:border-red-400 transition" autocomplete="current-password" required>
                 </div>
               <button type="reset" class="-mr-3 w-max p-3">
-                <span class="text-sm tracking-wide text-sky-600 dark:text-sky-400">Mot de passe oublié ?</span>
+                <span class="text-sm italic tracking-wide text-white averia-serif-libre-light">Mot de passe oublié ?</span>
               </button>
             </div>
     
             <div>
               <button type="submit"
-                class="w-full rounded-full bg-sky-500 dark:bg-sky-400 h-11 flex items-center justify-center px-6 py-3 transition hover:bg-sky-600 focus:bg-sky-600 active:bg-sky-800">
-                <span class="text-base font-semibold text-white dark:text-gray-900">Se connecter</span>
+                class="w-full rounded-full bg-red-500 h-11 flex items-center justify-center px-6 py-3 transition hover:bg-red-600 focus:bg-red-600 active:bg-red-800">
+                <span class="text-base font-semibold text-white averia-serif-libre-regular">Se connecter</span>
               </button>
               <button href="#" type="reset" class="-ml-3 w-max p-3">
-                <span class="text-sm tracking-wide text-sky-600 dark:text-sky-400">S'inscrire</span>
+                <span class="text-sm tracking-wide text-white averia-serif-libre-light">S'inscrire</span>
               </button>
             </div>
           
         </div>
-          <div class="border-t pt-12 text-gray-500 dark:border-gray-800">
-            <div class="space-x-4 text-center">
+          <div class="pt-12 text-gray-500 dark:border-gray-800">
+            <div class="space-x-4 text-center averia-serif-libre-regular">
               <span>&copy; Magic-Hub</span>
               <a href="#" class="text-sm hover:text-sky-900 dark:hover:text-gray-300">Contact</a>
               <a href="#" class="text-sm hover:text-sky-900 dark:hover:text-gray-300">Termes et confidentialité</a>
@@ -74,6 +75,8 @@
         </div>
       </div>
     </div>
+
+  </div>
 
     <input type="hidden" name="_csrf_token"
                value="{{ csrf_token('authenticate') }}"

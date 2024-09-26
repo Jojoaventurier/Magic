@@ -9,6 +9,42 @@
   padding: 0;
 }
 
+.averia-serif-libre-light {
+  font-family: "Averia Serif Libre", serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.averia-serif-libre-regular {
+  font-family: "Averia Serif Libre", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.averia-serif-libre-bold {
+  font-family: "Averia Serif Libre", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.averia-serif-libre-light-italic {
+  font-family: "Averia Serif Libre", serif;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.averia-serif-libre-regular-italic {
+  font-family: "Averia Serif Libre", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.averia-serif-libre-bold-italic {
+  font-family: "Averia Serif Libre", serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
 .gradient {
   background: #200122;  /* fallback for old browsers */
   background: -webkit-linear-gradient(to right, #6f0000, #200122);  /* Chrome 10-25, Safari 5.1-6 */
@@ -31,10 +67,30 @@
 
 .dragon {
   background-image: 
-      url("/tests/untitled9.webp");
+      url("/tests/shivan.webp");
   background-size: cover;
   width: 100vw;
   height: 100vh;
+}
+
+.hydra {
+  background-image: 
+  url("/tests/skeleton.webp");
+background-size: cover;
+width: 100vw;
+height: 100vh;
+}
+
+.war {
+  background-image: 
+    linear-gradient(to bottom, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 1) 100%), 
+    url("/tests/war2.webp");
+  background-size: contain; /* Ensure the image keeps its original size */
+  background-position: top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  width: 100vw;
+  /* height: 100vh; */
 }
 
 .elesh-norn {
@@ -88,10 +144,6 @@
   justify-content: center
 }
 
-.row-container {
-  width: 100%;
-  display: flex;
-}
 
 .column {
   display: flex;
@@ -110,9 +162,9 @@
   background: -webkit-linear-gradient(to right, #6f0000, #200122); 
   background: linear-gradient(to right, #6f0000, #200122); 
 }  */
-  nav {
+  /* nav {
     background:rgba(0, 0, 0)
-  }
+  } */
 
 
 /*===========================================     HOMEPAGE     ================================================*/

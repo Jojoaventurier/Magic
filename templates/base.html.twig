@@ -7,46 +7,54 @@
         {% block stylesheets %}
           <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
           <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide@3.5.2/dist/css/glide.core.min.css">
+          <link href="https://fonts.googleapis.com/css2?family=Averia+Serif+Libre:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
           <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
         {% endblock %}
       </head>
       <body>
-      <section>
-          <nav class="flex justify-between py-5">
-          <div class="row">
-            <div class="row space-x-4 px-4">
-              <a class="white hover:underline" href="{{ path('app_home') }}">Home</a>
-              <a class="white hover:underline" href="{{ path('all_sets') }}">Tous les sets/extensions</a> <!--path('app_all_sets')-->
-              <a class="white hover:underline" href="{{ path('app_search', {'search': 'basic', 'parameter': 'none'}) }}">Recherche de cartes</a>
-              <a class="white hover:underline" href="{{ path('app_decks', {'param': 'all'}) }}">Tous les Decks</a>
-              <a class="white hover:underline" href="{{ path('app_forum') }}">Forum</a>
+
+<div class="flex w-screen justify-center">
+
+        <nav class="fixed w-4/5 text-lg top-0 inline-flex justify-between py-5 averia-serif-libre-light bg-black bg-opacity-0 z-50">
+            <div class="flex flex-col">
+                <div class="inline-flex space-x-5">
+                <a class="white hover:underline" href="{{ path('app_home') }}">Accueil</a>
+                <a class="white hover:underline" href="{{ path('all_sets') }}">Sets/extensions</a> <!--path('app_all_sets')-->
+                <a class="white hover:underline" href="{{ path('app_search', {'search': 'basic', 'parameter': 'none'}) }}">Recherche de cartes</a>
+                <a class="white hover:underline" href="{{ path('app_decks', {'param': 'all'}) }}">Decks</a>
+                <a class="white hover:underline" href="{{ path('app_forum') }}">Forum</a>
+                {# </div> #}
+                {# <div class="row space-x-2 px-4 averia-serif-libre-light"> #}
+                {% if app.user %}
+                <span class=" text-white">|</span>
+                <a class="white hover:underline" href="{{ path('app_articleForm')}}">Article</a>
+                <a class="white hover:underline" href="{{ path('app_deck_manager', {'id': app.user.id})}}">Mes Decks</a>
+                {% endif %}
+                {# <span class="pr-4 text-white">|</span> #}
+                </div>
             </div>
-            <div class="row space-x-2 px-4">
-              {% if app.user %}
-              <a class="white hover:underline" href="{{ path('app_articleForm')}}">Rédiger un article</a>
-              <a class="white hover:underline" href="{{ path('app_deck_manager', {'id': app.user.id})}}">Mes Decks</a>
-              {% endif %}
+            <div class="flex flex-col">
+                {# <section> #}
+                <div class="space-x-3 averia-serif-libre-light">
+                    {% if app.user %}
+                    {% if app.user.globalChat is same as false and unread_count() > 0 %}
+                        <span class="text-white text-xs italic border-white border p-1">
+                            {{ unread_count() }} 
+                            {{ unread_count() > 1 ? 'nouveaux' : 'nouveau' }} 
+                            message{{ unread_count() > 1 ? 's' : '' }}
+                        </span>
+                    {% endif %}
+                    <a class="white hover:underline" href="{{ path('chatting') }}">Messagerie</a>
+                    <a class="white hover:underline" href="{{ path('app_profile_self') }}">Mon profil</a>
+                    <a class="white hover:underline" href="{{ path('app_logout') }}">Se déconnecter</a>
+                    {% else %}
+                    <a class="white hover:underline" href="{{ path('app_login') }}">Se connecter</a>
+                    <a class="white hover:underline" href="{{ path('app_register') }}">S'inscrire</a>
+                    {% endif %}
+                </div>
             </div>
-          </div>
-          <section></section>
-          <div class="space-x-2 px-4">
-            {% if app.user %}
-              {% if app.user.globalChat is same as false and unread_count() > 0 %}
-                  <span class="text-white text-xs italic border-white border p-1">
-                      {{ unread_count() }} 
-                      {{ unread_count() > 1 ? 'nouveaux' : 'nouveau' }} 
-                      message{{ unread_count() > 1 ? 's' : '' }}
-                  </span>
-              {% endif %}
-            <a class="white hover:underline" href="{{ path('chatting') }}">Mes Conversations</a>
-            <a class="white hover:underline" href="{{ path('app_profile_self') }}">Mon profil</a>
-            <a class="white hover:underline" href="{{ path('app_logout') }}">Se déconnecter</a>
-            {% else %}
-            <a class="white hover:underline" href="{{ path('app_login') }}">Se connecter</a>
-            <a class="white hover:underline" href="{{ path('app_register') }}">S'inscrire</a>
-            {% endif %}
-          </div>
         </nav>
+</div>
         
 {% if app.user %}
     {% if app.user.globalChat is same as true %}
