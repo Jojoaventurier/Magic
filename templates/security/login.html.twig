@@ -15,8 +15,8 @@
         {% endif %}
   <div class="hydra">
 
-    <div class="mx-auto h-full sm:w-max last:">
-        <div class="m-auto  py-12">
+    <div class="flex mx-auto h-full sm:w-max last:">
+      <div class="py-12">
           <div class="space-y-4">
             {# <a href="">
               <img src="images/tailus.svg" class="w-40 dark:hidden" alt="Magic-Hub logo" />
@@ -24,7 +24,7 @@
             </a> #}
           </div>
 
-        <div class=" mt-32 rounded-3xl bg-white bg-opacity-10 mx-6 sm:-mx-10 p-8 sm:p-10">
+        <div class="mt-32 rounded-3xl bg-white bg-opacity-10 mx-6 sm:-mx-10 p-8 sm:p-10">
           <h1 class="text-xl text-center font-semibold text-white averia-serif-libre-regular">Connection à Magic-hub</h1>
           <div class="mt-12 flex flex-wrap sm:grid gap-6 grid-cols-1">
             <a href="{{ path('auth_magichub_connect', {service: 'google'}) }}">

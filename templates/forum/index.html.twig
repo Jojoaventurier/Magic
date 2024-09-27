@@ -3,42 +3,35 @@
 {% block title %}Bienvenue sur le forum de Magic-Hub!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { max-width: 1000px; width: 95%; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-<section class="bg-gradient-purple flex justify-center">
-    <div class="w-4/5 max-w-[1000px] bg-white bg-opacity-20 px-6 py-8 mt-20 text-white rounded-md">
+
+<div class="bolas">
+<div class="flex justify-center items-center h-full">
+    <div class="w-4/5  max-w-[1000px] bg-white bg-opacity-10 px-6 py-8 mt-20 text-white rounded-md">
 
 
         <div class="font-semibold text-4xl averia-serif-libre-regular flex justify-center mb-10">
             <h1 class=" px-8 py-5 rounded-md">Bienvenue sur le forum de Magic-Hub</h1>
         </div>
-    <div x-data="{ showSubCategories: false }">
-        
-        <div  class="grid grid-cols-5 my-1 border bg-white text-black rounded">
+    <div x-data="{ showSubCategories: false }"  @click="showSubCategories = !showSubCategories" class="mb-8">
+        <span class="w-full inline-flex justify-center text-sm italic cursor-pointer">Cliquez pour <span class="px-1" x-text="showSubCategories ? 'masquer' : 'afficher'"></span> les sous-catégories</span>
+        <div  class="grid grid-cols-4 my-1  text-white rounded border border-white p-6 cursor-pointer">
             <!-- Toggle button to hide/show all subcategories -->
         
             {% for category in categories %}
                 <div>
-                    <h3 class="averia-serif-libre-bold text-xl p-2 underline underline-offset-4">{{ category.forumCategoryName }}</h3>
+                    <h3 class="averia-serif-libre-bold text-xl p-2">{{ category.forumCategoryName }}</h3>
         
                     <!-- Subcategories section with Alpine.js conditional rendering -->
-                    <div class="ml-3 space-y-1" x-show="showSubCategories">
+                    <div class="ml-3 space-y-1" x-show="showSubCategories" x-transition>
                         {% for subCategory in category.subCategories %}
-                            <a href="{{ path('app_forum_topics', {id: subCategory.id}) }}" class="block averia-serif-libre-light text-gray-900 hover:underline">
+                            <a href="{{ path('app_forum_topics', {id: subCategory.id}) }}" class="block averia-serif-libre-light text-white hover:underline">
                                 {{ subCategory.subCategoryName }}
                             </a>
                         {% endfor %}
                     </div>
                 </div>
             {% endfor %}
-        </div>
-        <div class="flex justify-center w-full mb-8">
-            <button @click="showSubCategories = !showSubCategories" class="bg-gradient-purple text-white rounded text-sm px-2 py-1">
-                <span x-text="showSubCategories ? 'Masquer' : 'Afficher'"></span> les sous-catégories
-            </button>
-        </div>
+            </div>
     </div>
 
         
@@ -110,6 +103,7 @@
         </div>
         
     </div>
-</section>
+</div>
+</div>
 
 {% endblock %}
