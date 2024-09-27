@@ -14,15 +14,19 @@
         <div class="font-semibold text-4xl averia-serif-libre-regular flex justify-center mb-10">
             <h1 class=" px-8 py-5 rounded-md">Bienvenue sur le forum de Magic-Hub</h1>
         </div>
-
-        <div class="grid grid-cols-5 mt-10 mb-4">
-            {% for category in categories %}
-                <div class="mb-6">
-                    <h3 class="averia-serif-libre-regular text-xl p-2 underline underline-offset-4 text-white mb-2">// {{ category.forumCategoryName }}</h3> 
+    <div x-data="{ showSubCategories: false }">
         
-                    <div class="ml-3 space-y-1">
+        <div  class="grid grid-cols-5 my-1 border bg-white text-black rounded">
+            <!-- Toggle button to hide/show all subcategories -->
+        
+            {% for category in categories %}
+                <div>
+                    <h3 class="averia-serif-libre-bold text-xl p-2 underline underline-offset-4">{{ category.forumCategoryName }}</h3>
+        
+                    <!-- Subcategories section with Alpine.js conditional rendering -->
+                    <div class="ml-3 space-y-1" x-show="showSubCategories">
                         {% for subCategory in category.subCategories %}
-                            <a href="{{ path('app_forum_topics', {id: subCategory.id}) }}" class="block averia-serif-libre-light text-gray-100 hover:underline">
+                            <a href="{{ path('app_forum_topics', {id: subCategory.id}) }}" class="block averia-serif-libre-light text-gray-900 hover:underline">
                                 {{ subCategory.subCategoryName }}
                             </a>
                         {% endfor %}
@@ -30,6 +34,12 @@
                 </div>
             {% endfor %}
         </div>
+        <div class="flex justify-center w-full mb-8">
+            <button @click="showSubCategories = !showSubCategories" class="bg-gradient-purple text-white rounded text-sm px-2 py-1">
+                <span x-text="showSubCategories ? 'Masquer' : 'Afficher'"></span> les sous-catégories
+            </button>
+        </div>
+    </div>
 
         
         {% include "components/_search_data.html.twig" with {
