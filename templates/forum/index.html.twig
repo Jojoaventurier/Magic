@@ -4,73 +4,102 @@
 
 {% block body %}
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; }
+    .example-wrapper { max-width: 1000px; width: 95%; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
-
-<div class="example-wrapper">
-    <h1>Bienvenue sur le forum de Magic-Hub</h1>
-
-
-    {% include "components/_search_data.html.twig" with {
-        searchForm: searchForm ?? null
-    } only %}
+<section class="bg-gradient-purple flex justify-center">
+    <div class="w-4/5 max-w-[1000px] bg-white bg-opacity-20 px-6 py-8 mt-20 text-white rounded-md">
 
 
-    {% for category in categories %}
-       <h3>{{ category.forumCategoryName }}</h3> 
+        <div class="font-semibold text-4xl averia-serif-libre-regular flex justify-center mb-10">
+            <h1 class=" px-8 py-5 rounded-md">Bienvenue sur le forum de Magic-Hub</h1>
+        </div>
 
-        {% for subCategory in category.subCategories %}
-        <a href="{{ path('app_forum_topics', {id: subCategory.id}) }}">{{ subCategory.subCategoryName }}</a>
-        {% endfor %} <br>
-    {% endfor %}
+        <div class="grid grid-cols-5 mt-10 mb-4">
+            {% for category in categories %}
+                <div class="mb-6">
+                    <h3 class="averia-serif-libre-regular text-xl p-2 underline underline-offset-4 text-white mb-2">// {{ category.forumCategoryName }}</h3> 
+        
+                    <div class="ml-3 space-y-1">
+                        {% for subCategory in category.subCategories %}
+                            <a href="{{ path('app_forum_topics', {id: subCategory.id}) }}" class="block averia-serif-libre-light text-gray-100 hover:underline">
+                                {{ subCategory.subCategoryName }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
 
-    {% if researchToken is same as true %}
-        <h3>Résultats de la recherche :</h3>
-    {% endif %}
-    {% if topics is empty %}
-        <p>Aucun résultat trouvé.</p>
-    {% endif %}
+        
+        {% include "components/_search_data.html.twig" with {
+            searchForm: searchForm ?? null
+        } only %}
 
-    <div class="forum-wrapper">
 
-        {% for topic in topics %}
-        <div class="postCard">
-            <p>
-                Par {% if topic.user is same as null %}
-                    <span class="italic">[profil supprimé]</span>
-                    {% else %}
-                    <a href="{{ path('app_profile', {'user': topic.user.userName}) }}" class="hover:underline p-1 border rounded">
-                    {{ topic.user.userName }} 
-                    </a>
-                    {% endif %}
-                    
-                    {% if topic.editDate is same as null %}
-                        posté le {{ topic.creationDate|date('d.m.Y H:i') }} ,
-                        {% else %}
-                        modifié le {{ topic.editDate|date('d.m.Y H:i') }}
-                    {% endif %}
-            </p>
-            <a class="hover:bg-gray-100 border p-2" href="{{ path('app_forum_posts', {'id': topic.id}) }}">
 
-                    <h3>
-                        {{ topic.topicTitle }}
-                    </h3>
-                    
-                    {% if app.user is same as topic.user and topic.user is not same as null %}
-                    <a href="{{ path('edit_topic', {'id': topic.id}) }}">Modifier</a>
-                    {# <a href="{{ path('lock_topic', {id : topic.id}) }}">Verrouiller</a> #} 
-                    {% endif %}
+        {% if researchToken is same as true %}
+            <h3 class="my-4">Résultats de la recherche :</h3>
+        {% endif %}
+        {% if topics is empty %}
+            <p>Aucun résultat trouvé.</p>
+        {% endif %}
 
-            </a>
+        <div class="w-full max-w-4xl mx-auto">
+            <div class="bg-white ">
+                <table class="table-auto w-full text-left text-gray-700 ">
+                    <thead class="bg-gray-200 text-gray-700">
+                        <tr>
+                            <th class="px-4 py-2">Auteur</th>
+                            <th class="px-4 py-2">Sujet</th>
+                            <th class="px-4 py-2">Date</th>
+                            {% if app.user %}
+                                <th class="px-4 py-2">Actions</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for topic in topics %}
+                            <tr class="{% if loop.index is odd %}bg-gray-50{% else %}bg-white{% endif %}">
+                                <td class="px-4 py-2">
+                                    {% if topic.user is same as null %}
+                                        <span class="italic text-gray-500">[Profil supprimé]</span>
+                                    {% else %}
+                                        <a href="{{ path('app_profile', {'user': topic.user.userName}) }}" class="text-violet-800 font-semibold hover:underline">
+                                            {{ topic.user.userName }}
+                                        </a>
+                                    {% endif %}
+                                </td>
+                                <td class="px-4 py-2">
+                                    <a href="{{ path('app_forum_posts', {'id': topic.id}) }}" class="text-lg font-semibold text-gray-800 hover:underline">
+                                        {{ topic.topicTitle }}
+                                    </a>
+                                </td>
+                                <td class="px-4 py-2">
+                                    {% if topic.editDate is same as null %}
+                                        posté le {{ topic.creationDate|date('d.m.Y H:i') }}
+                                    {% else %}
+                                        modifié le {{ topic.editDate|date('d.m.Y H:i') }}
+                                    {% endif %}
+                                </td>
+                                {% if app.user is same as topic.user and topic.user is not same as null %}
+                                    <td class="px-4 py-2">
+                                        <a href="{{ path('edit_topic', {'id': topic.id}) }}" class="text-blue-500 hover:underline">Modifier</a>
+                                        {# <a href="{{ path('lock_topic', {id: topic.id}) }}" class="text-red-500 hover:underline ml-4">Verrouiller</a> #}
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-        {% endfor %}
-    </div>
+        </div>
 
-    <div class="navigation flex justify-center mb-8">
-        {{ knp_pagination_render(topics) }}        
+        <div class="navigation flex justify-center mb-8">
+            {{ knp_pagination_render(topics) }}        
+        </div>
+        
     </div>
-    
-</div>
+</section>
 
 {% endblock %}

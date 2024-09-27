@@ -65,6 +65,18 @@
   background-color: linear-gradient(to right, #6f0000, #200122); 
 }
 
+.bg-gradient-purple {
+  background-color: #200122;  /* fallback for old browsers */
+  background-color: -webkit-linear-gradient(to right, #6f0000, #200122); 
+  background-color: linear-gradient(to right, #6f0000, #200122); 
+}
+
+.bg-gradient-red {
+  background-color: #200122;  /* fallback for old browsers */
+  background-color: -webkit-linear-gradient(to right, #6f0000, #200122); 
+  background-color: linear-gradient(to right, #6f0000, #200122); 
+}
+
 .dragon {
   background-image: 
       url("/tests/shivan.webp");

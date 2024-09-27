@@ -20,10 +20,12 @@ class SearchType extends AbstractType
                 'placeholder' => 'Recherche via un mot clé...'
             ]
         ])
+        
         ->add('forumSubCategories', EntityType::class, [
             'class' => ForumSubCategory::class,
             'expanded' => true,
-            'multiple' => true
+            'multiple' => true,
+            'label_html' => true, // Allow HTML inside the label for the checkbox icon
         ]);
     }
 
