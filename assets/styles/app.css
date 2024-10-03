@@ -109,11 +109,11 @@ height: 100vh;
   background-image: 
     linear-gradient(to bottom, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 1) 100%), 
     url("/tests/bolas.webp");
-  background-size: contain; /* Ensure the image keeps its original size */
+  background-size: cover; /* Ensure the image keeps its original size */
   background-position: top;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
 }
 
