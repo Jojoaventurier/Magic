@@ -171,7 +171,6 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Page chargée et script exécuté!');
 
     const cardList = document.querySelector("#cardList");
-    const searchInput = document.getElementById('searchInput');
     const count = document.getElementById('count');
 
     const eraser = document.getElementById('eraser');
@@ -182,288 +181,388 @@ document.addEventListener('DOMContentLoaded', function() {
         searchInput.value = '';
     });
 
-    const typeSelect = document.getElementById('typeSelect');
-    const colorCheckboxes = document.querySelectorAll('#colorSelect input[type="checkbox"]');
-    const subtypeSelect = document.getElementById('subtypeSelect');
-    const artistSearch = document.getElementById('artistSearch')
-    const uniquePrints = document.getElementById('uniquePrints')
-    const includeExtras = document.getElementById('includeExtras')
-    const searchStart = document.getElementById('searchStart')
-    const setInput = document.getElementById('setSearch');
+// Sélectionne l'élément d'entrée pour la barre de recherche
+const searchInput = document.getElementById('searchInput');
 
-    const colorOnly = document.getElementById('colorOnly');
-    const colorIncluding = document.getElementById('colorIncluding');
-    const colorless = document.getElementById('colorless');
+// Sélectionne le bouton pour démarrer la recherche
+const searchStart = document.getElementById('searchStart');
+// Sélectionne l'élément qui affiche un message si aucune carte n'est trouvée
+const noCardsMessage = document.getElementById('noCardsMessage');
 
-    const cmcSelect = document.getElementById('cmcSelect');
-
-    const reinitializeButton = document.getElementById('reinitializeButton');
-    const resetSearch = document.getElementById('resetSearch');
-    const noCardsMessage = document.getElementById('noCardsMessage');
-
-    const rarityButtons = {
-        all: document.getElementById('rarityAll'),
-        mythic: document.getElementById('rarityMythic'),
-        rare: document.getElementById('rarityRare'),
-        uncommon: document.getElementById('rarityUncommon'),
-        common: document.getElementById('rarityCommon')
-    };
-
-    let selectedRarity = '';
+// Sélectionne l'élément du menu déroulant pour le type de carte
+const typeSelect = document.getElementById('typeSelect');
+// Sélectionne toutes les cases à cocher pour la sélection de couleurs
+const colorCheckboxes = document.querySelectorAll('#colorSelect input[type="checkbox"]');
+// Sélectionne l'élément du menu déroulant pour le sous-type de carte
+const subtypeSelect = document.getElementById('subtypeSelect');
+// Sélectionne la case à cocher pour activer la recherche d'artiste
+const artistSearch = document.getElementById('artistSearch');
+// Sélectionne la case à cocher pour afficher uniquement les impressions uniques des cartes
+const uniquePrints = document.getElementById('uniquePrints');
+// Sélectionne la case à cocher pour inclure des cartes supplémentaires (extras) dans la recherche
+const includeExtras = document.getElementById('includeExtras');
+// Sélectionne l'élément d'entrée pour filtrer par set de cartes
+const setInput = document.getElementById('setSearch');
+// Sélectionne la case à cocher pour correspondance exacte des couleurs sélectionnées
+const colorOnly = document.getElementById('colorOnly');
+// Sélectionne la case à cocher pour correspondance inclusive des couleurs sélectionnées
+const colorIncluding = document.getElementById('colorIncluding');
+// Sélectionne la case à cocher pour exclure toutes les cartes colorées (incolore)
+const colorless = document.getElementById('colorless');
+// Sélectionne l'élément du menu déroulant pour filtrer les cartes par coût de mana converti (cmc)
+const cmcSelect = document.getElementById('cmcSelect');
+// Sélectionne le bouton pour réinitialiser les filtres de recherche
+const reinitializeButton = document.getElementById('reinitializeButton');
+// Sélectionne le bouton pour réinitialiser complètement la recherche
+const resetSearch = document.getElementById('resetSearch');
+// Objet contenant les boutons de rareté (toutes, mythique, rare, inhabituelle, commune)
+const rarityButtons = {
+    all: document.getElementById('rarityAll'),        // Bouton pour sélectionner toutes les raretés
+    mythic: document.getElementById('rarityMythic'),  // Bouton pour sélectionner les cartes mythiques
+    rare: document.getElementById('rarityRare'),      // Bouton pour sélectionner les cartes rares
+    uncommon: document.getElementById('rarityUncommon'), // Bouton pour sélectionner les cartes inhabituelles
+    common: document.getElementById('rarityCommon')   // Bouton pour sélectionner les cartes communes
+};
+// Variable pour stocker la rareté sélectionnée par l'utilisateur (initialement vide)
+let selectedRarity = '';
 
     function updateFetchUrl() {
+
+        // Récupération de la valeur de recherche saisie dans le champ de recherche et supprime les espaces inutiles
         let searchTerm = searchInput.value.trim();
+
+        // Initialisation de la chaîne de requête avec le terme de recherche si fourni
+        let query = searchTerm ? `${searchTerm}` : "";
+    
+        // Utilisation d'une autre chaîne de requête vide pour certaines recherches (ex : artiste)
+        let emptyQuery = '';
+    
+        // Récupération des valeurs sélectionnées dans les menus déroulants et les champs de saisie
         let type = typeSelect.value;
         let subtype = subtypeSelect.value;
-        let set = setInput.value
-
+        let set = setInput.value;
+    
+        //Récupération des couleurs sélectionnées (cases à cocher), filtrées pour ne garder que celles qui sont cochées
+        // Transformation de la liste des valeurs en une chaîne de caractères séparée par des virgules
         let selectedColors = Array.from(colorCheckboxes)
             .filter(checkbox => checkbox.checked)
             .map(checkbox => checkbox.value)
             .join(',');
-
+    
+        // Récupération de la valeur sélectionnée pour le coût de mana converti (cmc)
         let selectedCMC = cmcSelect.value;
-
-        let query = searchTerm ? `${searchTerm}` : "";
-        let emptyQuery = '';
-
+    
+        // Si un set est sélectionné, ajout du filtre de set à la requête
         if (set) {
-            query += `+set:${set}`
+            query += `+set:${set}`;
         }
-
+    
+        // Si un type est sélectionné, ajout du filtre de type à la requête principale et à la requête vide
         if (type) {
             query += `+type:${type}`;
             emptyQuery += `+type:${type}`;
         }
-
+    
+        // Si des couleurs sont sélectionnées, traitement des différentes options de couleurs
         if (selectedColors) {
+            // Si la case "incolore" est cochée, exclure toutes les couleurs
             if (colorless.checked) {
-                query += `+-c:W+-c:U+-c:B+-c:R+-c:G`;
+                query += `+-c:W+-c:U+-c:B+-c:R+-c:G`;  // Exclut les couleurs : Blanc, Bleu, Noir, Rouge, Vert
                 emptyQuery += `+-c:W+-c:U+-c:B+-c:R+-c:G`;
-            } else if (colorOnly.checked) {
-                query += `+color=${selectedColors}`;  // Exact color match
+            } 
+            // Si l'option "Exact color match" est cochée, ajouter un filtre de correspondance exacte sur les couleurs sélectionnées
+            else if (colorOnly.checked) {
+                query += `+color=${selectedColors}`;  // Correspondance exacte avec les couleurs sélectionnées
                 emptyQuery += `+color=${selectedColors}`;
-            } else if (colorIncluding.checked) {
-                query += `+ci:${selectedColors}`;  // Inclusive color match
+            } 
+            // Si l'option "Inclusive color match" est cochée, inclure toutes les cartes contenant au moins l'une des  couleurs sélectionnées
+            else if (colorIncluding.checked) {
+                query += `+ci:${selectedColors}`;  // Correspondance inclusive
                 emptyQuery += `+ci:${selectedColors}`;
             }
         }
-
+    
+        // Si un coût de mana converti est sélectionné, ajout du filtre de cmc à la requête
         if (selectedCMC) {
             query += `+cmc=${selectedCMC}`;
             emptyQuery += `+cmc=${selectedCMC}`;
         }
-
+    
+        // Si un sous-type est sélectionné, ajout du filtre de sous-type à la requête
         if (subtype) {
             query += `+type:${subtype}`;
             emptyQuery += `+type:${subtype}`;
         }
-
+    
+        // Si une rareté est sélectionnée, ajout du filtre de rareté à la requête
         if (selectedRarity) {
             query += `+rarity:${selectedRarity}`;
             emptyQuery += `+rarity:${selectedRarity}`;
         }
-
-        if(uniquePrints.checked && includeExtras.checked == false) {
+    
+        // Si "uniquePrints" est coché et "includeExtras" non coché, ajouter les variations uniques à la requête
+        if (uniquePrints.checked && includeExtras.checked == false) {
             return `https://api.scryfall.com/cards/search?include_variations=true&order=dir&unique=prints&q=${query}`;
         }
-        if(includeExtras.checked && uniquePrints.checked == false) {
+    
+        // Si "includeExtras" est coché et "uniquePrints" non coché, inclure les cartes supplémentaires dans la requête
+        if (includeExtras.checked && uniquePrints.checked == false) {
             return `https://api.scryfall.com/cards/search?include_extras=true&order=dir&q=${query}`;
         }
-        if(uniquePrints.checked && includeExtras.checked) {
+    
+        // Si les deux "uniquePrints" et "includeExtras" sont cochés, inclure à la fois les extras et les variations   uniques
+        if (uniquePrints.checked && includeExtras.checked) {
             return `https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&unique=prints&q=${query}`;
         }
-
+    
+        // Si l'utilisateur effectue une recherche d'artiste, construire une requête spécifique pour cela
         if (artistSearch.checked) {
-            // Check if artist name contains spaces and wrap in quotes
+            // Si le nom de l'artiste contient des espaces, on l'entoure de guillemets (->string)
             let artistQuery = searchTerm.includes(' ') ? `"${searchTerm}"` : searchTerm;
             return `https://api.scryfall.com/cards/search?order=dir&q=artist:${artistQuery}${emptyQuery}`;
         }
 
+        // Par défaut, retourner la requête avec tous les filtres appliqués
         return `https://api.scryfall.com/cards/search?order=dir&q=${query}`;
-        //return `https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=dir&unique=prints&q=name:${query}`;
     }
 
-    function fetchCards() {
-        let url = updateFetchUrl();
-        console.log("Fetching cards with URL:", url);
+     //return `https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=dir&unique=prints&q=name:${query}`;
 
+    function fetchCards() {
+        // Appelle « updateFetchUrl() » pour obtenir l'URL mise à jour en fonction des paramètres de recherche choisis par l'utilisateur
+        let url = updateFetchUrl();
+    
+        // Lance une requête de récupération (fetch) avec l'URL obtenue ci-dessus. 'fetch' est      utilisé pour effectuer la requête HTTP vers l'API Scryfall 
         fetch(url)
+            //la réponse de l'appel à fetch sera convertie en objet JSON pour être utilisée dans la suite du code
             .then(response => response.json())
+            // Une fois les données JSON obtenues, elles sont transmises au bloc '.then()' suivant  pour être traitées.
             .then(data => {
 
+                // Sélectionne l'élément contenant la liste des cartes (cardList)
                 const myNode = document.getElementById("cardList");
+                
+                // Si l'élément cardList existe, on supprime tous ses enfants (efface la liste existante)
                 if (myNode) {
                     while (myNode.firstChild) {
                         myNode.removeChild(myNode.lastChild);
                     }
                 }
-    
+            
+                // Vérifie que la réponse 'data' contient un tableau de cartes
                 if (data.data && Array.isArray(data.data)) {
+                    
+                    // Si le tableau de données n'est pas vide, on continue
                     if (data.data.length > 0) {
-                        console.log(data.data)
-                        // Set the total number of cards
+                        console.log(data.data); // Affiche les données des cartes dans la console pour vérification
+            
+                        // Met à jour le nombre total de cartes trouvées, basé sur la propriété 'total_cards'
                         totalCards.innerHTML = data.total_cards || data.data.length;
-    
-                        noCardsMessage.classList.add('hidden');  // Hide the no cards found message
-
+            
+                        // Cache le message "Aucune carte trouvée" si des cartes sont présentes
+                        noCardsMessage.classList.add('hidden');  
+            
+                        // Crée un ensemble (Set) pour stocker les sous-types uniques de cartes
                         const subtypes = new Set();
+                        
+                        // Parcourt chaque carte retournée par la recherche
                         data.data.forEach(card => {
-                            
+            
+                            // Vérifie si la carte possède une ligne de type (type_line)
                             if(card.type_line) {
+                                
+                                // Si la ligne de type contient un tiret (indiquant un sous-type), on la traite
                                 if (card.type_line.includes('—')) {
+                                    
+                                    // Sépare la ligne de type en deux parties : le type principal et les sous-types
                                     const parts = card.type_line.split('—');
+                                    
+                                    // Crée un tableau des sous-types en supprimant les espaces inutiles
                                     const subtypesArray = parts[1].trim().split(' ');
+            
+                                    // Ajoute chaque sous-type au Set (en évitant les doublons)
                                     subtypesArray.forEach(subtype => subtypes.add(subtype));
                                 }
                             }
                         });
-
+            
+                        // Réinitialise le menu déroulant des sous-types avec une option par défaut
                         subtypeSelect.innerHTML = '<option value="">Tous les sous-types</option>';
+                        
+                        // Ajoute chaque sous-type unique trouvé dans le menu déroulant des sous-types
                         subtypes.forEach(subtype => {
-                            const option = document.createElement('option');
-                            option.value = subtype.toLowerCase();
-                            option.textContent = subtype;
-                            subtypeSelect.appendChild(option);
+                            const option = document.createElement('option'); // Crée une nouvelle option
+                            option.value = subtype.toLowerCase();            // Définit la valeur en minuscule
+                            option.textContent = subtype;                    // Définit le texte de l'option
+                            subtypeSelect.appendChild(option);               // Ajoute l'option au menu déroulant
                         });
-                   
-                        data.data.forEach(card => {
-                            let displayCard;
-                            if (card.image_uris && card.image_uris.normal) {
-                                displayCard = new Image(250, 350);
-                                displayCard.src = card.image_uris.normal;
-                                displayCard.id = card.id;
-                                displayCard.classList.add('singleCard', 'p-1', 'transform',  'rounded-xl', 'bg-white', 'shadow-xl', 'transition', 'duration-300', 'hover:scale-105');
-                            } else if (card.card_faces[0]['image_uris'] && card.card_faces[0]['image_uris']['normal']) {
-                                displayCard = new Image(250, 350);
-                                displayCard.src = card.card_faces[0]['image_uris']['normal'];
-                                displayCard.id = card.id;
-                                displayCard.classList.add('singleCard', 'p-1');
-                            }
+
+data.data.forEach(card => {
+    let displayCard; // Déclare une variable pour stocker la carte à afficher
     
-                            var cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}";
-                            let link = document.createElement("a");
-                            let url = cardDetailUrl.replace('REPLACE_CARD_ID', card.id);
-                            link.href = url;
-    
-                            link.appendChild(displayCard);
-                            cardList.appendChild(link);
-                            count.classList.remove('hidden')
-                        });
-                    } else {
-                        setName.innerHTML = "Set non trouvé";
-                        noCardsMessage.classList.remove('hidden');  // Show the no cards found message
-                    }
-                } else {
-                    console.error('Erreur: la réponse de l\'API ne contient pas un tableau de cartes dans "data"');
-                    noCardsMessage.classList.remove('hidden');  // Show the no cards found message on error
-                }
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                noCardsMessage.classList.remove('hidden');  // Show the no cards found message on error
-            });
+    // Vérifie si l'objet 'card' a une image normale
+    if (card.image_uris && card.image_uris.normal) {
+        displayCard = new Image(250, 350); // Crée un nouvel objet Image avec une taille de 250x350 pixels
+        displayCard.src = card.image_uris.normal; // Définit la source de l'image à l'URL de l'image normale
+        displayCard.id = card.id; // Définit l'ID de l'image en utilisant l'ID de la carte
+        displayCard.classList.add('singleCard', 'p-1', 'transform', 'rounded-xl', 'bg-white', 'shadow-xl', 'transition', 'duration-300', 'hover:scale-105'); // Ajoute des classes CSS pour le style
+    } 
+    // Vérifie si la carte a des faces (cartes double face) et si la première face a une image normale
+    else if (card.card_faces[0]['image_uris'] && card.card_faces[0]['image_uris']['normal']) {
+        displayCard = new Image(250, 350); // Crée une nouvelle image pour la carte double face
+        displayCard.src = card.card_faces[0]['image_uris']['normal']; // Définit la source de l'image de la première face
+        displayCard.id = card.id; // Définit l'ID de l'image en utilisant l'ID de la carte
+        displayCard.classList.add('singleCard', 'p-1'); // Ajoute des classes CSS pour le style
     }
 
-    // searchInput.addEventListener('input', fetchCards);
-    searchStart.addEventListener('click', fetchCards);
+    // Prépare l'URL pour la page de détail de la carte en remplaçant un identifiant fictif
+    var cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}";
+    let link = document.createElement("a"); // Crée un nouvel élément de lien (anchor)
+    let url = cardDetailUrl.replace('REPLACE_CARD_ID', card.id); // Remplace l'identifiant fictif par l'identifiant réel de la carte
+    link.href = url; // Définit l'attribut href du lien à l'URL de détail de la carte
 
-    Array.from(colorCheckboxes).forEach(checkbox => {
-        checkbox.addEventListener('change', fetchCards);
-    });
+    link.appendChild(displayCard); // Ajoute l'image de la carte comme enfant du lien
+    cardList.appendChild(link); // Ajoute le lien (et l'image de la carte) à la liste des cartes affichées
+    count.classList.remove('hidden'); // Affiche l'élément qui contient le compte des cartes
+});
 
-    colorOnly.addEventListener('change', fetchCards);
-    colorIncluding.addEventListener('change', fetchCards);
-    colorless.addEventListener('change', fetchCards);
-    typeSelect.addEventListener('change', fetchCards);
-    subtypeSelect.addEventListener('change', fetchCards);
-    artistSearch.addEventListener('change', fetchCards)
-    cmcSelect.addEventListener('change', fetchCards);
-    uniquePrints.addEventListener('change', fetchCards);
-    includeExtras.addEventListener('change', fetchCards);
+// Si aucune carte n'est trouvée
+} else {
+    setName.innerHTML = "Set non trouvé"; // Affiche un message indiquant que l'ensemble n'a pas été trouvé
+    noCardsMessage.classList.remove('hidden'); // Affiche le message "Aucune carte trouvée"
+}
 
-    reinitializeButton.addEventListener('click', function() {
-        //searchInput.value = '';
-        typeSelect.selectedIndex = 0;
-        subtypeSelect.selectedIndex = 0;
-        cmcSelect.selectedIndex = 0;
-        artistSearch.checked = false;
-        uniquePrints.checked = false;
-        includeExtras.checked = false;
-        setInput.value = '';
+// Si la réponse de l'API ne contient pas un tableau de cartes
+} else {
+    console.error('Erreur: la réponse de l\'API ne contient pas un tableau de cartes dans "data"'); //Affiche une erreur dans la console
+    noCardsMessage.classList.remove('hidden'); // Affiche le message "Aucune carte trouvée" en cas d'erreur
+}
+})
+.catch(error => {
+    console.error('Erreur:', error); // Affiche l'erreur dans la console
+    noCardsMessage.classList.remove('hidden'); // Affiche le message "Aucune carte trouvée" en cas d'erreur
+});
+}
 
-        Array.from(colorCheckboxes).forEach(checkbox => checkbox.checked = false);
-        colorOnly.checked = true;
+// searchInput.addEventListener('input', fetchCards); // Cette ligne est commentée, elle permettrait d'appeler fetchCards à chaque saisie dans le champ de recherche.
+searchStart.addEventListener('click', fetchCards); // Ajoute un écouteur d'événement 'click' sur le bouton de recherche pour déclencher la fonction fetchCards
 
-        selectedRarity = '';
-        rarityButtons.all.className = '{{ active }}';
-        rarityButtons.mythic.className = '{{ inactive }}';
-        rarityButtons.rare.className = '{{ inactive }}';
-        rarityButtons.uncommon.className = '{{ inactive }}';
-        rarityButtons.common.className = '{{ inactive }}';
+// Ajoute un écouteur d'événement 'change' pour chaque case à cocher de sélection de couleur pour déclencher fetchCards lorsque l'état d'une case change.
+Array.from(colorCheckboxes).forEach(checkbox => {
+    checkbox.addEventListener('change', fetchCards);
+});
 
-        noCardsMessage.classList.add('hidden');
-        fetchCards();
-    });
+// Ajoute des écouteurs d'événements 'change' sur plusieurs filtres de recherche (couleurs, types, artiste, CMC, impressions uniques, et extras) pour déclencher fetchCards à chaque modification.
+colorOnly.addEventListener('change', fetchCards); 
+colorIncluding.addEventListener('change', fetchCards); 
+colorless.addEventListener('change', fetchCards); 
+typeSelect.addEventListener('change', fetchCards);
+subtypeSelect.addEventListener('change', fetchCards); 
+artistSearch.addEventListener('change', fetchCards); 
+cmcSelect.addEventListener('change', fetchCards); 
+uniquePrints.addEventListener('change', fetchCards); 
+includeExtras.addEventListener('change', fetchCards); 
 
-    Object.keys(rarityButtons).forEach(key => {
-        rarityButtons[key].addEventListener('click', function() {
-            selectedRarity = key === 'all' ? '' : key;
-            Object.keys(rarityButtons).forEach(innerKey => {
-                rarityButtons[innerKey].className = key === innerKey ? '{{ active }}' : '{{ inactive }}';
-            });
-            fetchCards();
+// Ajoute des écouteurs d'événements 'click' sur chaque bouton de rareté (tous, mythique, rare, peu commune, commune).
+Object.keys(rarityButtons).forEach(key => {
+
+    // Lors du clic sur un bouton de rareté, met à jour 'selectedRarity' en fonction du bouton cliqué.
+    rarityButtons[key].addEventListener('click', function() {
+        selectedRarity = key === 'all' ? '' : key;  // Si le bouton "Tous" est cliqué, réinitialise la rareté sélectionnée.
+
+        // Met à jour la classe CSS de chaque bouton pour indiquer visuellement quel bouton est actif.
+        Object.keys(rarityButtons).forEach(innerKey => {
+            rarityButtons[innerKey].className = key === innerKey ? '{{ active }}' : '{{ inactive }}';  // Active le bouton cliqué et désactive les autres.
         });
-    });
 
-    resetSearch.addEventListener('click', function() {
-        // Clear text inputs
-        searchInput.value = '';
-        setInput.value = '';
-    
-        // Reset select dropdowns
-        typeSelect.selectedIndex = 0;
-        subtypeSelect.selectedIndex = 0;
-        cmcSelect.selectedIndex = 0;
-    
-        // Uncheck checkboxes
-        artistSearch.checked = false;
-        uniquePrints.checked = false;
-        includeExtras.checked = false;
-    
-        // Uncheck all color checkboxes
-        Array.from(colorCheckboxes).forEach(checkbox => checkbox.checked = false);
-        colorOnly.checked = true; // Default to "Incluant exactement"
-    
-        // Reset rarity selection
-        selectedRarity = '';
-        rarityButtons.all.className = '{{ active }}';
-        rarityButtons.mythic.className = '{{ inactive }}';
-        rarityButtons.rare.className = '{{ inactive }}';
-        rarityButtons.uncommon.className = '{{ inactive }}';
-        rarityButtons.common.className = '{{ inactive }}';
-    
-        // Hide "No cards found" message
-        noCardsMessage.classList.add('hidden');
-    
-        // Hide the card count
-        count.classList.add('hidden');
-        
-        // Clear all previously fetched cards
-        const myNode = document.getElementById("cardList");
-        if (myNode) {
-            while (myNode.firstChild) {
-                myNode.removeChild(myNode.lastChild);
-            }
-        }
-    });
-
-    if (searchInput.value) {
-        fetchCards(); // Initial fetch when page loads if there is a search parameter given
-    }
-    if (setInput.value) {
+        // Rafraîchit la liste des cartes en fonction de la rareté sélectionnée.
         fetchCards();
+    });
+});
+
+// Ajoute un écouteur d'événement 'click' sur le bouton de réinitialisation.
+reinitializeButton.addEventListener('click', function() {
+    // Réinitialise les valeurs des champs de recherche et des sélecteurs.
+    typeSelect.selectedIndex = 0; // Réinitialise le sélecteur de type au premier élément
+    subtypeSelect.selectedIndex = 0; // Réinitialise le sélecteur de sous-type au premier élément
+    cmcSelect.selectedIndex = 0; // Réinitialise le sélecteur CMC au premier élément
+    artistSearch.checked = false; // Décoche la case pour la recherche par artiste
+    uniquePrints.checked = false; // Décoche la case des impressions uniques
+    includeExtras.checked = false; // Décoche la case des cartes supplémentaires
+    setInput.value = ''; // Vide le champ de recherche de set
+
+    // Réinitialise toutes les cases à cocher de sélection de couleur.
+    Array.from(colorCheckboxes).forEach(checkbox => checkbox.checked = false);
+    colorOnly.checked = true; // Active l'option 'colorOnly' par défaut
+
+    // Réinitialise la sélection de rareté.
+    selectedRarity = ''; // Réinitialise la rareté sélectionnée
+    rarityButtons.all.className = '{{ active }}'; // Définit le bouton de rareté 'toutes' comme actif
+    rarityButtons.mythic.className = '{{ inactive }}'; // Définit le bouton de rareté 'mythique' comme inactif
+    rarityButtons.rare.className = '{{ inactive }}'; // Définit le bouton de rareté 'rare' comme inactif
+    rarityButtons.uncommon.className = '{{ inactive }}'; // Définit le bouton de rareté 'peu commune' comme inactif
+    rarityButtons.common.className = '{{ inactive }}'; // Définit le bouton de rareté 'commune' comme inactif
+
+    // Cache le message indiquant qu'aucune carte n'a été trouvée.
+    noCardsMessage.classList.add('hidden');
+
+    // Appelle fetchCards pour relancer la recherche avec les paramètres réinitialisés.
+    fetchCards();
+});
+
+// Ajoute un écouteur d'événement sur le bouton "Réinitialiser la recherche".
+resetSearch.addEventListener('click', function() {
+
+    // Réinitialise les champs de saisie de texte (terme de recherche et set).
+    searchInput.value = '';
+    setInput.value = '';
+
+    // Réinitialise les listes déroulantes (type, sous-type, CMC) à leur première option (valeur par défaut).
+    typeSelect.selectedIndex = 0;
+    subtypeSelect.selectedIndex = 0;
+    cmcSelect.selectedIndex = 0;
+
+    // Décoche toutes les cases à cocher (artiste, versions uniques, extras).
+    artistSearch.checked = false;
+    uniquePrints.checked = false;
+    includeExtras.checked = false;
+
+    // Décoche toutes les cases de couleur et coche par défaut l'option "Incluant exactement".
+    Array.from(colorCheckboxes).forEach(checkbox => checkbox.checked = false);
+    colorOnly.checked = true;  // Par défaut, on inclut exactement les couleurs sélectionnées.
+
+    // Réinitialise la sélection de rareté (active "Tous" et désactive les autres).
+    selectedRarity = '';
+    rarityButtons.all.className = '{{ active }}';
+    rarityButtons.mythic.className = '{{ inactive }}';
+    rarityButtons.rare.className = '{{ inactive }}';
+    rarityButtons.uncommon.className = '{{ inactive }}';
+    rarityButtons.common.className = '{{ inactive }}';
+
+    // Masque le message "Aucune carte trouvée" s'il était visible.
+    noCardsMessage.classList.add('hidden');
+
+    // Masque l'affichage du nombre de cartes.
+    count.classList.add('hidden');
+
+    // Supprime toutes les cartes affichées précédemment de la liste.
+    const myNode = document.getElementById("cardList");
+    if (myNode) {
+        while (myNode.firstChild) {
+            myNode.removeChild(myNode.lastChild);  // Supprime chaque enfant du nœud un par un.
+        }
     }
+});
+
+// Dans le cas d'une redirection depuis une extension ou depuis le lien sur le détail d'une carte pour la recherche par artistes
+// Si la page est chargée avec une valeur dans la barre de recherche, une recherche est lancée automatiquement
+if (searchInput.value) {
+    fetchCards(); // Initial fetch when page loads if there is a search parameter given
+}
+// Idem si une information de set est remplie au chargement de la page
+if (setInput.value) {
+    fetchCards();
+}
 });
 </script>
 {% endblock %}

@@ -28,13 +28,12 @@
             const query = searchInput.value; // on attribue la valeur saisie par l'utilisateur à une variable query qu'on va utiliser dans la requête envers l'api
     
             //requête à l'api selon la recherche de l'utilisateur
-            // fetch(`https://api.scryfall.com/cards/search?q=name:${query}+lang:fr`) recherche pour une carte en français spécifiquement
+            // fetch(`https://api.scryfall.com/cards/search?q=name:${query}+lang:fr`) recherche pour les cartes en français
             fetch(`https://api.scryfall.com/cards/search?q=name:${query}`)
                 // Convertit la réponse en format JSON
                 .then(response => response.json())
                 // Une fois que les données JSON sont disponibles
                 .then(data => {
-                 //   console.log(data); Vérifie le format des données
     
                     if (data.data && Array.isArray(data.data)) { // on vérifiqe qu'on récupère bien des données de l'api, et quelle soit sous forme de tableau
     

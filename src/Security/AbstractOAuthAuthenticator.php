@@ -90,7 +90,14 @@ abstract class AbstractOAuthAuthenticator extends OAuth2Authenticator
 
     protected function getResourceOwnerFromCredentials(AccessToken $credentials): ResourceOwnerInterface
     {
+        // This method takes an AccessToken object as input, which contains the token 
+        // obtained after the OAuth2 authentication process (e.g., from Google).
+        
         return $this->getClient()->fetchUserFromToken($credentials);
+        // Ici, la méthode appelle le client OAuth2 (du package KnpLabs), qui est responsable de l'interaction avec le fournisseur OAuth. Plus précisément, elle utilise la méthode « fetchUserFromToken », en passant par le jeton d'accès pour récupérer les infos de l'utilisateur (par exemple, les informations du profil de l'utilisateur de Google).
+        
+        // Le résultat est un objet 'ResourceOwnerInterface', qui contient typiquement les détails de l'utilisateur tels que son nom, son adresse électronique et son identifiant provenant du fournisseur OAuth. 
+        // contient les détails de l'utilisateur tels que son nom, son email et l'ID du fournisseur OAuth.
     }
 
     private function getClient(): OAuth2ClientInterface
