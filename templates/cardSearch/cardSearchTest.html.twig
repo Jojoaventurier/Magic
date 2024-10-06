@@ -19,10 +19,12 @@
         {% set inactive = 'text-sm bg-white text-red-700 px-4 py-2 rounded hover:bg-red-900 hover:text-white shadow-md cursor-pointer hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300' %}
 
         <div class="flex flex-col space-y-4">
-            <select id="typeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
-                <option value="">Tous les types</option>
-                <option value="legendary">Légendaire</option>
-                <option value="creature">Creature</option>
+            <!-- Sélecteur pour filtrer les cartes par type -->
+            <select id="typeSelect" 
+            class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+                <option value="">Tous les types</option> <!-- Option par défaut qui affiche tous les types de cartes -->
+                <option value="legendary">Légendaire</option> <!--filtrer les cartes par type légendaire-->
+                <option value="creature">Creature</option> <!--filtrer les cartes par type créature etc.-->
                 <option value="artifact">Artefact</option>
                 <option value="enchantment">Enchantement</option>
                 <option value="battle">Bataille</option>
@@ -35,36 +37,48 @@
 
             <select id="subtypeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
                 <option value="">Tous les sous-types</option>
-                <!-- Options will be dynamically populated -->
+                <!-- Options sont peuplées dynamiquement en fonction des résultats de la recherche -->
             </select>
         </div>
 
         <div class="border px-4 py-2 border-red-700 rounded hover:bg-gray-100 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+            <!-- Conteneur pour les options de filtrage par couleur -->
             <div class="px-2 space-x-2">
+                <!-- Option radio pour inclure exactement une couleur -->
                 <label class="text-sm italic text-gray-700 hover:underline">
                     <input name="color" type="radio" checked value="c:" id="colorOnly">
                     Incluant exactement
                 </label>
+                <!-- Option radio pour inclure séparément une couleur -->
                 <label class="text-sm italic text-gray-700 hover:underline">
                     <input name="color" type="radio" value="ci:" id="colorIncluding">
                     Incluant séparément
                 </label>
             </div>
+
+            <!-- Sélecteur pour choisir les couleurs avec des cases à cocher -->
             <div id="colorSelect" class="flex flex-wrap justify-center space-x-4 py-2">
+                <!-- Cases à cocher pour chaque couleur de mana -->
                 <label><input type="checkbox" value="W"><img class="w-5" src="/icons/mana/W.webp"></label>
                 <label><input type="checkbox" value="R"><img class="w-5" src="/icons/mana/R.webp"></label>
                 <label><input type="checkbox" value="G"><img class="w-5" src="/icons/mana/G.webp"></label>
                 <label><input type="checkbox" value="B"><img class="w-5" src="/icons/mana/B.webp"></label>
                 <label><input type="checkbox" value="U"><img class="w-5" src="/icons/mana/U.webp"></label>
+                <!-- Case à cocher pour le mana incolore -->
                 <label><input id="colorless" type="checkbox" value="C"><img class="w-5" src="https://svgs.scryfall.io/card-symbols/C.svg" alt="Colorless Mana Symbol"></label>               
             </div>
         </div>
         <div class="flex flex-col space-y-4">
         
             <div class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+                <!-- Label pour le sélecteur de coût de mana -->
                 <label for="cmcSelect">Filtrer par coût de mana :</label>
+
+                <!-- Sélecteur pour choisir le coût de mana avec différentes options -->
                 <select id="cmcSelect" class="text-sm rounded focus:ring-2 focus:outline-none outline-none text-center px-2 space-y-1">
+                    <!-- Option par défaut sans filtre appliqué -->
                     <option class="italic" value="">Aucun filtre</option>
+                    <!-- Options pour les différents coûts de mana de 0 à 20 -->
                     <option value="0">0</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -88,76 +102,103 @@
                 </select>
             </div>
             <div class="flex flex-col">
-                <label class="text-sm">Set / Extension <span class="text-xs italic"> exemple : fdn</span></label>
-                <input id="setSearch" type="text" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300"
-                {% if searchToken is same as 'set' %}
-                    value="{{ searchParameter }}"    
-                {% endif %}
+                <!-- label pour le champ de recherche de set/extension -->
+                <label class="text-sm">
+                    Set / Extension <span class="text-xs italic"> exemple : fdn</span>
+                </label>
+
+                <!-- Champ de saisie pour rechercher un set/extension -->
+                <!-- Si le token de recherche est 'set', préremplir le champ avec le paramètre de recherche -->
+                <input 
+                    id="setSearch" 
+                    type="text" 
+                    class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300"
+                    {% if searchToken is same as 'set' %}
+                        value="{{ searchParameter }}"    
+                    {% endif %}
                 >
             </div>
         </div>
 
         <div class="flex flex-col flex-wrap">
+            <!-- Label et case à cocher pour rechercher par nom d'artiste -->
             <label class="text-sm hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded-lg">
+                <!-- Si le token de recherche est 'artist', la case à cocher est cochée par défaut -->
                 <input id='artistSearch' type="checkbox"
                 {% if searchToken is same as 'artist' %}
                     checked
                 {% endif %}
                 > Recherche par nom d'artiste
-            </label>
+            </label> 
+            
+            <!-- Étiquette et case à cocher pour afficher toutes les versions des cartes -->
             <label class="text-sm hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded-lg">
                 <input id='uniquePrints' type="checkbox">
                 Afficher toutes les versions des cartes
             </label>
+            
+            <!-- Étiquette et case à cocher pour inclure les extras (jetons, plans, etc.) -->
             <label class="text-sm hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded-lg">
                 <input id='includeExtras' type="checkbox">
                 Inclure les Extras (jetons, plans...)
             </label>
         </div>
+
         <div class="flex flex-col items-center justify-center space-y-4">
             <button id="hideFilters" class="h-10 border border-bg-red-400 text-red-700 hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded shadow-md text-sm">Masquer les filtres</button>
             <button id="reinitializeButton" class="h-10 border border-bg-red-400 text-red-700 hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded shadow-md text-sm">Réinitialiser les filtres</button>
         </div>                             
-         {# class="h-10 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-900 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 text-sm"
-                                            //TODO TODO TODO TODO #}
     </div>
-    <div class="flex flex-col justify-center items-center w-full sticky top-40 z-30">
+    <div class="flex flrx-col justify-center items-center w-full sticky top-40 z-30">
         <div class="flex justify-evenly rounded-md">
+            <!-- Conteneur principal pour les options de rareté -->
             <div class="inline-flex space-x-4 p-2 bg-white rounded-md">
+                <!-- Option pour afficher toutes les cartes, option par défaut-->
                 <div id="rarityAll" class="{{ active }}">Toutes</div>
+                <!-- Option pour afficher uniquement les cartes mythiques-->
                 <div id="rarityMythic" class="{{ inactive }}">Mythiques</div>
+                <!-- Option pour afficher uniquement les cartes rares -->
                 <div id="rarityRare" class="{{ inactive }}">Rares</div>
+                <!-- Option pour afficher uniquement les cartes non communes -->
                 <div id="rarityUncommon" class="{{ inactive }}">Non communes</div>
+                <!-- Option pour afficher uniquement les cartes communes -->
                 <div id="rarityCommon" class="{{ inactive }}">Communes</div>
             </div>
 
             <div class="inline-flex justify-center space-x-3 p-2 bg-white rounded-md">
+                <!-- Champ de recherche pour entrer un terme -->
                 <input type="text" id="searchInput" class="border border-red-700 bg-white text-sm rounded px-4 py-2 w-96 focus:ring-2 focus:outline-none outline-none hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" 
                 {% if searchToken is same as 'artist' or searchToken is same as 'active' %}
-                    value="{{ searchParameter }}"
+                    value="{{ searchParameter }}" <!-- Remplit le champ avec le paramètre de recherche si le token de recherche est 'artist' ou 'active' -->
                 {% endif %}  
-                placeholder="Entrez un terme de recherche...">
-
+                placeholder="Entrez un terme de recherche..."> <!-- Indique à l'utilisateur ce qu'il doit entrer -->
+            
+                <!-- Icône pour effacer le texte du champ de recherche -->
                 <img id="eraser" class="w-10 border rounded hover:border-red-800 transition duration-300 hover:shadow-md bg-white" src="https://img.icons8.com/carbon-copy/100/erase.png" alt="eraser to clear text"/>
+            
+                <!-- Bouton pour lancer la recherche -->
                 <button id="searchStart" class="h-10 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] border border-red-700 duration-300 text-sm">Rechercher</button>
+            
+                <!-- Bouton pour réinitialiser le champ de recherche -->
                 <button id="resetSearch" class="h-10 px-4 py-2 text-xs rounded bg-white border-red-700 text-red-700 hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">RESET</button>
             </div>
+
         </div>
         <div id="count" class="flex justify-center hidden"></div>
             <p class="text-grey-600 italic text-xs p-2 bg-white rounded-md"><span id="totalCards"></span> cartes trouvées</p>
         </div>
     </div>
     
-
     <div class="w-full flex justify-center mt-6">
+        <!-- Conteneur principal centré pour les cartes -->
         <div class="flex flex-col flex-wrap max-w-4/5 w-4/5 px-10">
+            <!-- Zone où les cartes seront affichées -->
             <div id="cardBoard" class="w-full flex justify-center">
+                <!-- Liste des cartes, remplie dynamiquement avec les images récupérées de l'API Scryfall -->
                 <div id="cardList" class="flex flex-wrap justify-center"></div>
             </div>
         </div>
     </div>
-
-    
 
     <!-- Placeholder for no cards found message -->
     <div id="noCardsMessage" class="hidden text-center text-red-500 mt-4">
@@ -172,12 +213,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const cardList = document.querySelector("#cardList");
     const count = document.getElementById('count');
-
     const eraser = document.getElementById('eraser');
     
-    // Add a click event listener to the eraser
+    // Ajouter un écouteur d'événements pour le clic sur l'effaceur
     eraser.addEventListener('click', () => {
-        // Clear the input field's value when the eraser is clicked
+        // Effacer la valeur du champ de saisie lorsque l'effaceur est cliqué
         searchInput.value = '';
     });
 
@@ -397,54 +437,55 @@ let selectedRarity = '';
                             subtypeSelect.appendChild(option);               // Ajoute l'option au menu déroulant
                         });
 
-data.data.forEach(card => {
-    let displayCard; // Déclare une variable pour stocker la carte à afficher
-    
-    // Vérifie si l'objet 'card' a une image normale
-    if (card.image_uris && card.image_uris.normal) {
-        displayCard = new Image(250, 350); // Crée un nouvel objet Image avec une taille de 250x350 pixels
-        displayCard.src = card.image_uris.normal; // Définit la source de l'image à l'URL de l'image normale
-        displayCard.id = card.id; // Définit l'ID de l'image en utilisant l'ID de la carte
-        displayCard.classList.add('singleCard', 'p-1', 'transform', 'rounded-xl', 'bg-white', 'shadow-xl', 'transition', 'duration-300', 'hover:scale-105'); // Ajoute des classes CSS pour le style
-    } 
-    // Vérifie si la carte a des faces (cartes double face) et si la première face a une image normale
-    else if (card.card_faces[0]['image_uris'] && card.card_faces[0]['image_uris']['normal']) {
-        displayCard = new Image(250, 350); // Crée une nouvelle image pour la carte double face
-        displayCard.src = card.card_faces[0]['image_uris']['normal']; // Définit la source de l'image de la première face
-        displayCard.id = card.id; // Définit l'ID de l'image en utilisant l'ID de la carte
-        displayCard.classList.add('singleCard', 'p-1'); // Ajoute des classes CSS pour le style
-    }
+            data.data.forEach(card => {
+                let displayCard; // Déclare une variable pour stocker la carte à afficher
+                
+                // Vérifie si l'objet 'card' a une image normale
+                if (card.image_uris && card.image_uris.normal) {
+                    displayCard = new Image(250, 350); // Crée un nouvel objet Image avec une taille de 250x350 pixels
+                    displayCard.src = card.image_uris.normal; // Définit la source de l'image à l'URL de l'image normale
+                    displayCard.id = card.id; // Définit l'ID de l'image en utilisant l'ID de la carte
+                    displayCard.classList.add('singleCard', 'p-1', 'transform', 'rounded-xl', 'bg-white', 'shadow-xl', 'transition', 'duration-300', 'hover:scale-105'); // Ajoute des classes CSS pour le style
+                } 
+                // Vérifie si la carte a des faces (cartes double face) et si la première face a une image normale
+                else if (card.card_faces[0]['image_uris'] && card.card_faces[0]['image_uris']['normal']) {
+                    displayCard = new Image(250, 350); // Crée une nouvelle image pour la carte double face
+                    displayCard.src = card.card_faces[0]['image_uris']['normal']; // Définit la source de l'image de la première face
+                    displayCard.id = card.id; // Définit l'ID de l'image en utilisant l'ID de la carte
+                    displayCard.classList.add('singleCard', 'p-1'); // Ajoute des classes CSS pour le style
+                }
 
-    // Prépare l'URL pour la page de détail de la carte en remplaçant un identifiant fictif
-    var cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}";
-    let link = document.createElement("a"); // Crée un nouvel élément de lien (anchor)
-    let url = cardDetailUrl.replace('REPLACE_CARD_ID', card.id); // Remplace l'identifiant fictif par l'identifiant réel de la carte
-    link.href = url; // Définit l'attribut href du lien à l'URL de détail de la carte
+                // Prépare l'URL pour la page de détail de la carte en remplaçant un identifiant fictif
+                var cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}";
+                let link = document.createElement("a"); // Crée un nouvel élément de lien (anchor)
+                let url = cardDetailUrl.replace('REPLACE_CARD_ID', card.id); // Remplace l'identifiant fictif par l'identifiant réel de la carte
+                link.href = url; // Définit l'attribut href du lien à l'URL de détail de la carte
 
-    link.appendChild(displayCard); // Ajoute l'image de la carte comme enfant du lien
-    cardList.appendChild(link); // Ajoute le lien (et l'image de la carte) à la liste des cartes affichées
-    count.classList.remove('hidden'); // Affiche l'élément qui contient le compte des cartes
-});
+                link.appendChild(displayCard); // Ajoute l'image de la carte comme enfant du lien
+                cardList.appendChild(link); // Ajoute le lien (et l'image de la carte) à la liste des cartes affichées
+                count.classList.remove('hidden'); // Affiche l'élément qui contient le compte des cartes
+            });
 
-// Si aucune carte n'est trouvée
-} else {
-    setName.innerHTML = "Set non trouvé"; // Affiche un message indiquant que l'ensemble n'a pas été trouvé
-    noCardsMessage.classList.remove('hidden'); // Affiche le message "Aucune carte trouvée"
-}
+            // Si aucune carte n'est trouvée
+            } else {
+                setName.innerHTML = "Set non trouvé"; // Affiche un message indiquant que l'ensemble n'a pas été trouvé
+                noCardsMessage.classList.remove('hidden'); // Affiche le message "Aucune carte trouvée"
+            }
 
-// Si la réponse de l'API ne contient pas un tableau de cartes
-} else {
-    console.error('Erreur: la réponse de l\'API ne contient pas un tableau de cartes dans "data"'); //Affiche une erreur dans la console
-    noCardsMessage.classList.remove('hidden'); // Affiche le message "Aucune carte trouvée" en cas d'erreur
-}
-})
-.catch(error => {
-    console.error('Erreur:', error); // Affiche l'erreur dans la console
-    noCardsMessage.classList.remove('hidden'); // Affiche le message "Aucune carte trouvée" en cas d'erreur
-});
-}
+            // Si la réponse de l'API ne contient pas un tableau de cartes
+            } else {
+                console.error('Erreur: la réponse de l\'API ne contient pas un tableau de cartes dans "data"'); //Affiche une erreur dans la console
+                noCardsMessage.classList.remove('hidden'); // Affiche le message "Aucune carte trouvée" en cas d'erreur
+            }
+            })
+            .catch(error => {
+                console.error('Erreur:', error); // Affiche l'erreur dans la console
+                noCardsMessage.classList.remove('hidden'); // Affiche le message "Aucune carte trouvée" en cas d'erreur
+            });
+        }
 
 // searchInput.addEventListener('input', fetchCards); // Cette ligne est commentée, elle permettrait d'appeler fetchCards à chaque saisie dans le champ de recherche.
+
 searchStart.addEventListener('click', fetchCards); // Ajoute un écouteur d'événement 'click' sur le bouton de recherche pour déclencher la fonction fetchCards
 
 // Ajoute un écouteur d'événement 'change' pour chaque case à cocher de sélection de couleur pour déclencher fetchCards lorsque l'état d'une case change.
