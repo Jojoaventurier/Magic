@@ -22,7 +22,6 @@ final readonly class OAuthRegistrationService
      * @param GoogleUser $resourceOwner 
      */
 
-
 public function persist(ResourceOwnerInterface $resourceOwner): User
 {
     $currentDateTime = new \DateTime('now');
@@ -35,17 +34,6 @@ public function persist(ResourceOwnerInterface $resourceOwner): User
      $this->repository->add($user, flush: true);
      return $user;
 
-      //  $user = match (true) {
-    //     $resourceOwner instanceof GoogleUser => (new User())
-    //     ->setEmail($resourceOwner->getEmail())
-    //     ->setGoogleId($resourceOwner->getId()),
-    //     $resourceOwner instanceof GithubResourceOwner => (new User())
-    //     ->setEmail($resourceOwner->getEmail()
-    //     ->setGithubId($resourceOwner->getId()))
-    //  };
-
-
 }
-
 
 }
