@@ -5,7 +5,7 @@
 {% block body %}
 
 <main>
-    <div class="gradient-adapt flex flex-col h-60 w-full items-center justify-end space-y-6 mb-6 p-10">
+    <div class="bg-gradient-purple flex flex-col h-60 w-full items-center justify-end space-y-6 mb-6 p-10">
         <div class="space-y-2 border border-white p-4 rounded">
 
             <h1 class="px-6 text-3xl font-medium text-white w-prose">Recherche de cartes</h1>
@@ -149,7 +149,7 @@
             <button id="reinitializeButton" class="h-10 border border-bg-red-400 text-red-700 hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded shadow-md text-sm">Réinitialiser les filtres</button>
         </div>                             
     </div>
-    <div class="flex flrx-col justify-center items-center w-full sticky top-40 z-30">
+    <div class="flex flrx-col justify-center items-center w-full sticky top-40 z-30 ">
         <div class="flex justify-evenly rounded-md">
             <!-- Conteneur principal pour les options de rareté -->
             <div class="inline-flex space-x-4 p-2 bg-white rounded-md">
@@ -185,14 +185,14 @@
             </div>
 
         </div>
-        <div id="count" class="flex justify-center hidden"></div>
+        <div id="count" class="flex justify-center hidden">
             <p class="text-grey-600 italic text-xs p-2 bg-white rounded-md"><span id="totalCards"></span> cartes trouvées</p>
         </div>
     </div>
     
-    <div class="w-full flex justify-center mt-6">
+    <div class="w-full flex justify-center mt-6 pt-4 bg-gradient-purple h-screen">
         <!-- Conteneur principal centré pour les cartes -->
-        <div class="flex flex-col flex-wrap max-w-4/5 w-4/5 px-10">
+        <div class="flex flex-col flex-wrap max-w-4/5 w-4/5 px-10 bg-gradient-purple">
             <!-- Zone où les cartes seront affichées -->
             <div id="cardBoard" class="w-full flex justify-center">
                 <!-- Liste des cartes, remplie dynamiquement avec les images récupérées de l'API Scryfall -->
@@ -224,7 +224,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Sélectionne l'élément d'entrée pour la barre de recherche
 const searchInput = document.getElementById('searchInput');
-
 // Sélectionne le bouton pour démarrer la recherche
 const searchStart = document.getElementById('searchStart');
 
@@ -279,7 +278,7 @@ let selectedRarity = '';
         // Utilisation d'une autre chaîne de requête vide pour certaines recherches (ex : artiste)
         let emptyQuery = '';
     
-        // Récupération des valeurs sélectionnées dans les menus déroulants et les champs de saisie
+        // Récupération des valeurs sélectionnées dans les menus   déroulants et les champs de saisie
         // pour le type
         let type = typeSelect.value;
         // pour le sous-type
@@ -288,7 +287,6 @@ let selectedRarity = '';
         let set = setInput.value;
         // pour le coût de mana converti (cmc)
         let selectedCMC = cmcSelect.value;
-    
         //Récupération des couleurs sélectionnées (cases à cocher), filtrées pour ne garder que celles qui sont cochées
         // Transformation de la liste des valeurs en une chaîne de caractères séparée par des virgules
         let selectedColors = Array.from(colorCheckboxes)
@@ -300,13 +298,6 @@ let selectedRarity = '';
         if (set) {
             query += `+set:${set}`;
         }
-    
-        // Si un type est sélectionné, ajout du filtre de type à la requête principale et à la requête vide
-        if (type) {
-            query += `+type:${type}`;
-            emptyQuery += `+type:${type}`;
-        }
-    
         // Si des couleurs sont sélectionnées, traitement des différentes options de couleurs
         if (selectedColors) {
             // Si la case "incolore" est cochée, exclure toutes les couleurs
@@ -325,19 +316,21 @@ let selectedRarity = '';
                 emptyQuery += `+ci:${selectedColors}`;
             }
         }
-    
         // Si un coût de mana converti est sélectionné, ajout du filtre de cmc à la requête
         if (selectedCMC) {
             query += `+cmc=${selectedCMC}`;
             emptyQuery += `+cmc=${selectedCMC}`;
         }
-    
+        // Si un type est sélectionné, ajout du filtre de type à la requête principale et à la requête vide
+        if (type) {
+            query += `+type:${type}`;
+            emptyQuery += `+type:${type}`;
+        }
         // Si un sous-type est sélectionné, ajout du filtre de sous-type à la requête
         if (subtype) {
             query += `+type:${subtype}`;
             emptyQuery += `+type:${subtype}`;
         }
-    
         // Si une rareté est sélectionnée, ajout du filtre de rareté à la requête
         if (selectedRarity) {
             query += `+rarity:${selectedRarity}`;
@@ -375,7 +368,6 @@ let selectedRarity = '';
     function fetchCards() {
         // Appelle « updateFetchUrl() » pour obtenir l'URL mise à jour en fonction des paramètres de recherche choisis par l'utilisateur
         let url = updateFetchUrl();
-    
         // Lance une requête de récupération (fetch) avec l'URL obtenue ci-dessus. 'fetch' est utilisé pour effectuer la requête HTTP vers l'API Scryfall 
         fetch(url)
             //la réponse de l'appel à fetch sera convertie en objet JSON pour être utilisée dans la suite du code
@@ -450,14 +442,14 @@ let selectedRarity = '';
                     displayCard = new Image(250, 350); // Crée un nouvel objet Image avec une taille de 250x350 pixels
                     displayCard.src = card.image_uris.normal; // Définit la source de l'image à l'URL de l'image normale
                     displayCard.id = card.id; // Définit l'ID de l'image en utilisant l'ID de la carte
-                    displayCard.classList.add('singleCard', 'p-1', 'transform', 'rounded-xl', 'bg-white', 'shadow-xl', 'transition', 'duration-300', 'hover:scale-105'); // Ajoute des classes CSS pour le style
+                    displayCard.classList.add('singleCard', 'p-1', 'transform', 'rounded-xl', 'shadow-xl', 'transition', 'duration-300', 'hover:scale-105', 'mt-1'); // Ajoute des classes CSS pour le style
                 } 
                 // Vérifie si la carte a des faces (cartes double face) et si la première face a une image normale
                 else if (card.card_faces[0]['image_uris'] && card.card_faces[0]['image_uris']['normal']) {
                     displayCard = new Image(250, 350); // Crée une nouvelle image pour la carte double face
                     displayCard.src = card.card_faces[0]['image_uris']['normal']; // Définit la source de l'image de la première face
                     displayCard.id = card.id; // Définit l'ID de l'image en utilisant l'ID de la carte
-                    displayCard.classList.add('singleCard', 'p-1'); // Ajoute des classes CSS pour le style
+                    displayCard.classList.add('singleCard', 'p-1', 'transform', 'rounded-xl', 'shadow-xl', 'transition', 'duration-300', 'hover:scale-105', 'mt-1'); // Ajoute des classes CSS pour le style
                 }
 
                 // Prépare l'URL pour la page de détail de la carte en remplaçant un identifiant fictif
@@ -613,3 +605,4 @@ if (setInput.value) {
 </script>
 {% endblock %}
 {% endblock %}
+
