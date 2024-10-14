@@ -10,7 +10,6 @@ use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class SecurityController extends AbstractController
 {
@@ -18,7 +17,6 @@ class SecurityController extends AbstractController
     public const SCOPES = [
         'google' => [],
     ];
-
 
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
@@ -39,7 +37,6 @@ class SecurityController extends AbstractController
         ]);
     }
     
-
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {   unset($_SESSION);
@@ -54,8 +51,8 @@ class SecurityController extends AbstractController
        }
 
        return $clientRegistry
-           ->getClient($service)
-           ->redirect(self::SCOPES[$service]);
+           ->getClient($service) // Ici on récupère le client OAuth pour Google
+           ->redirect(self::SCOPES[$service]); // Cette fonction envoie la requête HTTP à Google pour l'authentification OAuth
     }
 
     #[Route('/magichub/check/{service}', name: 'auth_magichub_check', methods: ['GET', 'POST'])]
@@ -64,20 +61,4 @@ class SecurityController extends AbstractController
        return new Response(status: 200);
     }
 
-    #[Route('/{user}/profile/delete', name: 'app_delete_user')]
-    public function deleteProfile(EntityManagerInterface $entityManager, Request $request, TokenStorageInterface $tokenStorage)
-    {
-       $user = $this->getUser();
-       $entityManager->remove($user);
-       $request->getSession()->invalidate();
-       
-        // Clear the security token to avoid the refresh user error
-        $tokenStorage->setToken(null);
-        $entityManager->flush();
-
-        return $this->redirectToRoute('app_home');
-        
-    }
-
-    
 }

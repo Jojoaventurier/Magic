@@ -17,15 +17,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CompositionRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DeckBuilderController extends AbstractController
 {
-
+    // Constructeur de la classe, injecte le service HttpClientInterface
     public function __construct(private HttpClientInterface $httpClient) {}
     
     #[Route('/build/deck/{id}/{state}', name: 'app_deck_builder')]
@@ -548,7 +548,6 @@ public function importDeck(
     CompositionRepository $compositionRepository,
     FormatRepository $formatRepository,
     EntityManagerInterface $entityManager,
-    CardRepository $cardRepository,
     Request $request
 ): Response {
     $deckForm = $request->get('import_deck_form');
@@ -610,17 +609,17 @@ public function importDeck(
         }
     }
 
-    // Now process the aggregated card list
+    // traitement de la liste agrégée de cartes
     foreach ($cardQuantities as $cardName => $quantity) {
-        // Fetch the card from Scryfall API
+        // Récupération de  la carte depuis l'API Scryfall
         $cardData = $this->fetchCardFromScryfall($cardName);
 
         if ($cardData) {
-            // Process card saving to deck
+            // Traitetement l'enregistrement de la carte dans le deck
             $this->processCard($cardData, $deck, $quantity, $state, $compositionRepository, $entityManager);
-            $addedCards++;
+            $addedCards++; // Incrémenter le compteur de cartes ajoutées
         } else {
-            $notFound[] = $cardName; // Card not found
+            $notFound[] = $cardName; // Ajouter le nom de la carte non trouvée si non trouvée, ou problème
         }
     }
 
@@ -691,26 +690,28 @@ private function findOrCreateCard(array $cardData, EntityManagerInterface $entit
 }
 
 /**
- * Fetch card data from Scryfall API using Symfony's HttpClient.
+ * Récupérer les données de la carte depuis l'API Scryfall par le biais du HttpClient de Symfony
  */
 private function fetchCardFromScryfall(string $cardName): ?array
 {
     try {
-        // Add a delay to avoid overwhelming the API
-        usleep(1000000); // 1 second delay
+        // Ajouter un délai pour éviter de surcharger l'API
+        usleep(1000000); // Délai de 1 seconde
 
+        // Envoyer une requête GET à l'API Scryfall avec le nom exact de la carte
         $response = $this->httpClient->request('GET', 'https://api.scryfall.com/cards/named', [
             'query' => ['exact' => $cardName]
         ]);
 
+        // Vérifier si la réponse a un statut 200 (succès)
         if ($response->getStatusCode() === 200) {
-            return $response->toArray(); // Convert JSON response to array
+            return $response->toArray(); // Convertir la réponse JSON en tableau
         }
     } catch (\Exception $e) {
-        // Log the error or handle accordingly
+        // Consigner l'erreur ou la gérer selon les besoins
     }
 
-    return null; // Return null if card not found or any issue occurred
+    return null; // Retourner null si la carte n'est pas trouvée ou en cas de problème
 }
 
   

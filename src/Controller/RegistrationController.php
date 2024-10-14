@@ -15,6 +15,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class RegistrationController extends AbstractController
 {
@@ -82,4 +83,20 @@ class RegistrationController extends AbstractController
 
         return $this->redirectToRoute('app_login');
     }
+
+    #[Route('/{user}/profile/delete', name: 'app_delete_user')]
+    public function deleteProfile(EntityManagerInterface $entityManager, Request $request, TokenStorageInterface $tokenStorage)
+    {
+       $user = $this->getUser();
+       $entityManager->remove($user);
+       $request->getSession()->invalidate();
+       
+        // Clear the security token to avoid the refresh user error
+        $tokenStorage->setToken(null);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_home');
+        
+    }
+    
 }

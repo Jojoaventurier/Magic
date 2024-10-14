@@ -17,9 +17,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 class GoogleAuthenticator extends AbstractOAuthAuthenticator
 {
 
-
     protected string $serviceName ='google';
-
 
     protected function getUserFromResourceOwner(ResourceOwnerInterface $resourceOwner, UserRepository $repository): ?User
     {

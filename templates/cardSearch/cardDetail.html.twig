@@ -196,9 +196,9 @@ document.addEventListener('DOMContentLoaded', function() {
             This structure makes the code both efficient and dynamic, as it retrieves the most up-to-date symbols directly from the Scryfall API.    */
 
             fetch('https://api.scryfall.com/cards/' + cardId)  
-            // Fetch the card data from the Scryfall API using the card ID.
+            // Récupérer la data de la carte en envoyant une requête http à l'API SCRYFALL
                 .then((response) => response.json())  
-                // Parse the API response as JSON.
+                // Convertit la réponse API en JSON
                 .then((data) => {  
                     // Once the card data is parsed, execute this function to update the UI.
                     // Select elements in the DOM to update with card data

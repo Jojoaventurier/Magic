@@ -6,7 +6,7 @@
 
 <h1 class="hidden">Deck Builder</h1>
 
-<div class="gradient-adapt flex flex-wrap justify-center items-center space-x-8 w-full pb-8" > <!--style="background: url(' deck.commander.image_uris.art_crop ') no-repeat center center;"-->
+<div class="bg-gradient-purple flex flex-wrap justify-center items-center space-x-8 w-full pb-8" > <!--style="background: url(' deck.commander.image_uris.art_crop ') no-repeat center center;"-->
 
 
     <div class="space-y-2 relative block max-w-sm p-6 m-6 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
@@ -150,7 +150,17 @@
     </div>
     {% else %}
 
-    <div class="flex flex-wrap justify-center items-center space-x-4 p-2">
+    <div class="flex justify-center m-4">
+        <div class="flex items-center space-x-2 bg-white  border border-red-700 text-sm py-1 px-2 rounded-lg shadow-md hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">
+            <label for="stateSelector" class="text-red-700 text-sm">Ajouter la carte au</label>
+            <select name="stateSelector" id="stateSelector" class="bg-red-700 text-white text-sm font py-1 px-3 rounded-md  focus:outline-none focus:ring-2 focus:ring-white">
+                <option value="Mainboard" selected>Mainboard</option>
+                <option value="Sideboard">Sideboard</option>
+                <option value="Maybeboard">Maybeboard</option>
+            </select>
+        </div>
+    </div>
+    <div class="flex  flex-wrap justify-center items-center space-x-4 p-2">
 
         {% if deck.format.formatName is same as 'Commander / EDH' and deck.commander is same as null %}
         
@@ -189,7 +199,7 @@
             </form>
             <div class="p-1 m-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 rounded">
                 <input type="checkbox" id="noRestrictions" name="noRestrictions">
-                <label for="noRestrictions" class="text-sm italic text-red-700">Ignorer les restrictions du format pour la recherche</label>
+                <label for="noRestrictions" class="text-sm italic text-red-700">Ignorer les restrictions du format</label>
             </div>
         {% elseif deck.format.formatName is not same as 'Commander / EDH' %}
 
@@ -211,7 +221,7 @@
             </form>
             <div class="p-1 m-4rounded hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
                 <input type="checkbox" id="noRestrictions" name="noRestrictions">
-                <label for="noRestrictions" class="text-sm italic text-red-700">Ignorer les restrictions du format pour la recherche</label>
+                <label for="noRestrictions" class="text-sm italic text-red-700">Ignorer les restrictions du format</label>
             </div>
         {% else %}
 
@@ -233,23 +243,11 @@
         </div>
         {% endif %}
 
-
-
-<div class="flex justify-center m-4">
-    <div class="flex items-center space-x-2 bg-red-800 text-white text-sm py-1 px-2 rounded-lg shadow-md hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">
-        <label for="stateSelector" class="text-white text-sm font-medium">Ajouter la carte au</label>
-        <select name="stateSelector" id="stateSelector" class="bg-red-700 text-white text-sm font-semibold py-1 px-3 rounded-md  focus:outline-none focus:ring-2 focus:ring-white">
-            <option value="Mainboard" selected>Mainboard</option>
-            <option value="Sideboard">Sideboard</option>
-            <option value="Maybeboard">Maybeboard</option>
-        </select>
-    </div>
-</div>
 {% endif %}
 {% endif %}
 <div id="responseMessage" class="hidden text-center"></div> <!-- For displaying response messages -->
 
-<div id="cardBoard" class="flex justify-center w-full mb-4">
+<div id="cardBoard" class="flex justify-center w-full">
     <div class="hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 shadow">
         <img id="cardImage" class="transform  rounded-xl bg-white shadow-xl transition duration-300 hover:scale-105">
     </div>
