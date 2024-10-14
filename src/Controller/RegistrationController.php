@@ -26,21 +26,22 @@ class RegistrationController extends AbstractController
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $user = new User(); // création d'un objet User
-        $form = $this->createForm(RegistrationFormType::class, $user); // création du formulaire User
-        $form->handleRequest($request);
-        $currentDateTime = new \DateTime('now'); // récupère la date et l'heure actuelle gràce à l'objet natif de php DateTime
-
+        $form = $this->createForm(RegistrationFormType::class, $user); // création du formulaire d'inscription associé à l'utilisateur
+        $form->handleRequest($request); // gestion de la soumission du formulaire
+        $currentDateTime = new \DateTime('now'); // obtention de la date et l'heure actuelle
+    
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
+            // encode le mot de passe en clair
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
-                    $form->get('plainPassword')->getData()
-                ));
-            $user->setCreationDate($currentDateTime);
-
-            $entityManager->persist($user);
-            $entityManager->flush();
+                    $form->get('plainPassword')->getData() // récupération du mot de passe en clair
+                )
+            );
+            $user->setCreationDate($currentDateTime); // enregistre la date de création de l'utilisateur
+    
+            $entityManager->persist($user); // prépare l'enregistrement de l'utilisateur
+            $entityManager->flush(); // exécute l'insertion dans la base de données
 
             // generate a signed url and email it to the user
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
