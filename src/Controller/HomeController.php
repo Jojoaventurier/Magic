@@ -82,9 +82,11 @@ class HomeController extends AbstractController
     public function cardDetail(Request $request): Response
     {
         $cardId = $request->get('cardId');
+        $metaDescription = 'Examinez les détails de la carte !';
         
         return $this->render('cardSearch/cardDetail.html.twig', [
-            'cardId' => $cardId
+            'cardId' => $cardId,
+            'metaDescription' => $metaDescription
         ]);
     }
 

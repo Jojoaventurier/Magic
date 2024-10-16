@@ -110,18 +110,6 @@
     </div>
 </div>
 
-<!--
-
-    TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-"promo": false,
-"reprint": true,
-"rulings_uri": "https://api.scryfall.com/cards/f26a79b9-9f09-476e-b914-cade929dd852/rulings",
-"prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aebef6d84-b724-4a84-bcde-8eb6dc06717d&unique=prints",
-
-TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
-
--->
-
 {% block javascripts %}
 <script>
 
@@ -226,6 +214,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     // Display card image
                     let displayCard = new Image(287.5, 402.5);  
+                    displayCard.alt = `${data.name} illustré par ${data.artist}`
                     // Create a new Image element with specific dimensions for the card.
                     if (data.image_uris && data.image_uris.normal) {  
                         // Check if the card data includes an image URI for the normal resolution.

@@ -60,7 +60,7 @@ class RegistrationFormType extends AbstractType
                         'message' => 'Veuillez saisir un mot de passe',
                     ]),
                     new Length([ 
-                        'min' => 8, // utilisation de la classe EmailType pour filtrer l'adresse mail saisie par l'utilisateur (XSS)
+                        'min' => 8, 
                         'minMessage' => 'Votre mot de passe doit avoir un minimum de 8 characters', // message affiché si l'utilisateur tente de s'inscrire sans remplir la condition
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
