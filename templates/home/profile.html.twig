@@ -7,17 +7,20 @@
 {% if app.user and user is not defined %}
     {% set user = app.user %}
 {% endif %}
+<div class="h-screen grid bg-gradient-purple">
+<div class="flex flex-wrap justify-center ">
 
-<div class="flex flex-wrap justify-center">
-    <div class="w-4/5 m-8 inline-flex justify-items">
+    {% if user.twitchUsername is not same as 'twitch.tv/' and user.twitchUsername is not null and user.allowStream is same as true %}
+    <div class="w-4/5 m-8 inline-flex justify-items mt-20">
+        {% else %}
+        <div class="m-8 inline-flex space-x-10 mt-20">
+        {% endif %}
 
-        <div class="flex flex-col items-center justify-center h-[350px] w-[350px] space-y-4 border rounded p-6 m-auto">
-            <h1>
+        <div class="flex flex-col bg-white items-center justify-center h-auto w-[350px] space-y-4 border rounded p-6 m-auto">
+            <h1 class="text-xl">
                 {{ user.userName }}
             </h1>
                 
-            
-
             <p class="text-sm space-x-4">
                 <a class="hover:underline hover:text-red-800 text-" href="{{ path('app_user_list', {'user': user.id, 'param': 'followed'}) }}">
                     <span id="followers">{{ user.followedUsers|length }}</span> abonnements
@@ -92,7 +95,9 @@
                     <p class="text-sm italic text-gray-700 px-4 py-3">Vous devez être connecté pour suivre un profil.</p>
                 {% endif %}
 
-                {% if app.user is not same as user and app.user in user.followedUsers %}
+                
+            </div>
+            {% if app.user is not same as user and app.user in user.followedUsers %}
                 <div>
                     <form action="{{ path('chatting') }}" method="POST">
                         <input type="hidden" value="{{ user.id }}" id="otherUserId" name="otherUserId">
@@ -100,8 +105,8 @@
                     </form>
                 </div>
             {% endif %}
-            </div>
         </div>
+
         {% if user.twitchUsername is not same as 'twitch.tv/' and user.twitchUsername is not null and user.allowStream is same as true %}
         <div x-data="{ showIframe: true }" class="text-center">
             <button 
@@ -124,7 +129,7 @@
 
          
 
-        <div class="flex flex-col text-center justify-center justify-items mx-auto shadow-md rounded-md p-8 min-w-52 my-auto">
+        <div class="flex flex-col bg-white text-center justify-center justify-items mx-auto shadow-md rounded-md p-8 min-w-52 my-auto">
             <h3 class="hidden">Description</h3>
             <p class="text-sm">
                 {% if user.description is not null %}
@@ -138,32 +143,96 @@
     </div>
 </div>
 
-        <!-- Decks Section -->
-        <div class="flex flex-col" x-data="{ showMyDecks: true, showFavDecks: false }">
-            <div class="flex justify-center space-x-4">
-                <!-- Button to toggle "Mes decks" -->
-                <button class="text-sm px-2 py-1 border border-red-700 rounded hover:bg-red-800 hover:text-white duration-300"
-                        x-on:click="showMyDecks = !showMyDecks; showFavDecks = false">
-                    {% if app.user is same as user %}
-                        Mes decks
-                    {% else %}
-                        Decks de {{ user.userName }}
-                    {% endif %}
-                </button>
-                
-                {% if app.user is same as user %}
-                <!-- Button to toggle "Decks favoris" -->
-                <button class="text-sm px-2 py-1 border border-red-700 rounded hover:bg-red-800 hover:text-white duration-300"
-                        x-on:click="showFavDecks = !showFavDecks; showMyDecks = false">
-                    Decks favoris
-                </button>
+{% if app.user and app.user is same as user %} 
+{% if messages is defined %}
+<div class="flex justify-center items-center w-full h-full bg-gradient-purple rounded-md">
+    <div class="flex justify-center items-center space-x-10 rounded-md">
+        <div class="space-y-4">   
+    {% if messages is empty %}
+    {% else %}
+            <div x-data="{ isOpen: false }" 
+            {% if unread_count() > 0 %}    
+            class=" p-6 rounded hover:shadow-lg w-[280px] bg-red-700 text-white relative hover:bg-blue-100 hover:text-red-700"
+            {% else %}
+            class="shadow p-6 rounded hover:shadow-lg hover:bg-blue-100 w-[280px] bg-white text-black relative"
+            {% endif %}
+            >
+                <h2 @click="isOpen = !isOpen" class="text-sm font-semibold py-1 text-center cursor-pointer">
+                    Conversations récentes
+                    <span x-text="isOpen ? '▲' : '▼'" class="ml-2"></span> <!-- Toggle arrow -->
+                </h2>
+                {% if unread_count() > 0 %}
+                <span class="italic text-xs absolute top-2 right-16 ">
+                        Vous avez {{ unread_count() }} message{{ unread_count() > 1 ? 's' : '' }} non-lu{{ unread_count() > 1 ? 's' : '' }}
+                </span>
                 {% endif %}
+
+                <ul class="bg-white text-black rounded px-2 py-1" x-show="isOpen" x-transition>
+                    {% for message in messages %}
+                        <li class="border-b border-red-800 hover:bg-slate-100">
+                            {% if message.authorId is same as app.user.id %}
+                                <!-- Current user is the author, so show the receiver -->
+                                <form action="{{ path('chatting') }}" method="POST">
+                                    <input type="hidden" value="{{ message.receiverId }}" id="otherUserId" name="otherUserId">
+                                    <input type="submit" class="text-sm px-4 py-1 hover:text-red-600 hover:underline cursor-pointer" value="{{ message.receiverName }}">
+                                </form>
+                            {% else %}
+                                <!-- Current user is the receiver, so show the author -->
+                                <form action="{{ path('chatting') }}" method="POST">
+                                    <input type="hidden" value="{{ message.authorId }}" id="otherUserId" name="otherUserId">
+                                    <input type="submit" class="text-sm px-4 pt-1 hover:text-red-600 hover:underline cursor-pointer" value="{{ message.authorName }}">
+                                    {% if not message.isRead %}
+                                        <span class="italic text-red-500 text-xs pl-16 pb-1">vous a écrit</span>
+                                    {% endif %}
+                                </form>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
+            {% endif %}
+            {% endif %}
+
+            <div x-data="{ isOpen: false }" class="shadow p-6 rounded bg-white hover:bg-blue-100 w-[280px]">
+
+            <h2 class="text-sm  font-semibold text-center cursor-pointer">
+                <a href="{{ path('chatting') }}">
+                    Toutes les conversations
+                </a>
+            </h2>
+
+        </div> 
+    </div>
+    {% endif %}  
+
+
+    <!-- Decks Section -->
+    <div class="flex flex-col bg-gradient-purple w-full rounded-md" x-data="{ showMyDecks: true, showFavDecks: false }">
+        <div class="flex justify-center space-x-4 my-6">
+            <!-- Button to toggle "Mes decks" -->
+            <button class="text-sm bg-white px-2 py-1 border border-red-700 rounded hover:bg-red-800 hover:text-white duration-300"
+                    x-on:click="showMyDecks = !showMyDecks; showFavDecks = false">
+                {% if app.user is same as user %}
+                    Mes decks
+                {% else %}
+                    Decks de {{ user.userName }}
+                {% endif %}
+            </button>
             
-            <div class="w-3/5 flex justify-center mt-6 mx-auto">
-                <!-- "Mes decks" table -->
-                <div class="text-sm w-full" x-show="showMyDecks" x-transition>
-                    <table class="table-auto w-full text-left border-collapse">
+            {% if app.user is same as user %}
+            <!-- Button to toggle "Decks favoris" -->
+            <button class="text-sm px-2 py-1 bg-white border border-red-700 rounded hover:bg-red-800 hover:text-white duration-300"
+                    x-on:click="showFavDecks = !showFavDecks; showMyDecks = false">
+                Decks favoris
+            </button>
+            {% endif %}
+        </div>
+        
+        <div class="flex justify-center mt-6 mx-auto rounded-md">
+            <!-- "Mes decks" table -->
+            <div class="text-sm h-full overflow-y-auto rounded-md" x-show="showMyDecks" x-transition>
+                <div class="min-h-[400px] max-h-[550px] rounded-md">
+                    <table class="table-auto text-left border-collapse bg-white">
                         <thead>
                             <tr class="bg-gray-200">
                                 <th class="px-4 py-2">Couleurs</th>
@@ -213,11 +282,12 @@
                         </tbody>
                     </table>
                 </div>
-                
-                {% if app.user is same as user %}
-                <!-- "Decks favoris" table -->
-                <div class="text-sm w-full" x-show="showFavDecks" x-transition>
-                    <table class="table-auto w-full text-left border-collapse">
+            </div>
+            
+            <!-- "Decks favoris" table -->
+            <div class="text-sm overflow-y-auto max-h-[500px]" x-show="showFavDecks" x-transition>
+                <div class="min-h-[400px] max-h-[550px] rounded-md">
+                    <table class="table-auto bg-white">
                         <thead>
                             <tr class="bg-gray-200">
                                 <th class="px-4 py-2">Couleurs</th>
@@ -261,83 +331,21 @@
                             </tr>
                             {% else %}
                             <tr>
-                                <td class="border px-4 py-2" colspan="5">Aucun deck favori trouvé</td>
+                                <td class="border px-4 py-2 italic" colspan="5">Aucun deck ajouté aux favoris pour le moment</td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
-                {% endif %}
             </div>
-
         </div>
+    </div>
         
         
-
-
-
-{% if app.user and app.user is same as user %}
-    
-
-{% if messages is defined %}
-<div class="flex w-full justify-center">
-    <div class="w-4/5 m-8 space-y-4">   
-{% if messages is empty %}
-{% else %}
-        <div x-data="{ isOpen: false }" 
-        {% if unread_count() > 0 %}    
-        class=" p-6 rounded hover:shadow-lg w-[280px] bg-red-700 text-white relative hover:bg-blue-100 hover:text-red-700"
-        {% else %}
-        class="shadow p-6 rounded hover:shadow-lg hover:bg-blue-100 w-[280px] bg-white text-black relative"
-        {% endif %}
-        >
-            <h2 @click="isOpen = !isOpen" class="text-sm font-semibold py-1 text-center cursor-pointer">
-                Conversations récentes
-                <span x-text="isOpen ? '▲' : '▼'" class="ml-2"></span> <!-- Toggle arrow -->
-            </h2>
-            {% if unread_count() > 0 %}
-            <span class="italic text-xs absolute top-2 right-16 ">
-                    Vous avez {{ unread_count() }} message{{ unread_count() > 1 ? 's' : '' }} non-lu{{ unread_count() > 1 ? 's' : '' }}
-            </span>
-            {% endif %}
-
-            <ul class="bg-white text-black rounded px-2 py-1" x-show="isOpen" x-transition>
-                {% for message in messages %}
-                    <li class="border-b border-red-800 hover:bg-slate-100">
-                        {% if message.authorId is same as app.user.id %}
-                            <!-- Current user is the author, so show the receiver -->
-                            <form action="{{ path('chatting') }}" method="POST">
-                                <input type="hidden" value="{{ message.receiverId }}" id="otherUserId" name="otherUserId">
-                                <input type="submit" class="text-sm px-4 py-1 hover:text-red-600 hover:underline cursor-pointer" value="{{ message.receiverName }}">
-                            </form>
-                        {% else %}
-                            <!-- Current user is the receiver, so show the author -->
-                            <form action="{{ path('chatting') }}" method="POST">
-                                <input type="hidden" value="{{ message.authorId }}" id="otherUserId" name="otherUserId">
-                                <input type="submit" class="text-sm px-4 pt-1 hover:text-red-600 hover:underline cursor-pointer" value="{{ message.authorName }}">
-                                {% if not message.isRead %}
-                                    <span class="italic text-red-500 text-xs pl-16 pb-1">vous a écrit</span>
-                                {% endif %}
-                            </form>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
-        {% endif %}
-
-        <div x-data="{ isOpen: false }" class="shadow p-6 rounded hover:shadow-lg hover:bg-blue-100 w-[280px]">
-
-        <h2 class="text-sm font-semibold text-center cursor-pointer">
-            <a href="{{ path('chatting') }}">
-                Toutes les conversations
-            </a>
-        </h2>
-
-    </div> 
+    </div>
 </div>
-{% endif %}  
+
+
 
 
 

@@ -1,14 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gestion des decks{% endblock %}
+{% block title %}Gestion des decks personnels{% endblock %}
 
 {% block body %}
 
-  <h1 class="flex justify-center bold my-6">Mes Decks</h1>
 
-  <div class="flex justify-center"> <!--max-h-[70vh] overflow-y-auto-->
-    <table class=" w-4/5 bg-white shadow-md rounded-lg"> <!--table-auto-->
-        <thead class="bg-gray-100 border-b">
+<div class="flex flex-col justify-center items-center bg-gradient-purple py-10 w-full"> 
+  <h1 class="flex justify-center text-white text-2xl px-6 pt-20 pb-6 mb-6"><span class="border border-white rounded px-6 py-4">Mes decks</span></h1>
+  <div class="flex justify-center space-x-8">
+  <div class="my-10 w-auto rounded-md bg-white max-h-[70vh] overflow-y-auto">
+    <table class="table-auto"> <!--table-auto-->
+        <thead class="bg-gray-100 border-b rounded-md">
             <tr>
                 <th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Nom du deck</th>
                 <th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Couleur</th>
@@ -17,7 +19,7 @@
                 <th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Suppression</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="rounded-md">
             {% for deck in userDecks %}
             <tr class="border-b hover:bg-gray-50">
                 <td class="px-4 py-3 text-center">
@@ -64,121 +66,123 @@
             {% endfor %}
         </tbody>
     </table>
-</div>
-
-
-<section id="add-deck-section" class="px-4 py-8 sm:px-6 lg:px-8">
-  <span class="w-full flex justify-center">
-    <button id="toggle-form-btn" class="bg-red-800 text-white mt-12 px-4 py-2 rounded-lg hover:bg-red-900 transition hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">
-      Créer un deck
-    </button>
-  </span>
-
-<div id="deck-form-container" class="hidden grid grid-cols-1 lg:grid-cols-1">
-  <div class="inline-flex">
-    <div class="border relative max-w-md mx-auto rounded-lg bg-white p-8 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 lg:max-w-lg lg:p-8">
-      <button id="close-form-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-2 py-1 rounded-md">
-        &times;
+  </div>
+  <section id="add-deck-section" class="px-4 py-8 bg-gradient-purple sm:px-6 lg:px-8">
+    <span class="w-full flex justify-center">
+      <button id="toggle-form-btn" class="bg-red-800 text-white mt-12 px-4 py-2 rounded-lg hover:bg-red-900 transition hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">
+        Créer un deck
       </button>
-      
-      <h3 class="mb-6 font-bold underline underline-offset-2">Ajouter un nouveau deck</h3>
-
-      {{ form_errors(form) }}
-
-      {{ form_start(form, { 'attr': {'class': 'space-y-4'}}) }}
-      <div class=" p-4 rounded-lg">
-        {{ form_row(form.deckName, {
-          'attr': {'class': 'w-full rounded-lg border border-gray-400 p-3 text-sm focus:outline-none focus:border-red-800 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300'},
-          'label_attr': {'class': 'font-semibold'}
-        }) }}
-      </div>
-      {{ form_row(form.status, {'label_attr': {'class': 'font-semibold'}, 'attr': {'class': 'hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] rounded-lg duration-300'}}) }}
-      {{ form_row(form.format, {'label_attr': {'class': 'font-semibold'}, 'attr': {'class': 'hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] rounded-lg duration-300'}}) }}
-      <span class="flex justify-center items-center">
-        {{ form_row(form.Valider, { 'attr': {'class': "inline-block w-full rounded-lg bg-white text-red-800 border border-red-800 hover:bg-red-800 px-5 py-3 font-medium hover:text-white sm:w-auto hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300"}}) }}
-      </span>
-      <div>
-      {{ form_end(form) }}
-        <p class="text-center border font-semibold border-red-700 p-2">
-          <span class="font-bold underline underline-offset-4">Attention!</span><br> Si vous souhaitez créer un deck en important une liste de cartes, veuillez utiliser le formulaire ci-dessous 
-        </p>
-        <span class="flex justify-center items-center"><img width="50" height="50" src="https://img.icons8.com/ios/50/down--v1.png" alt="down--v1"/></span>
-        
-    </div>
-
-    <div class="flex flex-col" x-data="{ isLoading: false }">
-      <div class="relative border w-full rounded-lg bg-white p-8 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 lg:max-w-lg lg:p-8">
-
-        <form action="{{ path('import_deck_txt', {'user': app.user.id}) }}" method="POST"
-              x-on:submit.prevent="isLoading = true; fetch($event.target.action, {
-                    method: 'POST',
-                    body: new FormData($event.target),
-                    headers: {
-                        'Accept': 'text/html'
-                    }
-                }).then(response => response.text())
-                  .then(data => { 
-                      isLoading = false;
-                      document.getElementById('import-summary').innerHTML = data;
-                  }).catch(() => isLoading = false)">
-            
-            {{ form_start(importDeckForm, {'attr': {'class': 'w-full'}}) }}
-        
-            <!-- Deck Name Field -->
-            <div class="mb-4">
-                {{ form_label(importDeckForm.deckName, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-                {{ form_widget(importDeckForm.deckName, {'attr': {
-                    'class': 'w-full rounded-lg border border-gray-400 p-3 text-sm focus:outline-none focus:border-red-800 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300'
-                }}) }}
-            </div>
-        
-            <!-- Status (Public/Private) Field -->
-            <div class="mb-4">
-                {{ form_label(importDeckForm.status, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-                {{ form_widget(importDeckForm.status, {'attr': {
-                    'class': 'w-full rounded-lg border border-gray-400 p-2 text-sm focus:outline-none focus:border-red-800'
-                }}) }}
-            </div>
-        
-            <!-- Format Selection Field -->
-            <div class="mb-4">
-                {{ form_label(importDeckForm.format, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-                {{ form_widget(importDeckForm.format, {'attr': {
-                    'class': 'w-full rounded-lg border border-gray-400 p-2 text-sm focus:outline-none focus:border-red-800'
-                }}) }}
-            </div>
-        
-            <!-- Deck List Field -->
-            <div class="mb-4">
-                {{ form_label(importDeckForm.deckList, 'Liste de cartes', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
-                {{ form_widget(importDeckForm.deckList, {'attr': {
-                    'class': 'w-full rounded-lg border border-gray-400 p-2 text-sm focus:outline-none focus:border-red-800 mb-3'
-                }}) }}
-            </div>
-        
-            <!-- Submit Button -->
-            <div class="flex justify-center">
-              {{form_widget(importDeckForm.importer, {'attr': {
-                'class': 'w-full rounded-lg bg-white text-red-800 border border-red-800 hover:bg-red-800 px-5 py-3 font-medium hover:text-white sm:w-auto hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300'
-              }})}}
-              {{ form_label(importDeckForm.importer, 'Importer le deck', {'label': 'Importer la liste'}) }}
-
-            </div>
-        
-            {{ form_end(importDeckForm) }}
-        </form>
-
-      <!-- Loading animation -->
-      <div x-show="isLoading" class="fixed inset-0 flex justify-center items-center bg-opacity-75 bg-gray-800 z-50">
-          <div class="spinner"></div>
-          <p class="text-white">Deck en cours d'importation, veuillez patienter...</p>
-      </div>
+    </span>
+  
+    <div id="deck-form-container" class="hidden grid grid-cols-1 lg:grid-cols-1">
+      <div class="inline-flex">
+        <div class="border relative max-w-md mx-auto rounded-lg bg-white p-8 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 lg:max-w-lg lg:p-8">
+          <button id="close-form-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-2 py-1 rounded-md">
+            &times;
+          </button>
+          
+          <h3 class="mb-6 font-bold underline underline-offset-2">Ajouter un nouveau deck</h3>
     
-      <!-- Summary section (where the response will be displayed) -->
-      <div id="import-summary"></div>
+          {{ form_errors(form) }}
+    
+          {{ form_start(form, { 'attr': {'class': 'space-y-4'}}) }}
+          <div class=" p-4 rounded-lg">
+            {{ form_row(form.deckName, {
+              'attr': {'class': 'w-full rounded-lg border border-gray-400 p-3 text-sm focus:outline-none focus:border-red-800 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300'},
+              'label_attr': {'class': 'font-semibold'}
+            }) }}
+          </div>
+          {{ form_row(form.status, {'label_attr': {'class': 'font-semibold'}, 'attr': {'class': 'hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] rounded-lg duration-300'}}) }}
+          {{ form_row(form.format, {'label_attr': {'class': 'font-semibold'}, 'attr': {'class': 'hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] rounded-lg duration-300'}}) }}
+          <span class="flex justify-center items-center">
+            {{ form_row(form.Valider, { 'attr': {'class': "inline-block w-full rounded-lg bg-white text-red-800 border border-red-800 hover:bg-red-800 px-5 py-3 font-medium hover:text-white sm:w-auto hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300"}}) }}
+          </span>
+          <div>
+          {{ form_end(form) }}
+            <p class="text-center border font-semibold border-red-700 p-2">
+              <span class="font-bold underline underline-offset-4">Attention!</span><br> Si vous souhaitez créer un deck en important une liste de cartes, veuillez utiliser le formulaire ci-dessous 
+            </p>
+            <span class="flex justify-center items-center"><img width="50" height="50" src="https://img.icons8.com/ios/50/down--v1.png" alt="down--v1"/></span>
+      </div>
+  
+      <div class="flex flex-col" x-data="{ isLoading: false }">
+        <div class="relative border w-full rounded-lg bg-white p-8 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 lg:max-w-lg lg:p-8">
+  
+          <form action="{{ path('import_deck_txt', {'user': app.user.id}) }}" method="POST"
+                x-on:submit.prevent="isLoading = true; fetch($event.target.action, {
+                      method: 'POST',
+                      body: new FormData($event.target),
+                      headers: {
+                          'Accept': 'text/html'
+                      }
+                  }).then(response => response.text())
+                    .then(data => { 
+                        isLoading = false;
+                        document.getElementById('import-summary').innerHTML = data;
+                    }).catch(() => isLoading = false)">
+              
+              {{ form_start(importDeckForm, {'attr': {'class': 'w-full'}}) }}
+          
+              <!-- Deck Name Field -->
+              <div class="mb-4">
+                  {{ form_label(importDeckForm.deckName, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                  {{ form_widget(importDeckForm.deckName, {'attr': {
+                      'class': 'w-full rounded-lg border border-gray-400 p-3 text-sm focus:outline-none focus:border-red-800 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300'
+                  }}) }}
+              </div>
+          
+              <!-- Status (Public/Private) Field -->
+              <div class="mb-4">
+                  {{ form_label(importDeckForm.status, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                  {{ form_widget(importDeckForm.status, {'attr': {
+                      'class': 'w-full rounded-lg border border-gray-400 p-2 text-sm focus:outline-none focus:border-red-800'
+                  }}) }}
+              </div>
+          
+              <!-- Format Selection Field -->
+              <div class="mb-4">
+                  {{ form_label(importDeckForm.format, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                  {{ form_widget(importDeckForm.format, {'attr': {
+                      'class': 'w-full rounded-lg border border-gray-400 p-2 text-sm focus:outline-none focus:border-red-800'
+                  }}) }}
+              </div>
+          
+              <!-- Deck List Field -->
+              <div class="mb-4">
+                  {{ form_label(importDeckForm.deckList, 'Liste de cartes', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                  {{ form_widget(importDeckForm.deckList, {'attr': {
+                      'class': 'w-full rounded-lg border border-gray-400 p-2 text-sm focus:outline-none focus:border-red-800 mb-3'
+                  }}) }}
+              </div>
+          
+              <!-- Submit Button -->
+              <div class="flex justify-center">
+                {{form_widget(importDeckForm.importer, {'attr': {
+                  'class': 'w-full rounded-lg bg-white text-red-800 border border-red-800 hover:bg-red-800 px-5 py-3 font-medium hover:text-white sm:w-auto hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300'
+                }})}}
+                {{ form_label(importDeckForm.importer, 'Importer le deck', {'label': 'Importer la liste'}) }}
+  
+              </div>
+          
+              {{ form_end(importDeckForm) }}
+          </form>
+  
+        <!-- Loading animation -->
+        <div x-show="isLoading" class="fixed inset-0 flex justify-center items-center bg-opacity-75 bg-gray-800 z-50">
+            <div class="spinner"></div>
+            <p class="text-white">Deck en cours d'importation, veuillez patienter...</p>
+        </div>
+      
+        <!-- Summary section (where the response will be displayed) -->
+        <div id="import-summary"></div>
+      </div>
     </div>
+  </div>
+  </section>
 </div>
-</section>
+
+
+
 
 {# <form action="{{ path('import_deck_txt', {'user': app.user.id}) }}" method="POST">
   <textarea name="deckList" rows="10" cols="50" placeholder="Enter deck list in 'quantity card_name' format"></textarea>

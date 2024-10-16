@@ -219,43 +219,28 @@ document.querySelectorAll('.filter-mana').forEach(function(checkbox) {
 document.getElementById('filter-mode').addEventListener('change', filterMana);
 
 function filterMana() {
-    // Get the selected filter mode (either 'contains' or 'exact')
     var filterMode = document.getElementById('filter-mode').value;
-    
-    // Get all selected mana colors
-    var selectedColors = Array.from(document.querySelectorAll('.filter-mana:checked'))
-                              .map(function(checkbox) {
-                                  return checkbox.value;
-                              });
-    
-    // Get all the deck cards
+    var selectedColors = Array.from(document.querySelectorAll('.filter-mana:checked')).map(cb => cb.value);
     var cards = document.querySelectorAll('.deck-card');
-    
+
     cards.forEach(function(card) {
-        // Assuming `deck-color-count` contains the JSON string of colorCount
-        var colorCount = JSON.parse(card.getAttribute('data-color-count'));
-        var deckColors = Object.keys(colorCount);
-
-        let matches = false;
-
-        if (filterMode === 'contains') {
-            // "Contains Any" mode: deck must contain at least one of the selected colors
-            matches = selectedColors.some(function(color) {
-                return colorCount.hasOwnProperty(color);
-            });
-        } else if (filterMode === 'exact') {
-            // "Exact Match" mode: deck must have exactly the selected colors (ignores counts)
-            matches = (selectedColors.length === deckColors.length) &&
-                      selectedColors.every(function(color) {
-                          return deckColors.includes(color);
-                      });
+        // Check if colorCount is defined and not null
+        var colorCount = card.dataset.colorCount ? JSON.parse(card.dataset.colorCount) : null;
+        
+        if (colorCount === null) {
+            // If colorCount is null, hide the card
+            card.style.display = 'none';
+            return;
         }
 
-        // Show or hide the card based on the match
-        if (matches || selectedColors.length === 0) {
-            card.style.display = 'block';  // Show if it matches or no color is selected
-        } else {
-            card.style.display = 'none';   // Hide if no match
+        var cardColors = Object.keys(colorCount);
+
+        if (filterMode === 'contains') {
+            var matches = selectedColors.every(color => cardColors.includes(color));
+            card.style.display = matches ? 'block' : 'none';
+        } else if (filterMode === 'exact') {
+            var matches = selectedColors.length === cardColors.length && selectedColors.every(color => cardColors.includes(color));
+            card.style.display = matches ? 'block' : 'none';
         }
     });
 }
