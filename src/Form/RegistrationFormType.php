@@ -30,14 +30,14 @@ class RegistrationFormType extends AbstractType
                     new Length([ 
                         'min' => 4, 
                         'minMessage' => 'Votre nom d\' utilisateur doit avoir un minimum de 4 caractères et un maximum de 12', // message affiché si l'utilisateur tente de s'inscrire sans remplir la condition
-                     
+                        'maxMessage' => 'Votre nom d\' utilisateur doit avoir un minimum de 4 caractères et un maximum de 12',
                         'max' => 12,
                     ])
                 ]
             ]) 
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
-                'label' => 'Accepter les conditions d\'utilisation',
+                'label' => 'J\'ai lu et j\'accepte les <a href="#">conditions</a>',
                 'constraints' => [ // l'utilisateur est obligé d'accepter les conditions pour s'inscrire sinon apparation du message ci-dessous
                     new IsTrue([
                         'message' => 'Veuillez accepter les conditions d\'utilisation du site pour vous inscrire.',
@@ -45,8 +45,6 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
             ->add('plainPassword', RepeatedType::class, [ // utilisation de la classe Repeatedtype pour demander la confirmation du mot de passe
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
                 'mapped' => false,
                 'type' => PasswordType::class, // utilisation de la classe PasswordType pour utiliser les filtres de sécurité implémentés par symfony 
                 'invalid_message' => 'Les mots de passes doivent être identiques', // message si le repeated password n'est pas confirmé
@@ -59,15 +57,9 @@ class RegistrationFormType extends AbstractType
                     new NotBlank([ // contrainte du validateur de symfony, il faut saisir une valeur
                         'message' => 'Veuillez saisir un mot de passe',
                     ]),
-                    new Length([ 
-                        'min' => 8, 
-                        'minMessage' => 'Votre mot de passe doit avoir un minimum de 8 characters', // message affiché si l'utilisateur tente de s'inscrire sans remplir la condition
-                        // max length allowed by Symfony for security reasons
-                        'max' => 4096,
-                    ]),
-                    new Regex([
-                        'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/', // pattern imposé pour la création du mot de passe
-                        'message' => 'Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule, un chiffre et avoir au moins 8 caractères.',
+                    new Regex([ // contrainte du validateur de symfony, le mot de passe doit contenir au minimum 1é caractères, une minuscule, une majuscule, un chiffre et un caractère spécial
+                        'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{12,}$/',
+                        'message' => 'Votre mot de passe doit avoir une longueur minimale de 12 caractères, contenir aux moins une minuscule, une majuscule, un chiffre et un caractère spécial',
                         ])
                 ],
             ])
