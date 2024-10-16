@@ -73,8 +73,8 @@
 
 .bg-gradient-red {
   background-color: #200122;  /* fallback for old browsers */
-  background-color: -webkit-linear-gradient(to right, #6f0000, #200122); 
-  background-color: linear-gradient(to right, #6f0000, #200122); 
+  background: -webkit-linear-gradient(to right, #b31217, #3a0a1b); /* for Safari and Chrome */
+  background: linear-gradient(to right, #b31217, #3a0a1b); /* standard */
 }
 
 .dragon {

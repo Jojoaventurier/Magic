@@ -5,15 +5,36 @@
 {% block body %}
 
 <main>
-    <div class="bg-gradient-purple flex flex-col h-60 w-full items-center justify-end space-y-6 mb-6 p-10">
-        <div class="space-y-2 border border-white p-4 rounded">
+    <div class="gradient-bg flex flex-col flex-wrap w-full items-center justify-end space-y-6 pt-20 pb-10">
 
-            <h1 class="px-6 text-3xl font-medium text-white w-prose">Recherche de cartes</h1>
-            <p class="px-6 text-white italic text-sm">Utilisez les filtres ci-dessous pour affiner votre recherche.</p>
+        <div class="inline-flex space-x-8 w-full justify-center items-center averia-serif-libre-light">
+            <div class="flex w-72 opacity-60">
+                <img src="{{ asset('search-imgs/compulsive.jpg') }}" class=" rounded-xl" id="placeholder1" style="mask-image: linear-gradient(to top, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%), 
+                linear-gradient(to bottom, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%), 
+                linear-gradient(to left, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%), 
+                linear-gradient(to right, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%);
+mask-composite: intersect;">
+            </div>
+
+            <div class="space-y-2 border border-white p-4 rounded">
+                <div class="space-y-2 border border-white p-4 rounded">
+
+                    <h1 class="px-6 text-3xl font-medium text-white w-prose">Recherche de cartes</h1>
+                    <p class="px-6 text-white italic text-sm">Utilisez les filtres ci-dessous pour affiner votre recherche.</p>
+                </div>
+            </div>
+            <div class="flex w-72 opacity-60">
+                <img src="{{ asset('search-imgs/frantic.jpg') }}" class=" rounded-xl" id="placeholder2" style="mask-image: linear-gradient(to top, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%), 
+                linear-gradient(to bottom, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%), 
+                linear-gradient(to left, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%), 
+                linear-gradient(to right, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%);
+mask-composite: intersect;">
+            </div>
         </div>
     </div>
 
-    <div class="flex space-x-8 justify-center items-center p-2 mb-1 sticky top-8 z-10 bg-white">
+<div class="sticky top-4 z-10 bg-white mx-auto pt-4 mt-4 mb-1">
+    <div class="flex space-x-8 justify-center items-center">
 
         {% set active = 'text-sm bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 shadow-md cursor-pointer hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)]duration-300' %}
         {% set inactive = 'text-sm bg-white text-red-700 px-4 py-2 rounded hover:bg-red-900 hover:text-white shadow-md cursor-pointer hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300' %}
@@ -149,7 +170,7 @@
             <button id="reinitializeButton" class="h-10 border border-bg-red-400 text-red-700 hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded shadow-md text-sm">Réinitialiser les filtres</button>
         </div>                             
     </div>
-    <div class="flex flrx-col justify-center items-center w-full sticky top-40 z-30 ">
+    <div class="flex flex-col justify-center items-center z-30 ">
         <div class="flex justify-evenly rounded-md">
             <!-- Conteneur principal pour les options de rareté -->
             <div class="inline-flex space-x-4 p-2 bg-white rounded-md">
@@ -189,8 +210,9 @@
             <p class="text-grey-600 italic text-xs p-2 bg-white rounded-md"><span id="totalCards"></span> cartes trouvées</p>
         </div>
     </div>
+</div>
     
-    <div class="w-full flex justify-center mt-6 pt-4 bg-gradient-purple h-screen">
+    <div class="w-full flex justify-center pt-12 bg-gradient-purple h-screen">
         <!-- Conteneur principal centré pour les cartes -->
         <div class="flex flex-col flex-wrap max-w-4/5 w-4/5 px-10 bg-gradient-purple">
             <!-- Zone où les cartes seront affichées -->
