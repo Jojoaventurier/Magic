@@ -1,15 +1,40 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des decks{% endblock %}
+{% block title %}Recherche de decks{% endblock %}
 
 {% block body %}
 
-<div class="bg-gradient-purple"> <!--light-white-->
+<div class="bg-gradient-purple min-h-screen flex flex-col flex-wrap"> <!--light-white-->
 
-    <h1 class="flex justify-center text-white text-2xl px-6 pt-20 pb-6 mb-6"><span class="border border-white rounded px-6 py-4">Tous les decks</span></h1>
+    <div class="bg-gradient-purple flex flex-col flex-wrap w-full items-center justify-end space-y-6 pt-20 pb-10">
 
+        <div class="inline-flex space-x-8 w-full justify-center items-center averia-serif-libre-light">
+            <div class="flex w-72 opacity-70">
+                <img src="{{ asset('decks-imgs/ritual.jpg') }}" class=" rounded-xl" id="placeholder1" style="mask-image: linear-gradient(to top, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%), 
+                linear-gradient(to bottom, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%), 
+                linear-gradient(to left, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%), 
+                linear-gradient(to right, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%);
+mask-composite: intersect;">
+            </div>
 
-    <div class="max-w-10/12 px-40 py-10">
+            <div class="space-y-2 border border-white p-4 rounded">
+                <div class="space-y-2 border border-white p-4 rounded">
+
+                    <h1 class="px-6 text-3xl font-medium text-white w-prose">Recherche de decks</h1>
+                    <p class="px-6 text-white italic text-sm">Utilisez les filtres ci-dessous pour affiner votre recherche.</p>
+                </div>
+            </div>
+            <div class="flex w-72 opacity-70">
+                <img src="{{ asset('decks-imgs/grim.jpg') }}" class=" rounded-xl" id="placeholder2" style="mask-image: linear-gradient(to top, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%), 
+                linear-gradient(to bottom, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%), 
+                linear-gradient(to left, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%), 
+                linear-gradient(to right, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%);
+mask-composite: intersect;">
+            </div>
+        </div>
+    </div> 
+
+    <div class="w-4/5 mx-auto py-10">
         <div class="flex justify-evenly items-center ml-8 mr-12">
                 <div class="flex flex-row ml-8 space-x-4 text-sm">
                     <a href="{{ path('app_decks', {'param': 'all'}) }}" class="border-2 inline-flex justify-center px-2 py-2 rounded-lg  text-black font-semibold bg-white  hover:bg-red-900 hover:text-white transition duration-300 ease-in-out">Tous les decks</a>
@@ -62,7 +87,7 @@
         </div>
     </div>
 
-    <div class="flex flex-wrap justify-center max-w-10/12 py-12">
+    <div class="flex flex-wrap justify-center max-w-4/5 py-12">
 
         {% for deck in decks %}
 

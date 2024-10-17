@@ -7,7 +7,7 @@
 {% if app.user and user is not defined %}
     {% set user = app.user %}
 {% endif %}
-<div class="h-screen grid bg-gradient-red">
+<div class="h-screen grid bg-gradient-purple">
 <div class="flex flex-wrap justify-center ">
 
     {% if user.twitchUsername is not same as 'twitch.tv/' and user.twitchUsername is not null and user.allowStream is same as true %}
@@ -283,7 +283,9 @@
                     </table>
                 </div>
             </div>
-            
+            {% if app.user is same as user %}
+                
+   
             <!-- "Decks favoris" table -->
             <div class="text-sm overflow-y-auto max-h-[500px]" x-show="showFavDecks" x-transition>
                 <div class="min-h-[400px] max-h-[550px] rounded-md">
@@ -338,6 +340,7 @@
                     </table>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
         

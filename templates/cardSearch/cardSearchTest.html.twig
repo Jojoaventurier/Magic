@@ -4,11 +4,12 @@
 
 {% block body %}
 
-<main>
+<main class="min-h-screen bg-gradient-purple">
+
     <div class="bg-gradient-purple flex flex-col flex-wrap w-full items-center justify-end space-y-6 pt-20 pb-10">
 
         <div class="inline-flex space-x-8 w-full justify-center items-center averia-serif-libre-light">
-            <div class="flex w-72 opacity-60">
+            <div class="flex w-72 opacity-70">
                 <img src="{{ asset('search-imgs/compulsive.jpg') }}" class=" rounded-xl" id="placeholder1" style="mask-image: linear-gradient(to top, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%), 
                 linear-gradient(to bottom, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%), 
                 linear-gradient(to left, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%), 
@@ -23,7 +24,7 @@ mask-composite: intersect;">
                     <p class="px-6 text-white italic text-sm">Utilisez les filtres ci-dessous pour affiner votre recherche.</p>
                 </div>
             </div>
-            <div class="flex w-72 opacity-60">
+            <div class="flex w-72 opacity-70">
                 <img src="{{ asset('search-imgs/frantic.jpg') }}" class=" rounded-xl" id="placeholder2" style="mask-image: linear-gradient(to top, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%), 
                 linear-gradient(to bottom, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%), 
                 linear-gradient(to left, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 1) 25%), 
@@ -33,186 +34,195 @@ mask-composite: intersect;">
         </div>
     </div>
 
-<div class="sticky top-4 z-10 bg-white max-w-fit pt-4 mt-4 mb-1">
-    <div class="flex space-x-8 justify-center items-center">
+    <div x-data="{ showFilters: true }" class="w-full sticky top-9 z-10 flex flex-col items-center">
+        <div class="flex justify-center h-full">
+            <div class="bg-white flex flex-col items-center justify-center max-w-fit p-4 mt-4 mb-1 rounded-md">
+                <div class="inline-flex">     
+                 <!-- Section des filtres -->
+                    <div x-show="showFilters" class="flex space-x-8 justify-center items-center">
 
-        {% set active = 'text-sm bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 shadow-md cursor-pointer hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)]duration-300' %}
-        {% set inactive = 'text-sm bg-white text-red-700 px-4 py-2 rounded hover:bg-red-900 hover:text-white shadow-md cursor-pointer hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300' %}
+                        {% set active = 'text-sm bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 shadow-md cursor-pointer hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)]duration-300' %}
+                        {% set inactive = 'text-sm bg-white text-red-700 px-4 py-2 rounded hover:bg-red-900 hover:text-white shadow-md cursor-pointer hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300' %}
 
-        <div class="flex flex-col space-y-4">
-            <!-- Sélecteur pour filtrer les cartes par type -->
-            <select id="typeSelect" 
-            class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
-                <option value="">Tous les types</option> <!-- Option par défaut qui affiche tous les types de cartes -->
-                <option value="legendary">Légendaire</option> <!--filtrer les cartes par type légendaire-->
-                <option value="creature">Creature</option> <!--filtrer les cartes par type créature etc.-->
-                <option value="artifact">Artefact</option>
-                <option value="enchantment">Enchantement</option>
-                <option value="battle">Bataille</option>
-                <option value="instant">Ephémère</option>
-                <option value="sorcery">Rituel</option>
-                <option value="land">Terrain</option>
-                <option value="planeswalker">Planeswalker</option>
-                <option value="saga">Saga</option>
-            </select>
+                        <div class="flex flex-col space-y-4">
+                            <!-- Sélecteur pour filtrer les cartes par type -->
+                            <select id="typeSelect" 
+                            class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+                                <option value="">Tous les types</option> <!-- Option par défaut qui affiche tous les types de cartes -->
+                                <option value="legendary">Légendaire</option> <!--filtrer les cartes par type légendaire-->
+                                <option value="creature">Creature</option> <!--filtrer les cartes par type créature etc.-->
+                                <option value="artifact">Artefact</option>
+                                <option value="enchantment">Enchantement</option>
+                                <option value="battle">Bataille</option>
+                                <option value="instant">Ephémère</option>
+                                <option value="sorcery">Rituel</option>
+                                <option value="land">Terrain</option>
+                                <option value="planeswalker">Planeswalker</option>
+                                <option value="saga">Saga</option>
+                            </select>
 
-            <select id="subtypeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
-                <option value="">Tous les sous-types</option>
-                <!-- Options sont peuplées dynamiquement en fonction des résultats de la recherche -->
-            </select>
+                            <select id="subtypeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+                                <option value="">Tous les sous-types</option>
+                                <!-- Options sont peuplées dynamiquement en fonction des résultats de la recherche -->
+                            </select>
+                        </div>
+
+                        <div class="border px-4 py-2 border-red-700 rounded hover:bg-gray-100 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+                            <!-- Conteneur pour les options de filtrage par couleur -->
+                            <div class="px-2 space-x-2">
+                                <!-- Option radio pour inclure exactement une couleur -->
+                                <label class="text-sm italic text-gray-700 hover:underline">
+                                    <input name="color" type="radio" checked value="c:" id="colorOnly">
+                                    Incluant exactement
+                                </label>
+                                <!-- Option radio pour inclure séparément une couleur -->
+                                <label class="text-sm italic text-gray-700 hover:underline">
+                                    <input name="color" type="radio" value="ci:" id="colorIncluding">
+                                    Incluant séparément
+                                </label>
+                            </div>
+
+                            <!-- Sélecteur pour choisir les couleurs avec des cases à cocher -->
+                            <div id="colorSelect" class="flex flex-wrap justify-center space-x-4 py-2">
+                                <!-- Cases à cocher pour chaque couleur de mana -->
+                                <label><input type="checkbox" value="W"><img class="w-5" src="/icons/mana/W.webp"></label>
+                                <label><input type="checkbox" value="R"><img class="w-5" src="/icons/mana/R.webp"></label>
+                                <label><input type="checkbox" value="G"><img class="w-5" src="/icons/mana/G.webp"></label>
+                                <label><input type="checkbox" value="B"><img class="w-5" src="/icons/mana/B.webp"></label>
+                                <label><input type="checkbox" value="U"><img class="w-5" src="/icons/mana/U.webp"></label>
+                                <!-- Case à cocher pour le mana incolore -->
+                                <label><input id="colorless" type="checkbox" value="C"><img class="w-5" src="https://svgs.scryfall.io/card-symbols/C.svg" alt="Colorless Mana Symbol"></label>               
+                            </div>
+                        </div>
+                        <div class="flex flex-col space-y-4">
+                        
+                            <div class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+                                <!-- Label pour le sélecteur de coût de mana -->
+                                <label for="cmcSelect">Filtrer par coût de mana :</label>
+
+                                <!-- Sélecteur pour choisir le coût de mana avec différentes options -->
+                                <select id="cmcSelect" class="text-sm rounded focus:ring-2 focus:outline-none outline-none text-center px-2 space-y-1">
+                                    <!-- Option par défaut sans filtre appliqué -->
+                                    <option class="italic" value="">Aucun filtre</option>
+                                    <!-- Options pour les différents coûts de mana de 0 à 20 -->
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                    <option value="15">15</option>
+                                    <option value="16">16</option>
+                                    <option value="17">17</option>
+                                    <option value="18">18</option>
+                                    <option value="20">20</option>
+                                </select>
+                            </div>
+                            <div class="flex flex-col">
+                                <!-- label pour le champ de recherche de set/extension -->
+                                <label class="text-sm">
+                                    Set / Extension <span class="text-xs italic"> exemple : fdn</span>
+                                </label>
+
+                                <!-- Champ de saisie pour rechercher un set/extension -->
+                                <!-- Si le token de recherche est 'set', préremplir le champ avec le paramètre de recherche -->
+                                <input 
+                                    id="setSearch" 
+                                    type="text" 
+                                    class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300"
+                                    {% if searchToken is same as 'set' %}
+                                        value="{{ searchParameter }}"    
+                                    {% endif %}
+                                >
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col flex-wrap">
+                            <!-- Label et case à cocher pour rechercher par nom d'artiste -->
+                            <label class="text-sm hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded-lg">
+                                <!-- Si le token de recherche est 'artist', la case à cocher est cochée par défaut -->
+                                <input id='artistSearch' type="checkbox"
+                                {% if searchToken is same as 'artist' %}
+                                    checked
+                                {% endif %}
+                                > Recherche par nom d'artiste
+                            </label> 
+                            
+                            <!-- Étiquette et case à cocher pour afficher toutes les versions des cartes -->
+                            <label class="text-sm hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded-lg">
+                                <input id='uniquePrints' type="checkbox">
+                                Afficher toutes les versions des cartes
+                            </label>
+                            
+                            <!-- Étiquette et case à cocher pour inclure les extras (jetons, plans, etc.) -->
+                            <label class="text-sm hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded-lg">
+                                <input id='includeExtras' type="checkbox">
+                                Inclure les Extras (jetons, plans...)
+                            </label>
+                        </div>
+                    </div>
+                        <!-- Boutons "Masquer les filtres" et "Réinitialiser les filtres" -->
+                            <div class="flex flex-col items-center justify-center space-y-4">
+                            <button @click="showFilters = !showFilters" class="h-10 border border-red-400 text-red-700 hover:bg-red-800 hover:text-white duration-300 px-4 py-2 rounded shadow-md text-sm">
+                            <span x-text="showFilters ? 'Masquer les filtres' : 'Afficher les filtres'"></span>
+                            </button>
+                            <button id="reinitializeButton" class="h-10 border border-red-400 text-red-700 hover:bg-red-800 hover:text-white duration-300 px-4 py-2 rounded shadow-md text-sm">Réinitialiser les filtres</button>
+                        </div>
+                    </div>
+                
+                    <div class="flex flex-col justify-center items-center z-30 mt-2 ">
+                        <div class="flex justify-evenly rounded-md">
+                            <!-- Conteneur principal pour les options de rareté -->
+                            <div class="inline-flex items-center space-x-4 p-2 bg-white rounded-md">
+                                <!-- Option pour afficher toutes les cartes, option par défaut-->
+                                <div id="rarityAll" class="{{ active }}">Toutes</div>
+                                <!-- Option pour afficher uniquement les cartes mythiques-->
+                                <div id="rarityMythic" class="{{ inactive }}">Mythiques</div>
+                                <!-- Option pour afficher uniquement les cartes rares -->
+                                <div id="rarityRare" class="{{ inactive }}">Rares</div>
+                                <!-- Option pour afficher uniquement les cartes non communes -->
+                                <div id="rarityUncommon" class="{{ inactive }}">Non communes</div>
+                                <!-- Option pour afficher uniquement les cartes communes -->
+                                <div id="rarityCommon" class="{{ inactive }}">Communes</div>
+                            </div>
+
+                            <div class="inline-flex justify-center space-x-3 p-2 bg-white rounded-md">
+                                <!-- Champ de recherche pour entrer un terme -->
+                                <input type="text" id="searchInput" class="border border-red-700 bg-white text-sm rounded px-4 py-2 w-96 focus:ring-2 focus:outline-none outline-none hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" 
+                                {% if searchToken is same as 'artist' or searchToken is same as 'active' %}
+                                {# Remplit le champ avec le paramètre de recherche si le token de recherche est 'artist' ou 'active' #}
+                                    value="{{ searchParameter }}" 
+                                {% endif %}  
+                                placeholder="Entrez un terme de recherche..."> <!-- Indique à l'utilisateur ce qu'il doit entrer -->
+                            
+                                <!-- Icône pour effacer le texte du champ de recherche -->
+                                <img id="eraser" class="w-10 border rounded hover:border-red-800 transition duration-300 hover:shadow-md bg-white" src="https://img.icons8.com/carbon-copy/100/erase.png" alt="eraser to clear text"/>
+                            
+                                <!-- Bouton pour lancer la recherche -->
+                                <button id="searchStart" class="h-10 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] border border-red-700 duration-300 text-sm">Rechercher</button>
+                            
+                                <!-- Bouton pour réinitialiser le champ de recherche -->
+                                <button id="resetSearch" class="h-10 px-4 py-2 text-xs rounded bg-white border-red-700 text-red-700 hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">RESET</button>
+                            </div>
+                        </div>
+                </div>
+            </div>  
         </div>
-
-        <div class="border px-4 py-2 border-red-700 rounded hover:bg-gray-100 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
-            <!-- Conteneur pour les options de filtrage par couleur -->
-            <div class="px-2 space-x-2">
-                <!-- Option radio pour inclure exactement une couleur -->
-                <label class="text-sm italic text-gray-700 hover:underline">
-                    <input name="color" type="radio" checked value="c:" id="colorOnly">
-                    Incluant exactement
-                </label>
-                <!-- Option radio pour inclure séparément une couleur -->
-                <label class="text-sm italic text-gray-700 hover:underline">
-                    <input name="color" type="radio" value="ci:" id="colorIncluding">
-                    Incluant séparément
-                </label>
-            </div>
-
-            <!-- Sélecteur pour choisir les couleurs avec des cases à cocher -->
-            <div id="colorSelect" class="flex flex-wrap justify-center space-x-4 py-2">
-                <!-- Cases à cocher pour chaque couleur de mana -->
-                <label><input type="checkbox" value="W"><img class="w-5" src="/icons/mana/W.webp"></label>
-                <label><input type="checkbox" value="R"><img class="w-5" src="/icons/mana/R.webp"></label>
-                <label><input type="checkbox" value="G"><img class="w-5" src="/icons/mana/G.webp"></label>
-                <label><input type="checkbox" value="B"><img class="w-5" src="/icons/mana/B.webp"></label>
-                <label><input type="checkbox" value="U"><img class="w-5" src="/icons/mana/U.webp"></label>
-                <!-- Case à cocher pour le mana incolore -->
-                <label><input id="colorless" type="checkbox" value="C"><img class="w-5" src="https://svgs.scryfall.io/card-symbols/C.svg" alt="Colorless Mana Symbol"></label>               
-            </div>
+        <div id="count" class="flex justify-center hidden bg-gradient-purple">
+            <div class="text-grey-600 italic text-xs px-2 bg-white rounded-md mx-auto"><span id="totalCards"></span> cartes trouvées</div>
         </div>
-        <div class="flex flex-col space-y-4">
-        
-            <div class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
-                <!-- Label pour le sélecteur de coût de mana -->
-                <label for="cmcSelect">Filtrer par coût de mana :</label>
-
-                <!-- Sélecteur pour choisir le coût de mana avec différentes options -->
-                <select id="cmcSelect" class="text-sm rounded focus:ring-2 focus:outline-none outline-none text-center px-2 space-y-1">
-                    <!-- Option par défaut sans filtre appliqué -->
-                    <option class="italic" value="">Aucun filtre</option>
-                    <!-- Options pour les différents coûts de mana de 0 à 20 -->
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                    <option value="14">14</option>
-                    <option value="15">15</option>
-                    <option value="16">16</option>
-                    <option value="17">17</option>
-                    <option value="18">18</option>
-                    <option value="20">20</option>
-                </select>
-            </div>
-            <div class="flex flex-col">
-                <!-- label pour le champ de recherche de set/extension -->
-                <label class="text-sm">
-                    Set / Extension <span class="text-xs italic"> exemple : fdn</span>
-                </label>
-
-                <!-- Champ de saisie pour rechercher un set/extension -->
-                <!-- Si le token de recherche est 'set', préremplir le champ avec le paramètre de recherche -->
-                <input 
-                    id="setSearch" 
-                    type="text" 
-                    class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300"
-                    {% if searchToken is same as 'set' %}
-                        value="{{ searchParameter }}"    
-                    {% endif %}
-                >
-            </div>
-        </div>
-
-        <div class="flex flex-col flex-wrap">
-            <!-- Label et case à cocher pour rechercher par nom d'artiste -->
-            <label class="text-sm hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded-lg">
-                <!-- Si le token de recherche est 'artist', la case à cocher est cochée par défaut -->
-                <input id='artistSearch' type="checkbox"
-                {% if searchToken is same as 'artist' %}
-                    checked
-                {% endif %}
-                > Recherche par nom d'artiste
-            </label> 
-            
-            <!-- Étiquette et case à cocher pour afficher toutes les versions des cartes -->
-            <label class="text-sm hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded-lg">
-                <input id='uniquePrints' type="checkbox">
-                Afficher toutes les versions des cartes
-            </label>
-            
-            <!-- Étiquette et case à cocher pour inclure les extras (jetons, plans, etc.) -->
-            <label class="text-sm hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded-lg">
-                <input id='includeExtras' type="checkbox">
-                Inclure les Extras (jetons, plans...)
-            </label>
-        </div>
-
-        <div class="flex flex-col items-center justify-center space-y-4">
-            <button id="hideFilters" class="h-10 border border-bg-red-400 text-red-700 hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded shadow-md text-sm">Masquer les filtres</button>
-            <button id="reinitializeButton" class="h-10 border border-bg-red-400 text-red-700 hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded shadow-md text-sm">Réinitialiser les filtres</button>
-        </div>                             
     </div>
-    <div class="flex flex-col justify-center items-center z-30 ">
-        <div class="flex justify-evenly rounded-md">
-            <!-- Conteneur principal pour les options de rareté -->
-            <div class="inline-flex space-x-4 p-2 bg-white rounded-md">
-                <!-- Option pour afficher toutes les cartes, option par défaut-->
-                <div id="rarityAll" class="{{ active }}">Toutes</div>
-                <!-- Option pour afficher uniquement les cartes mythiques-->
-                <div id="rarityMythic" class="{{ inactive }}">Mythiques</div>
-                <!-- Option pour afficher uniquement les cartes rares -->
-                <div id="rarityRare" class="{{ inactive }}">Rares</div>
-                <!-- Option pour afficher uniquement les cartes non communes -->
-                <div id="rarityUncommon" class="{{ inactive }}">Non communes</div>
-                <!-- Option pour afficher uniquement les cartes communes -->
-                <div id="rarityCommon" class="{{ inactive }}">Communes</div>
-            </div>
 
-            <div class="inline-flex justify-center space-x-3 p-2 bg-white rounded-md">
-                <!-- Champ de recherche pour entrer un terme -->
-                <input type="text" id="searchInput" class="border border-red-700 bg-white text-sm rounded px-4 py-2 w-96 focus:ring-2 focus:outline-none outline-none hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" 
-                {% if searchToken is same as 'artist' or searchToken is same as 'active' %}
-                {# Remplit le champ avec le paramètre de recherche si le token de recherche est 'artist' ou 'active' #}
-                    value="{{ searchParameter }}" 
-                {% endif %}  
-                placeholder="Entrez un terme de recherche..."> <!-- Indique à l'utilisateur ce qu'il doit entrer -->
-            
-                <!-- Icône pour effacer le texte du champ de recherche -->
-                <img id="eraser" class="w-10 border rounded hover:border-red-800 transition duration-300 hover:shadow-md bg-white" src="https://img.icons8.com/carbon-copy/100/erase.png" alt="eraser to clear text"/>
-            
-                <!-- Bouton pour lancer la recherche -->
-                <button id="searchStart" class="h-10 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] border border-red-700 duration-300 text-sm">Rechercher</button>
-            
-                <!-- Bouton pour réinitialiser le champ de recherche -->
-                <button id="resetSearch" class="h-10 px-4 py-2 text-xs rounded bg-white border-red-700 text-red-700 hover:bg-red-800 hover:text-white hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">RESET</button>
-            </div>
-
-        </div>
-        <div id="count" class="flex justify-center hidden">
-            <p class="text-grey-600 italic text-xs p-2 bg-white rounded-md"><span id="totalCards"></span> cartes trouvées</p>
-        </div>
-    </div>
-</div>
-    
-    <div class="w-full flex justify-center pt-12 bg-gradient-purple h-screen">
+    <div class="w-full flex justify-center pt-12 bg-gradient-purple">
         <!-- Conteneur principal centré pour les cartes -->
         <div class="flex flex-col flex-wrap max-w-4/5 w-4/5 px-10 bg-gradient-purple">
             <!-- Zone où les cartes seront affichées -->
@@ -227,6 +237,8 @@ mask-composite: intersect;">
     <div id="noCardsMessage" class="hidden text-center text-red-500 mt-4">
         Aucune carte trouvée avec les filtres sélectionnés.
     </div>
+</div>
+    
 </main>
 
 {% block javascripts %}
