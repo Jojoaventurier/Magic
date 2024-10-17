@@ -20,7 +20,7 @@ mask-composite: intersect;">
             <div class="space-y-2 border border-white p-4 rounded">
                 <div class="space-y-2 border border-white p-4 rounded">
 
-                    <h1 class="px-6 text-3xl font-medium text-white w-prose">Recherche de cartes</h1>
+                    <h1 class="px-6 text-3xl font-medium text-white w-prose averia-serif-libre-regular">Recherche de cartes</h1>
                     <p class="px-6 text-white italic text-sm">Utilisez les filtres ci-dessous pour affiner votre recherche.</p>
                 </div>
             </div>
@@ -34,10 +34,10 @@ mask-composite: intersect;">
         </div>
     </div>
 
-    <div x-data="{ showFilters: true }" class="w-full sticky top-9 z-10 flex flex-col items-center">
+    <div x-data="{ showFilters: true }" class="bg-gradient-purple w-full sticky top-9 z-10 flex flex-col items-center">
         <div class="flex justify-center h-full">
-            <div class="bg-white flex flex-col items-center justify-center max-w-fit p-4 mt-4 mb-1 rounded-md">
-                <div class="inline-flex">     
+            <div class=" flex flex-col items-center justify-center max-w-fit p-4 mt-4 mb-1 rounded-md">
+                <div class="inline-flex space-x-2">     
                  <!-- Section des filtres -->
                     <div x-show="showFilters" class="flex space-x-8 justify-center items-center">
 
@@ -47,7 +47,7 @@ mask-composite: intersect;">
                         <div class="flex flex-col space-y-4">
                             <!-- Sélecteur pour filtrer les cartes par type -->
                             <select id="typeSelect" 
-                            class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+                            class="border bg-white border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
                                 <option value="">Tous les types</option> <!-- Option par défaut qui affiche tous les types de cartes -->
                                 <option value="legendary">Légendaire</option> <!--filtrer les cartes par type légendaire-->
                                 <option value="creature">Creature</option> <!--filtrer les cartes par type créature etc.-->
@@ -61,13 +61,13 @@ mask-composite: intersect;">
                                 <option value="saga">Saga</option>
                             </select>
 
-                            <select id="subtypeSelect" class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+                            <select id="subtypeSelect" class="border bg-white border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 h-10 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
                                 <option value="">Tous les sous-types</option>
                                 <!-- Options sont peuplées dynamiquement en fonction des résultats de la recherche -->
                             </select>
                         </div>
 
-                        <div class="border px-4 py-2 border-red-700 rounded hover:bg-gray-100 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+                        <div class="border bg-white px-4 py-2 border-red-700 rounded hover:bg-gray-100 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
                             <!-- Conteneur pour les options de filtrage par couleur -->
                             <div class="px-2 space-x-2">
                                 <!-- Option radio pour inclure exactement une couleur -->
@@ -83,7 +83,7 @@ mask-composite: intersect;">
                             </div>
 
                             <!-- Sélecteur pour choisir les couleurs avec des cases à cocher -->
-                            <div id="colorSelect" class="flex flex-wrap justify-center space-x-4 py-2">
+                            <div id="colorSelect" class="flex bg-white flex-wrap justify-center space-x-4 py-2">
                                 <!-- Cases à cocher pour chaque couleur de mana -->
                                 <label><input type="checkbox" value="W"><img class="w-5" src="/icons/mana/W.webp"></label>
                                 <label><input type="checkbox" value="R"><img class="w-5" src="/icons/mana/R.webp"></label>
@@ -96,7 +96,7 @@ mask-composite: intersect;">
                         </div>
                         <div class="flex flex-col space-y-4">
                         
-                            <div class="border border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+                            <div class="border bg-white border-red-700 text-sm rounded px-4 py-2 focus:ring-2 focus:outline-none outline-none hover:bg-gray-100 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
                                 <!-- Label pour le sélecteur de coût de mana -->
                                 <label for="cmcSelect">Filtrer par coût de mana :</label>
 
@@ -127,7 +127,7 @@ mask-composite: intersect;">
                                     <option value="20">20</option>
                                 </select>
                             </div>
-                            <div class="flex flex-col">
+                            <div class="flex flex-col bg-white p-2 border border-red-700 rounded-md">
                                 <!-- label pour le champ de recherche de set/extension -->
                                 <label class="text-sm">
                                     Set / Extension <span class="text-xs italic"> exemple : fdn</span>
@@ -146,7 +146,7 @@ mask-composite: intersect;">
                             </div>
                         </div>
 
-                        <div class="flex flex-col flex-wrap">
+                        <div class="flex flex-col flex-wrap bg-white border border-red-700 rounded-md">
                             <!-- Label et case à cocher pour rechercher par nom d'artiste -->
                             <label class="text-sm hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300 px-4 py-2 rounded-lg">
                                 <!-- Si le token de recherche est 'artist', la case à cocher est cochée par défaut -->
@@ -172,17 +172,17 @@ mask-composite: intersect;">
                     </div>
                         <!-- Boutons "Masquer les filtres" et "Réinitialiser les filtres" -->
                             <div class="flex flex-col items-center justify-center space-y-4">
-                            <button @click="showFilters = !showFilters" class="h-10 border border-red-400 text-red-700 hover:bg-red-800 hover:text-white duration-300 px-4 py-2 rounded shadow-md text-sm">
+                            <button @click="showFilters = !showFilters" class="h-10 bg-white border border-red-400 text-red-700 hover:bg-red-800 hover:text-white duration-300 px-4 py-2 rounded shadow-md text-sm">
                             <span x-text="showFilters ? 'Masquer les filtres' : 'Afficher les filtres'"></span>
                             </button>
-                            <button id="reinitializeButton" class="h-10 border border-red-400 text-red-700 hover:bg-red-800 hover:text-white duration-300 px-4 py-2 rounded shadow-md text-sm">Réinitialiser les filtres</button>
+                            <button id="reinitializeButton" class="h-10 bg-white border border-red-400 text-red-700 hover:bg-red-800 hover:text-white duration-300 px-4 py-2 rounded shadow-md text-sm">Réinitialiser les filtres</button>
                         </div>
                     </div>
                 
-                    <div class="flex flex-col justify-center items-center z-30 mt-2 ">
-                        <div class="flex justify-evenly rounded-md">
+                    <div class="flex flex-col justify-center items-center z-30 mt-2 rounded-md">
+                        <div class="flex justify-evenly rounded">
                             <!-- Conteneur principal pour les options de rareté -->
-                            <div class="inline-flex items-center space-x-4 p-2 bg-white rounded-md">
+                            <div class="inline-flex items-center space-x-4 p-2 bg-white rounded-l-md">
                                 <!-- Option pour afficher toutes les cartes, option par défaut-->
                                 <div id="rarityAll" class="{{ active }}">Toutes</div>
                                 <!-- Option pour afficher uniquement les cartes mythiques-->
@@ -195,7 +195,7 @@ mask-composite: intersect;">
                                 <div id="rarityCommon" class="{{ inactive }}">Communes</div>
                             </div>
 
-                            <div class="inline-flex justify-center space-x-3 p-2 bg-white rounded-md">
+                            <div class="inline-flex justify-center space-x-3 p-2 bg-white rounded-r-md">
                                 <!-- Champ de recherche pour entrer un terme -->
                                 <input type="text" id="searchInput" class="border border-red-700 bg-white text-sm rounded px-4 py-2 w-96 focus:ring-2 focus:outline-none outline-none hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" 
                                 {% if searchToken is same as 'artist' or searchToken is same as 'active' %}

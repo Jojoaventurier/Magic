@@ -17,7 +17,7 @@
         {% endif %}
 
         <div class="flex flex-col bg-white items-center justify-center h-auto w-[350px] space-y-4 border rounded p-6 m-auto">
-            <h1 class="text-xl">
+            <h1 class="text-xl averia-serif-libre-regular">
                 {{ user.userName }}
             </h1>
                 
@@ -146,8 +146,8 @@
 {% if app.user and app.user is same as user %} 
 {% if messages is defined %}
 <div class="flex justify-center items-center w-full h-full  rounded-md">
-    <div class="flex justify-center items-center space-x-10 rounded-md">
-        <div class="space-y-4">   
+    <div class="flex justify-center space-x-10 rounded-md">
+        <div class="space-y-4 mt-4">   
     {% if messages is empty %}
     {% else %}
             <div x-data="{ isOpen: false }" 
@@ -208,7 +208,7 @@
 
     <!-- Decks Section -->
     <div class="flex flex-col  w-full rounded-md" x-data="{ showMyDecks: true, showFavDecks: false }">
-        <div class="flex justify-center space-x-4 my-6">
+        <div class="flex justify-center space-x-4 mt-4">
             <!-- Button to toggle "Mes decks" -->
             <button class="text-sm bg-white px-2 py-1 border border-red-700 rounded hover:bg-red-800 hover:text-white duration-300"
                     x-on:click="showMyDecks = !showMyDecks; showFavDecks = false">
@@ -228,7 +228,7 @@
             {% endif %}
         </div>
         
-        <div class="flex justify-center mt-6 mx-auto rounded-md">
+        <div class="flex justify-center mt-4 mx-auto rounded-md">
             <!-- "Mes decks" table -->
             <div class="text-sm h-full overflow-y-auto rounded-md" x-show="showMyDecks" x-transition>
                 <div class="min-h-[400px] max-h-[550px] rounded-md">
