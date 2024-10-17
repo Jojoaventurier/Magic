@@ -13,48 +13,61 @@
       </head>
       <body>
 
-<div class="flex w-screen justify-center">
+        <div class="flex w-screen justify-center">
+            <nav id="navbar" class="transition-all flex justify-center duration-500 ease-in-out fixed w-full rounded text-lg top-0 bg-black bg-opacity-0 z-40">
+                <div class="w-4/5 inline-flex justify-between py-5 px-2 text-normal averia-serif-libre-light">
+                    
+                    <!-- Bento Icon for Mobile -->
+                    <div id="bento-icon" class="block cursor-pointer">
+                        <svg class="w-8 h-8 text-white z-50" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M2 3h6v6H2V3zm10 0h6v6h-6V3zM2 11h6v6H2v-6zm10 0h6v6h-6v-6z" />
+                        </svg>
+                    </div>
+        
+                    <!-- Navigation Menu -->
+                    <div id="nav-menu" class="hidden md:flex md:flex-row md:space-x-5 items-center transition-all duration-500 ease-in-out">
+                        <a class="white hover:underline" href="{{ path('app_home') }}">Accueil</a>
+                        <a class="white hover:underline" href="{{ path('all_sets') }}">Sets/extensions</a>
+                        <a class="white hover:underline" href="{{ path('app_search', {'search': 'basic', 'parameter': 'none'}) }}">Recherche de cartes</a>
+                        <a class="white hover:underline" href="{{ path('app_decks', {'param': 'all'}) }}">Decks</a>
+                        <a class="white hover:underline" href="{{ path('app_forum') }}">Forum</a>
+                        
+                        {% if app.user %}
+                            <a class="white hover:underline" href="{{ path('app_articleForm')}}">Article</a>
+                            <a class="white hover:underline" href="{{ path('app_deck_manager', {'id': app.user.id})}}">Mes Decks</a>
+                            <a class="white hover:underline" href="{{ path('chatting') }}">Messagerie</a>
+                            <a class="white hover:underline" href="{{ path('app_profile_self') }}">Mon profil</a>
+                            <a class="white hover:underline" href="{{ path('app_logout') }}">Se déconnecter</a>
+                        {% else %}
+                            <a class="white hover:underline" href="{{ path('app_login') }}">Se connecter</a>
+                            <a class="white hover:underline" href="{{ path('app_register') }}">S'inscrire</a>
+                        {% endif %}
+                    </div>
+        
+                    <!-- Bento Grid Menu -->
+                    <div id="bento-menu" class="hidden absolute top-16 right-0 bg-black bg-opacity-90 text-white grid grid-cols-2 gap-4 p-4 w-64 rounded-lg">
+                        <a href="{{ path('app_home') }}" class="hover:bg-gray-700 p-2 rounded">Accueil</a>
+                        <a href="{{ path('all_sets') }}" class="hover:bg-gray-700 p-2 rounded">Sets/extensions</a>
+                        <a href="{{ path('app_search', {'search': 'basic', 'parameter': 'none'}) }}" class="hover:bg-gray-700 p-2 rounded">Recherche de cartes</a>
+                        <a href="{{ path('app_decks', {'param': 'all'}) }}" class="hover:bg-gray-700 p-2 rounded">Decks</a>
+                        <a href="{{ path('app_forum') }}" class="hover:bg-gray-700 p-2 rounded">Forum</a>
+                        
+                        {% if app.user %}
+                            <a href="{{ path('app_articleForm') }}" class="hover:bg-gray-700 p-2 rounded">Article</a>
+                            <a href="{{ path('app_deck_manager', {'id': app.user.id})}}" class="hover:bg-gray-700 p-2 rounded">Mes Decks</a>
+                            <a href="{{ path('chatting') }}" class="hover:bg-gray-700 p-2 rounded">Messagerie</a>
+                            <a href="{{ path('app_profile_self') }}" class="hover:bg-gray-700 p-2 rounded">Mon profil</a>
+                            <a href="{{ path('app_logout') }}" class="hover:bg-gray-700 p-2 rounded">Se déconnecter</a>
+                        {% else %}
+                            <a href="{{ path('app_login') }}" class="hover:bg-gray-700 p-2 rounded">Se connecter</a>
+                            <a href="{{ path('app_register') }}" class="hover:bg-gray-700 p-2 rounded">S'inscrire</a>
+                        {% endif %}
+                    </div>
+        
+                </div>
+            </nav>
+        </div>
 
-        <nav class="fixed w-4/5 text-lg top-0 inline-flex justify-between py-5 averia-serif-libre-light bg-black bg-opacity-0 z-50">
-            <div class="flex flex-col">
-                <div class="inline-flex space-x-5">
-                <a class="white hover:underline" href="{{ path('app_home') }}">Accueil</a>
-                <a class="white hover:underline" href="{{ path('all_sets') }}">Sets/extensions</a> <!--path('app_all_sets')-->
-                <a class="white hover:underline" href="{{ path('app_search', {'search': 'basic', 'parameter': 'none'}) }}">Recherche de cartes</a>
-                <a class="white hover:underline" href="{{ path('app_decks', {'param': 'all'}) }}">Decks</a>
-                <a class="white hover:underline" href="{{ path('app_forum') }}">Forum</a>
-                {# </div> #}
-                {# <div class="row space-x-2 px-4 averia-serif-libre-light"> #}
-                {% if app.user %}
-                <span class=" text-white">|</span>
-                <a class="white hover:underline" href="{{ path('app_articleForm')}}">Article</a>
-                <a class="white hover:underline" href="{{ path('app_deck_manager', {'id': app.user.id})}}">Mes Decks</a>
-                {% endif %}
-                {# <span class="pr-4 text-white">|</span> #}
-                </div>
-            </div>
-            <div class="flex flex-col">
-                {# <section> #}
-                <div class="space-x-3 averia-serif-libre-light">
-                    {% if app.user %}
-                    {% if app.user.globalChat is same as false and unread_count() > 0 %}
-                        <span class="text-white text-xs italic border-white border p-1">
-                            {{ unread_count() }} 
-                            {{ unread_count() > 1 ? 'nouveaux' : 'nouveau' }} 
-                            message{{ unread_count() > 1 ? 's' : '' }}
-                        </span>
-                    {% endif %}
-                    <a class="white hover:underline" href="{{ path('chatting') }}">Messagerie</a>
-                    <a class="white hover:underline" href="{{ path('app_profile_self') }}">Mon profil</a>
-                    <a class="white hover:underline" href="{{ path('app_logout') }}">Se déconnecter</a>
-                    {% else %}
-                    <a class="white hover:underline" href="{{ path('app_login') }}">Se connecter</a>
-                    <a class="white hover:underline" href="{{ path('app_register') }}">S'inscrire</a>
-                    {% endif %}
-                </div>
-            </div>
-        </nav>
-</div>
         
 {% if app.user %}
     {% if app.user.globalChat is same as true %}
@@ -279,6 +292,7 @@
         </section>
 
         {% endif %}
+
     <script>
             document.addEventListener('alpine:init', () => {
                 Alpine.data('chatBox', () => ({
@@ -552,11 +566,44 @@
           {% block body %}{% endblock %}
 
 
+          <footer class="text-white bg-black bg-opacity-50  text-xs p-4 averia-serif-libre-light">
+            <div class="w-4/5 mx-auto text-center space-y-1">
+                <!-- Liens du footer -->
+                <div class="flex justify-center space-x-4">
+                    <a href="/contact" class="hover:text-gray-400">Contact</a>
+                    <span> | </span>
+                    <a href="/terms" class="hover:text-gray-400">Termes et confidentialité</a>
+                    <span> | </span>
+                    <p class="text-xs">&copy; 2024 Magic-Hub</p>
+                </div>
 
-          {# {% block javascripts %} #}
-          {# <script src="{{ asset('cardDetail.js') }}"></script> #}
-          {# {% block importmap %}{{ importmap('app') }}{% endblock %}  #}
-          {# {% endblock %} #}
-  
+                <!-- Message de non-responsabilité -->
+                <div class="w-full flex justify-center">
+                    <p class="text-xs w-4/5">
+                        Magic: The Gathering est une marque déposée de Wizards of the Coast. Ce site n'est pas affilié à Wizards of the Coast ni à Hasbro.<br> Tous les droits liés à Magic: The Gathering appartiennent à leurs propriétaires respectifs.
+                    </p>
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            window.addEventListener('scroll', function() {
+                const navbar = document.getElementById('navbar');
+                if (window.scrollY > 50) {  // Change the threshold as per your needs
+                    navbar.classList.add('bg-opacity-50', 'shadow-lg');
+                } else {
+                    navbar.classList.remove('bg-opacity-50', 'shadow-lg');
+                }
+            });
+            
+            const bentoIcon = document.getElementById('bento-icon');
+            const bentoMenu = document.getElementById('bento-menu');
+        
+            bentoIcon.addEventListener('click', () => {
+                // Toggle the visibility of the bento menu
+                console.log('clic')
+                bentoMenu.classList.toggle('hidden');
+            });   
+        </script>
     </body>
 </html>

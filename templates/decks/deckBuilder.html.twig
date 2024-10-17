@@ -6,7 +6,7 @@
 
 <h1 class="hidden">Deck Builder</h1>
 
-<div class="bg-gradient-purple flex flex-wrap justify-center items-center space-x-8 w-full pb-8" > <!--style="background: url(' deck.commander.image_uris.art_crop ') no-repeat center center;"-->
+<div class="bg-gradient-purple flex flex-wrap justify-center items-center space-x-8 w-full pt-12 pb-8" > <!--style="background: url(' deck.commander.image_uris.art_crop ') no-repeat center center;"-->
 
 
     <div class="space-y-2 relative block max-w-sm p-6 m-6 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
@@ -149,100 +149,102 @@
         <p class="text-center text-red-600 italic font-semibold border border-red-600 p-2">Vous avez trop de carte dans le deck, veuillez en supprimer pour pouvoir en ajouter d'autres.</p>
     </div>
     {% else %}
+<div id="filtersWrapper" class="flex flex-col justify-center items-center bg-white py-6">
+    <div class="bg-white rounded-md">
+        <div class="flex justify-center items-center mt-3">
+            <div class="flex items-center space-x-2 bg-white  border border-red-700 text-sm py-1 px-2 rounded-lg shadow-md hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">
+                <label for="stateSelector" class="text-red-700 text-sm">Ajouter la carte au</label>
+                <select name="stateSelector" id="stateSelector" class="bg-red-700 text-white text-sm font py-1 px-3 rounded-md  focus:outline-none focus:ring-2 focus:ring-white">
+                    <option value="Mainboard" selected>Mainboard</option>
+                    <option value="Sideboard">Sideboard</option>
+                    <option value="Maybeboard">Maybeboard</option>
+                </select>
+            </div>
+        </div>
+        <div class="flex  flex-wrap justify-center items-center">
+            {% if deck.format.formatName is same as 'Commander / EDH' and deck.commander is same as null %}
+            
+                <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 mx-4">
+                    <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
+                        <label for="searchId" class="sr-only">Rechercher un commandant</label>
+                        <input type="text" class="h-10 search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
+                        <label for="cardSelect" class="sr-only">Choisir une carte</label>
+                    </div>
+                    <select class="card" name="cardName" id="cardSelect"></select>
+                    <button class="h-10 border border-red-700 bg-white text-red-700 px-4 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out" type="button" id="researchStart">Rechercher</button><br>
+                </div>
 
-    <div class="flex justify-center m-4">
-        <div class="flex items-center space-x-2 bg-white  border border-red-700 text-sm py-1 px-2 rounded-lg shadow-md hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300">
-            <label for="stateSelector" class="text-red-700 text-sm">Ajouter la carte au</label>
-            <select name="stateSelector" id="stateSelector" class="bg-red-700 text-white text-sm font py-1 px-3 rounded-md  focus:outline-none focus:ring-2 focus:ring-white">
-                <option value="Mainboard" selected>Mainboard</option>
-                <option value="Sideboard">Sideboard</option>
-                <option value="Maybeboard">Maybeboard</option>
-            </select>
+                <form id="saveCommanderForm" method="post" action="{{ path('save_commander_deck', {'user': deck.user.id, 'deck': deck.id}) }}">
+                    <input type="hidden" id="cardIdInput" name="cardId">
+                    <input type="hidden" id="cardData" name="cardData">
+                    <button id="save" class="border border-red-700 bg-white text-red-700 px-4 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter en tant que commandant</button>
+                </form>
+
+            {% elseif deck.format.formatName is same as 'Commander / EDH' and deck.commander is not null %}
+                <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 mx-4">
+                    <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
+                        <label for="searchId" class="sr-only">Rechercher une carte</label>
+                        <input type="text" class="h-10 inline-flex tracking-wide bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md px-3 focus:outline-none w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
+                        <label for="cardSelect" class="sr-only">Choisir une carte</label>
+                    </div>
+                    <select class="card" name="cardName" id="cardSelect"></select>
+                    <button class="h-10 border border-red-700 bg-white text-red-700 px-4 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out" type="button" id="researchStart">Rechercher</button><br>
+                </div>
+
+                <form id="saveCardWithColorsForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
+                    <input type="hidden" id="cardIdInput" name="cardId">
+                    <input type="hidden" id="cardData" name="cardData">
+                    <input type="hidden" id="colors" value="{{ deck.commander.color_identity|join('') }}">
+                    <button id="save" class="h-10 border border-red-700 bg-white text-red-700 px-4 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter la carte</button>
+                </form>
+                <div class="p-1 m-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 rounded">
+                    <input type="checkbox" id="noRestrictions" name="noRestrictions">
+                    <label for="noRestrictions" class="text-sm italic text-red-700">Ignorer les restrictions du format</label>
+                </div>
+            {% elseif deck.format.formatName is not same as 'Commander / EDH' %}
+
+                <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 mx-4">
+                    <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
+                        <label for="searchId" class="sr-only">Rechercher une carte</label>
+                        <input type="text" class="h-10 search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md  px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
+                        <label for="cardSelect" class="sr-only">Choisir une carte</label>
+                    </div>
+                    <select class="card" name="cardName" id="cardSelect"></select>
+                    <button class="h-10 border border-red-700 bg-white text-red-700 px-4 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out " type="button" id="researchStart">Rechercher</button><br>
+                </div>
+
+                <form id="saveCardFormatForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
+                    <input type="hidden" id="format" value="{{ format }}">
+                    <input type="hidden" id="cardIdInput" name="cardId">
+                    <input type="hidden" id="cardData" name="cardData">
+                    <button id="save" class="h-10 border border-red-700  bg-white text-red-700 px-4 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter la carte</button>
+                </form>
+                <div class="p-1 m-4rounded hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+                    <input type="checkbox" id="noRestrictions" name="noRestrictions">
+                    <label for="noRestrictions" class="text-sm italic text-red-700">Ignorer les restrictions du format</label>
+                </div>
+            {% else %}
+
+                <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 mx-4">
+                    <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
+                        <label for="searchId" class="sr-only">Rechercher une carte</label>
+                        <input type="text" class="h-10 search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
+                        <label for="cardSelect" class="sr-only">Choisir une carte</label>
+                    </div>
+                    <select class="card" name="cardName" id="cardSelect"></select>
+                    <button class="h-10 border border-red-700 bg-white text-red-700 px-4 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out" type="button" id="researchStart">Rechercher</button><br>
+                </div>
+
+                <form id="saveCardForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
+                    <input type="hidden" id="cardIdInput" name="cardId">
+                    <input type="hidden" id="cardData" name="cardData">
+                    <button id="save" class="h-10 border border-red-700 bg-white text-red-700 px-4 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter la carte</button>
+                </form>
+            </div>
+            {% endif %}
         </div>
     </div>
-    <div class="flex  flex-wrap justify-center items-center space-x-4 p-2">
-
-        {% if deck.format.formatName is same as 'Commander / EDH' and deck.commander is same as null %}
-        
-            <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
-                <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
-                    <label for="searchId" class="sr-only">Rechercher un commandant</label>
-                    <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
-                    <label for="cardSelect" class="sr-only">Choisir une carte</label>
-                </div>
-                <select class="card" name="cardName" id="cardSelect"></select>
-                <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out" type="button" id="researchStart">Rechercher</button><br>
-            </div>
-
-            <form id="saveCommanderForm" method="post" action="{{ path('save_commander_deck', {'user': deck.user.id, 'deck': deck.id}) }}">
-                <input type="hidden" id="cardIdInput" name="cardId">
-                <input type="hidden" id="cardData" name="cardData">
-                <button id="save" class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter en tant que commandant</button>
-            </form>
-
-        {% elseif deck.format.formatName is same as 'Commander / EDH' and deck.commander is not null %}
-            <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
-                <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
-                    <label for="searchId" class="sr-only">Rechercher une carte</label>
-                    <input type="text" class="inline-flex tracking-wide bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
-                    <label for="cardSelect" class="sr-only">Choisir une carte</label>
-                </div>
-                <select class="card" name="cardName" id="cardSelect"></select>
-                <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out" type="button" id="researchStart">Rechercher</button><br>
-            </div>
-
-            <form id="saveCardWithColorsForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
-                <input type="hidden" id="cardIdInput" name="cardId">
-                <input type="hidden" id="cardData" name="cardData">
-                <input type="hidden" id="colors" value="{{ deck.commander.color_identity|join('') }}">
-                <button id="save" class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter la carte</button>
-            </form>
-            <div class="p-1 m-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 rounded">
-                <input type="checkbox" id="noRestrictions" name="noRestrictions">
-                <label for="noRestrictions" class="text-sm italic text-red-700">Ignorer les restrictions du format</label>
-            </div>
-        {% elseif deck.format.formatName is not same as 'Commander / EDH' %}
-
-            <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
-                <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
-                    <label for="searchId" class="sr-only">Rechercher une carte</label>
-                    <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
-                    <label for="cardSelect" class="sr-only">Choisir une carte</label>
-                </div>
-                <select class="card" name="cardName" id="cardSelect"></select>
-                <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out " type="button" id="researchStart">Rechercher</button><br>
-            </div>
-
-            <form id="saveCardFormatForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
-                <input type="hidden" id="format" value="{{ format }}">
-                <input type="hidden" id="cardIdInput" name="cardId">
-                <input type="hidden" id="cardData" name="cardData">
-                <button id="save" class="border border-red-700  bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter la carte</button>
-            </form>
-            <div class="p-1 m-4rounded hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
-                <input type="checkbox" id="noRestrictions" name="noRestrictions">
-                <label for="noRestrictions" class="text-sm italic text-red-700">Ignorer les restrictions du format</label>
-            </div>
-        {% else %}
-
-            <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-3 m-4">
-                <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-2 w-full md:w-auto">
-                    <label for="searchId" class="sr-only">Rechercher une carte</label>
-                    <input type="text" class="search bg-white border border-red-700 focus:border-red-900 text-red-900 placeholder-red-700 text-sm rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-900 w-full md:w-64 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300" name="search" id="searchId" placeholder="Cherchez une carte...">
-                    <label for="cardSelect" class="sr-only">Choisir une carte</label>
-                </div>
-                <select class="card" name="cardName" id="cardSelect"></select>
-                <button class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md transition duration-300 ease-in-out" type="button" id="researchStart">Rechercher</button><br>
-            </div>
-
-            <form id="saveCardForm" method="post" action="{{ path('save_card_deck', {'user': deck.user.id, 'deck': deck.id, 'state': 'Mainboard'}) }}">
-                <input type="hidden" id="cardIdInput" name="cardId">
-                <input type="hidden" id="cardData" name="cardData">
-                <button id="save" class="border border-red-700 bg-white text-red-700 px-4 py-2 rounded hover:bg-red-800 hover:text-white shadow-md hidden" type="submit">Ajouter la carte</button>
-            </form>
-        </div>
-        {% endif %}
-
+</div>
 {% endif %}
 {% endif %}
 <div id="responseMessage" class="hidden text-center"></div> <!-- For displaying response messages -->
@@ -254,7 +256,7 @@
 </div>
 
 {# <div id="displayDeck" class="board"> #}
-<div class="light-white p-8 flex flex-wrap justify-center">
+<div class="light-white w-full p-8 m-0 flex flex-wrap justify-center">
     {% set active = 'mb-4 font-semibold bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300' %}
     {% set inactive = 'mb-4 font-semibold bg-white text-red-800 px-4 py-2 rounded hover:bg-red-800 hover:text-white mr-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300' %}
 
@@ -280,11 +282,6 @@
       
       
         <div class="px-8 mt-3 mb-5 w-full">
-        <!--<div class="container mt-3 mb-5">-->
-            <!-- Toggle View Buttons -->
-
-
-
 
             <div class="flex justify-between mb-4 mr-4">
                 <div>
@@ -358,7 +355,13 @@
                                                         {% if element.card.data.legalities[format] is not same as 'legal' %}
                                                         text-grey-400 italic
                                                         {% endif %}"
-                                                        data-image="{{ element.card.data.image_uris.normal }}">
+                                                        
+                                                            
+                                                        data-image="
+                                                        {% if element.card.data.image_uris.normal is defined  %}
+                                                        {{ element.card.data.image_uris.normal }}
+                                                        {% endif %}
+                                                             ">
                                                         {{ element.quantity }}x {{ element.card.data.name }}
                                                     </span>
                                                 </a>
@@ -379,7 +382,7 @@
                                                     {% set colorIdentity = deck.commander.color_identity %} 
                                                     {% set allColorsMatch = true %} {# Assume all colors match initially #}
 
-                                                    {% for color in element.card.data.colors %}
+                                                    {% for color in element.card.data.color_identity %}
                                                         {% if color not in colorIdentity %}
                                                             {% set allColorsMatch = false %} {# If any color doesn't match, set to false #}
                                                         {% endif %}
@@ -428,18 +431,18 @@
                                                     {% if element.quantity > 1 %}
                                                         {% if element.quantity > deck.format.maxQuantity %}
                                                         <a href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
-                                                            <img class="singleCard transform  rounded-xl bg-white shadow-xl transition duration-300 hover:scale-105" src="{{ element.card.data.image_uris.normal }}">
-                                                            <span class="card-span red-span">X{{ element.quantity }}</span>
+                                                            <img class="singleCard transform  rounded-xl bg-white shadow-xl transition duration-300 hover:scale-105" {% if element.card.data.image_uris.normal is defined %}src="{{ element.card.data.image_uris.normal }}{% endif %}">
+                                                            <span class="card-span red-span">X{{ element.quantity }}</span> 
                                                         </a>
                                                         {% else %}
                                                         <a href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
-                                                            <img class="singleCard transform  rounded-xl bg-white shadow-xl transition duration-300 hover:scale-105" src="{{ element.card.data.image_uris.normal }}">
+                                                            <img class="singleCard transform  rounded-xl bg-white shadow-xl transition duration-300 hover:scale-105" {% if element.card.data.image_uris.normal is defined %}src="{{ element.card.data.image_uris.normal }}{% endif %}">
                                                             <span class="card-span white-span">X{{ element.quantity }}</span>
                                                         </a>
                                                         {% endif %}
                                                     {% else %}
                                                     <a href="{{ path('app_card_detail', {'cardId': element.card.data.id }) }}">
-                                                        <img class="singleCard transform  rounded-xl bg-white shadow-xl transition duration-300 hover:scale-105" src="{{ element.card.data.image_uris.normal }}">
+                                                        <img class="singleCard transform  rounded-xl bg-white shadow-xl transition duration-300 hover:scale-105" {% if element.card.data.image_uris.normal is defined %}src="{{ element.card.data.image_uris.normal }}{% endif %}">
                                                     </a>
                                                     {% endif %}
                                                     
@@ -466,7 +469,7 @@
                                                         {% set colorIdentity = deck.commander.color_identity %}
                                                         {% set allColorsMatch = true %} {# Assume all colors match initially #}
                                                         
-                                                        {% for color in element.card.data.colors %}
+                                                        {% for color in element.card.data.color_identity %}
                                                             {% if color not in colorIdentity %}
                                                                 {% set allColorsMatch = false %} {# If any color doesn't match, set to false #}
                                                             {% endif %}
@@ -539,7 +542,7 @@
                                         {% set colorIdentity = deck.commander.colors %}
                                         {% set allColorsMatch = true %} {# Assume all colors match initially #}
         
-                                        {% for color in element.card.data.colors %}
+                                        {% for color in element.card.data.color_identity %}
                                             {% if color not in colorIdentity %}
                                                 {% set allColorsMatch = false %} {# If any color doesn't match, set to false #}
                                             {% endif %}
@@ -599,7 +602,7 @@
                                         {% set colorIdentity = deck.commander.colors %}
                                         {% set allColorsMatch = true %} {# Assume all colors match initially #}
         
-                                        {% for color in element.card.data.colors %}
+                                        {% for color in element.card.data.color_identity %}
                                             {% if color not in colorIdentity %}
                                                 {% set allColorsMatch = false %} {# If any color doesn't match, set to false #}
                                             {% endif %}
@@ -714,7 +717,7 @@
     
 {# </div> #}
 
-{% block javascripts %} 
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>  //TODO max number of cards
 
@@ -1160,4 +1163,4 @@
 </script>
 
 {% endblock %}
-{% endblock %}
+

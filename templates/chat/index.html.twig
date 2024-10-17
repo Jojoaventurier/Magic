@@ -76,7 +76,7 @@
                     </ul>
                 </div>
                 {% endif %}
-            </div>
+        </div>
 
 
         <!-- Chat Box -->
@@ -156,22 +156,8 @@
         </div>
     </div>
 </div>
+</div>
 
-
-<div>
-    <!-- Search bar -->
-    
-
-    {# <!-- Filtered user list -->
-    <div id="user-list">
-        {% for user in app.user.followingUsers %}
-            <form action="{{ path('chatting') }}" method="POST" class="user-form">
-                <input type="hidden" value="{{ user.id }}" name="otherUserId">
-                <input type="submit" class="text-sm px-4 py-1 hover:text-red-600 hover:underline cursor-pointer" value="{{ user.userName }}">
-            </form>
-        {% endfor %}
-    </div>
-</div> #}
 
 <script>
     function filterUsers() {
@@ -194,84 +180,5 @@
         });
     }
 </script>
-
-
-
-
-
-
-
-{# 
-<script>
-
-
-    const searchInput = document.querySelector('.input');
-    const list = document.getElementById('list'); // Refers to the results container (the ul with id="list")
-    const clearButton = document.getElementById('clear');
-    
-    // Populate the persons array with usernames from the DOM
-    let userElements = document.getElementsByClassName('userLine');
-    let persons = [];
-    
-    for (let i = 0; i < userElements.length; i++) {
-        persons.push({
-            name: userElements[i].textContent.trim() // Store the person's name
-        });
-    }
-    
-    // Clear button functionality
-    clearButton.addEventListener("click", (e) => {
-        e.preventDefault(); // Prevent form submission
-        clearList();
-        searchInput.value = ''; // Clear the input field
-    });
-    
-    // Search input functionality
-    searchInput.addEventListener("input", (e) => {
-        let value = e.target.value;
-    
-        if (value && value.trim().length > 0) {
-            value = value.trim().toLowerCase();
-            const filteredResults = persons.filter(person => 
-                person.name.toLowerCase().includes(value)
-            );
-            setList(filteredResults); // Update the list with filtered results
-        } else {
-            clearList(); // Clear the list when input is empty
-        }
-    });
-    
-    // Clear the list of results
-    function clearList() {
-        list.innerHTML = ""; // Clear the inner HTML of the list element
-    }
-    
-    // Populate the list with filtered results
-    function setList(results) {
-        clearList(); // Clear the current list before adding new results
-    
-        for (const person of results) {
-            const resultItem = document.createElement('li');
-            resultItem.classList.add('result-item');
-            const text = document.createTextNode(person.name);
-            resultItem.appendChild(text);
-            list.appendChild(resultItem); // Append the result item to the list
-        }
-    
-        if (results.length === 0) {
-            noResults();
-        }
-    }
-    
-    // Display a "No results" message when no results are found
-    function noResults() {
-        const error = document.createElement('li');
-        error.classList.add('error-message');
-        const text = document.createTextNode('No results found. Sorry!');
-        error.appendChild(text);
-        list.appendChild(error);
-    }
-
-</script> #}
 
 {% endblock %}

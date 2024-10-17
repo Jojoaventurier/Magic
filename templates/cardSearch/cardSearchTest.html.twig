@@ -17,7 +17,7 @@
 mask-composite: intersect;">
             </div>
 
-            <div class="space-y-2 border border-white p-4 rounded">
+            <div class="space-y-2 p-4 rounded">
                 <div class="space-y-2 border border-white p-4 rounded">
 
                     <h1 class="px-6 text-3xl font-medium text-white w-prose averia-serif-libre-regular">Recherche de cartes</h1>
@@ -36,7 +36,7 @@ mask-composite: intersect;">
 
     <div x-data="{ showFilters: true }" class="bg-gradient-purple w-full sticky top-9 z-10 flex flex-col items-center">
         <div class="flex justify-center h-full">
-            <div class=" flex flex-col items-center justify-center max-w-fit p-4 mt-4 mb-1 rounded-md">
+            <div id="filterDiv" class="bg-white flex flex-col items-center justify-center max-w-fit p-4 mt-4 mb-1 rounded-md">
                 <div class="inline-flex space-x-2">     
                  <!-- Section des filtres -->
                     <div x-show="showFilters" class="flex space-x-8 justify-center items-center">
@@ -171,8 +171,8 @@ mask-composite: intersect;">
                         </div>
                     </div>
                         <!-- Boutons "Masquer les filtres" et "Réinitialiser les filtres" -->
-                            <div class="flex flex-col items-center justify-center space-y-4">
-                            <button @click="showFilters = !showFilters" class="h-10 bg-white border border-red-400 text-red-700 hover:bg-red-800 hover:text-white duration-300 px-4 py-2 rounded shadow-md text-sm">
+                        <div id="buttonsDiv" class="flex flex-col items-center justify-center space-y-4">
+                            <button id="hideFiltersButton" @click="showFilters = !showFilters" class="h-10 bg-white border border-red-400 text-red-700 hover:bg-red-800 hover:text-white duration-300 px-4 py-2 rounded shadow-md text-sm">
                             <span x-text="showFilters ? 'Masquer les filtres' : 'Afficher les filtres'"></span>
                             </button>
                             <button id="reinitializeButton" class="h-10 bg-white border border-red-400 text-red-700 hover:bg-red-800 hover:text-white duration-300 px-4 py-2 rounded shadow-md text-sm">Réinitialiser les filtres</button>
@@ -241,7 +241,6 @@ mask-composite: intersect;">
     
 </main>
 
-{% block javascripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Page chargée et script exécuté!');
@@ -626,6 +625,34 @@ resetSearch.addEventListener('click', function() {
     }
 });
 
+let hideFiltersButton = document.getElementById('hideFiltersButton')
+hideFiltersButton.addEventListener('click', toggleStyles)
+
+function toggleStyles() {
+    var filterDiv = document.getElementById("filterDiv");
+    var buttonsDiv = document.getElementById("buttonsDiv")
+    var hidingButton = document.getElementById("hidingButton")
+
+    // Toggle background color class
+    if (filterDiv.classList.contains("bg-white")) {
+        filterDiv.classList.remove("bg-white");
+        filterDiv.classList.add("bg-gradient-purple");
+    } else {
+        filterDiv.classList.remove("bg-gradient-purple");
+        filterDiv.classList.add("bg-white");
+    }
+
+    // Toggle flex to inline-flex
+    if (buttonsDiv.classList.contains("flex", "flex-col")) {
+        buttonsDiv.classList.remove("flex", "flex-col");
+        buttonsDiv.classList.add("inline-flex", "items-center", "space-x-4");
+        hideFiltersButton.classList.add("mt-4")
+    } else {
+        buttonsDiv.classList.remove("inline-flex", "items-center", "space-x-4");
+        buttonsDiv.classList.add("flex", "flex-col");
+    }
+}
+
 // Dans le cas d'une redirection depuis une extension ou depuis le lien sur le détail d'une carte pour la recherche par artistes
 // Si la page est chargée avec une valeur dans la barre de recherche, une recherche est lancée automatiquement
 if (searchInput.value) {
@@ -638,5 +665,5 @@ if (setInput.value) {
 });
 </script>
 {% endblock %}
-{% endblock %}
+
 
