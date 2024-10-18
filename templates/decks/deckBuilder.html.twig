@@ -960,7 +960,7 @@
             const typeCount = JSON.parse(document.getElementById('typeCount').value);
             const subtypeCount = JSON.parse(document.getElementById('subtypeCount').value);
             const cmcCount = JSON.parse(document.getElementById('cmcCount').value);
-            console.log(manaColorCount);
+            //console.log(manaColorCount);
 
             // Create a mapping of mana symbols to their corresponding names and colors
             const manaColorDetails = {
@@ -984,7 +984,8 @@
                     datasets: [{
                         data: Object.values(manaColorCount),
                         backgroundColor: backgroundColors, // Use the specific color for each mana type
-                        borderWidth: 1
+                        borderWidth: 1,
+                        hoverOffset: 4
                     }]
                 },
                 options: {
@@ -1008,7 +1009,8 @@
                     data: Object.values(typeCount),
                     backgroundColor: '#4caf50',
                     borderColor: '#388e3c',
-                    borderWidth: 1
+                    borderWidth: 1,
+                    hoverOffset: 4
                 }]
             },
             options: {
@@ -1049,7 +1051,8 @@
                     data: Object.values(subtypeCount),
                     backgroundColor: '#ffcc66',
                     borderColor: '#ff9933',
-                    borderWidth: 1
+                    borderWidth: 1,
+                    hoverOffset: 4
                 }]
             },
             options: {
@@ -1094,7 +1097,8 @@
                         data: cmcData, // Quantities for each CMC
                         backgroundColor: 'rgba(54, 162, 235, 0.2)',
                         borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
+                        borderWidth: 1,
+                        hoverOffset: 4
                     }]
                 },
                 options: {
