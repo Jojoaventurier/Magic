@@ -17,12 +17,12 @@
                 <h2>Communauté ]</h2>
             </div> #}
             <h1 class='white title-homepage justify-center averia-serif-libre-regular'>Bienvenue sur <br><span class="bold">Magic-Hub</span></h1>
-            <div id='mana-homepage' class="row space-x-4 mt-4">
-                <img class="big-mana low-opacity" src='{{ asset('img/arbreuh.webp')}}'>
-                <img class="big-mana low-opacity"  src='{{ asset('img/flamme.webp')}}'>
-                <img class="big-mana low-opacity"  src='{{ asset('img/goutte.webp')}}'>
-                <img class="big-mana low-opacity"  src='{{ asset('img/mortmort.webp')}}'>
-                <img class="big-mana low-opacity"  src='{{ asset('img/soleil.webp')}}'>
+            <div id='mana-homepage' class="row space-x-4 mt-4 z-50">
+                <img class="big-mana low-opacity animate-spin-slow" src='{{ asset('img/arbreuh.webp')}}'>
+                <img class="big-mana low-opacity animate-spin-slow"  src='{{ asset('img/flamme.webp')}}'>
+                <img class="big-mana low-opacity animate-spin-slow"  src='{{ asset('img/goutte.webp')}}'>
+                <img class="big-mana low-opacity animate-spin-slow"  src='{{ asset('img/mortmort.webp')}}'>
+                <img class="big-mana low-opacity animate-spin-slow"  src='{{ asset('img/soleil.webp')}}'>
             </div>
             
         </div>
@@ -51,198 +51,19 @@
 
             <div class="ninety">
                 <div class="flex justify-center">
-
                     <input type="text" class="search-field w-4/5 rounded-md border-gray-200 p-2 py-2.5 pe-10 shadow-sm sm:text-sm focus:outline-none" name="search" id="searchId" placeholder="Cherchez une carte...">
                     <a id="searchUrl" href="#" class="text-white font-semibold border-2 ml-2 p-2 border-white rounded-md hover:bg-white hover:text-red-700 duration-300">
                         GO
                     </a>
-
-                </div>
-
-                {# <div class="row center mt-4">
-                    <a href="{{ path('app_search', {'search': 'basic', 'parameter': 'none'}) }}" class="text-white font-semibold border-2 bg-red-900 bg-opacity-10 border ml-2 p-2 border-white rounded-md hover:bg-white hover:text-red-700 duration-300 mx-6 my-3 sm:text-sm">RECHERCHE AVANCEE</a>
-                    <a href="{{ path('all_sets') }}" class="text-white font-semibold border-2 bg-red-900 bg-opacity-10 border ml-2 p-2 border-white rounded-md hover:bg-white hover:text-red-700 duration-300 mx-6 my-3 sm:text-sm">TOUS LES SETS</a>
-                </div> #}
-            </div>
-            
-        </div>
-    </div>
-
-</div>
-
-<!-- Main Container -->
-<div class="container bg-gray-100 mx-auto p-4 border">
-        
-    <!-- Spoiler Subsection -->
-    <div class="bg-white p-6 rounded shadow-lg mb-8">
-        <h2 class="text-2xl font-semibold mb-4">Latest Spoilers</h2>
-
-        <!-- Card Carousel -->
-        <div class="glide" id="spoiler-carousel">
-            <div class="glide__track" data-glide-el="track">
-                <ul class="glide__slides">
-                    <li class="glide__slide">
-                        <img src="https://www.mythicspoiler.com/dsk/cards/overlordofthemistmoors.jpg" alt="Spoiler Card 1" class="border border-gray-300 h-40 w-28 transition-transform transform hover:scale-105 cursor-pointer" onclick="enlargeCard(this.src)">
-                    </li>
-                    <li class="glide__slide">
-                        <img src="https://www.mythicspoiler.com/dsk/cards/overlordofthefloodpits.jpg" alt="Spoiler Card 2" class="border border-gray-300 h-40 w-28 transition-transform transform hover:scale-105 cursor-pointer" onclick="enlargeCard(this.src)">
-                    </li>
-                    <li class="glide__slide">
-                        <img src="https://www.mythicspoiler.com/dsk/cards/valgavothterroreater.jpg" alt="Spoiler Card 3" class="border border-gray-300 h-40 w-28 transition-transform transform hover:scale-105 cursor-pointer" onclick="enlargeCard(this.src)">
-                    </li>
-                    <li class="glide__slide">
-                        <img src="https://www.mythicspoiler.com/dsk/cards/overlordoftheboilerbilge.jpg" alt="Spoiler Card 3" class="border border-gray-300 h-40 w-28 transition-transform transform hover:scale-105 cursor-pointer" onclick="enlargeCard(this.src)">
-                    </li>
-                    <li class="glide__slide">
-                        <img src="https://www.mythicspoiler.com/dsk/cards/overlordofthehauntwoodsf.jpg" alt="Spoiler Card 3" class="border border-gray-300 h-40 w-28 transition-transform transform hover:scale-105 cursor-pointer" onclick="enlargeCard(this.src)">
-                    </li>
-                    <li class="glide__slide">
-                        <img src="https://www.mythicspoiler.com/dsk/cards/thewanderingrescuer.jpg" alt="Spoiler Card 3" class="border border-gray-300 h-40 w-28 transition-transform transform hover:scale-105 cursor-pointer" onclick="enlargeCard(this.src)">
-                    </li>
-                    <!-- Add more slides if needed -->
-                </ul>
-            </div>
-
-            <!-- Glide Arrows -->
-            <div class="glide__arrows" data-glide-el="controls">
-                <button class="glide__arrow glide__arrow--left" data-glide-dir="<">&lt;</button>
-                <button class="glide__arrow glide__arrow--right" data-glide-dir=">">&gt;</button>
-            </div>
-        </div>
-
-        <!-- Upcoming Releases -->
-        <div class="mt-4">
-            <p class="text-sm text-gray-600">Upcoming Releases: Oct 15, Dec 5</p>
-            <a href="https://www.aetherhub.com" class="text-blue-500 underline mr-4">AetherHub Spoilers</a>
-            <a href="https://mythicspoiler.com" class="text-blue-500 underline">Mythic Spoilers</a>
-        </div>
-    </div>
-
-        <!-- Modal for Card Enlargement -->
-        <div id="card-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 hidden justify-center items-center">
-            <div class="bg-white p-4 rounded-lg relative">
-                <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-700" onclick="closeModal()">X</button>
-                <img id="modal-img" src="" alt="Card Image" class="max-h-screen max-w-full">
-            </div>
-        </div>
-
-    <!-- Article/News Subsection -->
-    <div class="bg-white p-6 rounded shadow-lg mb-8 flex flex-col justify-center items-center border">
-        <h2 class="text-2xl font-semibold mb-4">Article News</h2>
-        <div class="flex">
-            <img src="https://via.placeholder.com/150" alt="Article Image" class="h-40 w-40 rounded mr-6">
-            <div>
-                <h3 class="text-xl font-semibold">Interesting New Mechanics</h3>
-                <p class="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sit amet tristique augue...</p>
-                <div class="mt-2">
-                    <a href="/author/john-doe" class="text-blue-500 underline">John Doe</a>
-                    <span class="text-gray-500 ml-4">Sept 1, 2024</span>
                 </div>
             </div>
         </div>
     </div>
-=
-
-
-
-    <!-- Artist of the Week Subsection -->
-    <div class="bg-white p-6 rounded shadow-lg flex flex-col justify-center items-center">
-        <h2 class="text-2xl font-semibold mb-4">Artist of the Week: John Avon</h2>
-        <div class="flex">
-            <img  alt="Artist John Avon" class="h-40 w-40 rounded mr-6">
-            <div>
-                <p class="text-gray-700">John Avon is known for his incredible landscapes in MTG. Check out his latest work and cards he's illustrated.</p>
-                <a href="/search-card/john-avon" class="text-blue-500 underline mt-2">View John Avon's Cards</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Video of the Week Subsection -->
-    <div class="bg-white p-6 rounded shadow-lg flex flex-col justify-center items-center">
-        <h2 class="text-2xl font-semibold mb-4">Video of the Week</h2>
-        <iframe class="w-auto h-64 border"></iframe>
-        {# <iframe class="w-full h-64" src="https://www.youtube.com/embed/videoid"></iframe> #}
-        <p class="text-gray-700 mt-4">Check out the latest gameplay video by popular MTG streamer!</p>
-        <a href="/content-creator" class="text-blue-500 underline">More Content from this Creator</a>
-    </div>
-
-    <!-- Website of the Week Subsection -->
-    <div class="bg-white p-6 rounded shadow-lg flex flex-col justify-center items-center">
-        <h2 class="text-2xl font-semibold mb-4">Website of the Week</h2>
-        <div class="flex">
-            <img src="" alt="Website Thumbnail" class="h-40 w-40 rounded mr-6">
-            <div>
-                <p class="text-gray-700">Check out this awesome MTG resource for deck building!</p>
-                <a href="" class="text-blue-500 underline">Visit MTGWebsite</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Mechanic of the Week Subsection -->
-    <div class="bg-white p-6 rounded shadow-lg flex flex-col justify-center items-center">
-        <h2 class="text-2xl font-semibold mb-4">Mechanic of the Week</h2>
-        <p class="text-gray-700">Explore the new mechanics from the latest set and how they interact in combo decks.</p>
-        <h3>Decks using this mechanic</h3>
-        <a>link 1</a>
-        <a>link 1</a>
-        <a>link 1</a>
-    </div>
-
-    <!-- Prime Member of the Week Subsection -->
-    <div class="bg-white p-6 rounded shadow-lg flex flex-col justify-center items-center">
-        <h2 class="text-2xl font-semibold mb-4">Prime Member of the Week</h2>
-        <div class="flex">
-            <img src="" alt="Prime Member" class="h-40 w-40 rounded mr-6">
-            <div>
-                <p class="text-gray-700">This week’s prime member has contributed the most popular decks and insights.</p>
-                <a href="/member-profile" class="text-blue-500 underline">View Profile</a>
-            </div>
-        </div>
-    </div>
-
-</div>
-    
-    <!-- Footer -->
-    <footer class="text-center py-4">
-        <p class="text-gray-600">&copy; 2024 MTG Weekly Content. All rights reserved.</p>
-    </footer>
-    
 </div>
 
-<!-- Optional JS Libraries for Carousel -->
 
-<script src="https://cdn.jsdelivr.net/npm/@glidejs/glide@3.5.2/dist/glide.min.js"></script>
-
-    <!-- JavaScript Code -->
     <script>
-        window.onload = function() {
-            const spoilerCarousel = document.querySelector('#spoiler-carousel');
-            if (spoilerCarousel) {
-                const glide = new Glide(spoilerCarousel, {
-                    type: 'carousel',
-                    perView: 3,
-                    gap: 20
-                });
-                glide.mount();
-            } else {
-                console.error('Spoiler carousel not found');
-            }
 
-            function enlargeCard(src) {
-                const modal = document.createElement('div');
-                modal.classList.add('fixed', 'inset-0', 'bg-black', 'bg-opacity-75', 'flex', 'justify-center', 'items-center', 'z-50');
-    
-                const card = document.createElement('img');
-                card.src = src;
-                card.classList.add('h-auto', 'w-auto', 'max-w-screen-sm', 'shadow-lg', 'rounded');
-    
-                modal.onclick = function() {
-                    modal.remove();
-                };
-    
-                modal.appendChild(card);
-                document.body.appendChild(modal);
-            }
 
             const searchUrl = "{{ path('app_search', {'search': 'active', 'parameter': 'PLACEHOLDER'}) }}"
 
@@ -257,7 +78,7 @@
                 link.href = updatedUrl;
             }
         })
-    }
+    
         
     </script>
 {% endblock %}

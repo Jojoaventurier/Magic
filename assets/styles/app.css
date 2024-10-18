@@ -95,6 +95,26 @@ body {
   background: linear-gradient(to left, #5a0a0a, #200122); 
 } */
 
+/* Spin Animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 4s linear infinite; /* Durée de 4 secondes pour un tour complet */
+}
+
+/* Optionnel : style de transition pour low-opacity */
+.low-opacity:hover {
+  opacity: 1; /* Pour augmenter l'opacité au survol */
+  transition: opacity 0.3s ease;
+}
+
 .dragon {
   background-image: 
       url("/tests/shivan.webp");
