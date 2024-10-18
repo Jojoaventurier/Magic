@@ -6,18 +6,18 @@
 
 <input id="cardInput" type="hidden" value="{{ cardId }}">
 
-<div id="container" class="flex flex-wrap justify-center items-center w-screen">
+<div id="container" class="flex flex-wrap mt-10 justify-center items-center min-h-4/5 w-screen">
 
-    <div class="flex flex-col items-center space-y-2 text-sm hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 m-6 rounded p-4">
-        <h3 class="px-2 py-1 bg-red-700 text-white rounded">Versions de la carte</h3>
+    <div class="bg-white flex flex-col items-center space-y-2 text-sm shadow duration-300 m-6 rounded pt-2">
+        <h3 class="px-2 py-1 text-black border rounded">Versions de la carte</h3>
         <div id="printings" class="text-sm p-2 hidden max-h-[60vh] overflow-y-auto">
         </div>
     </div>
 
 
    <!--<div id="detailBoard" class="hover:shadow-[5px_5px_0px_0px_rgba(0,_0,_0,_0.5)] hover:border transition-all shadow-md ease-in-out duration-300 rounded-lg flex flex-wrap justify-center m-8 p-10 space-x-8">--> 
-    <div  class=" hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 rounded-lg m-8">
-        <div id="detailBoard" class="flex flex-wrap justify-center p-10 space-x-8">
+    <div  class=" rounded-md p-4">
+        <div id="detailBoard" class="bg-white rounded-t-md flex flex-wrap justify-center p-6 space-x-8">
             <div id="placeholder" class="xl:w-96 lg:w-80 object-cover">
             </div>
 
@@ -36,7 +36,7 @@
             </div>
         </div>
 
-        <div class="flex flex-col items-center">
+        <div class="bg-white flex flex-col items-center">
             <div>
                 <p id="cardSet" class="border-t pt-4">
                     <!-- Card set and artist details will be inserted here -->
@@ -52,7 +52,7 @@
                 </a>
             </div>
         </div>
-        <div class="flex flex-col justify-center items-center p-4">
+        <div class="bg-white flex flex-col justify-center items-center p-4 rounded-b-md">
               <!-- Button to trigger the image download options -->
               <button id="download-button" class="text-xs p-2 rounded hover:underline">
                 Télécharger la carte
@@ -73,7 +73,7 @@
 
 
     <div class="flex flex-col space-y-4">
-        <div class="text-sm p-4 m-6 flex flex-col space-y-2 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 rounded">
+        <div class="bg-white text-sm p-4 m-6 flex flex-col space-y-2 rounded">
             <a id="edhrec" href="#" target="_blank" class="hover:underline">Voir la carte sur <strong>EDHREC</strong></a>
             <a id="tappedOut" href="#" target="_blank" class="hover:underline">Voir la carte sur <strong>Tapped Out</strong></a>
             <a id="spellbook" href="#" target="_blank" class="hover:underline">Voir la carte sur <strong>Commander Spellbook</strong></a>
@@ -82,8 +82,8 @@
         </div>
 
 
-        <div class="flex flex-col text-center m-6 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300 rounded">
-            <h3 class="px-2 py-1 mb-4 border text-black rounded text-sm m-auto">Légalité de la carte</h3>
+        <div class="bg-white flex flex-col text-center m-6  rounded">
+            <h3 class="mt-2 mx-auto px-2 py-1 border text-black rounded text-sm">Légalité de la carte</h3>
             <div id="legalities" class="text-xs p-4 grid grid-cols-2 gap-y-3 gap-x-2 text-left rounded">
             </div>
         </div>
@@ -95,7 +95,7 @@
 
 
 <div class="flex justify-center w-screen">
-    <div class="flex flex-col justif-center items-center p-4 space-y-1 m-6 rounded ml-8 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300">
+    <div class="bg-white flex flex-col justif-center items-center p-4 space-y-1 m-6 rounded ml-8">
         <p class="py-2 border-t border-b">Rang EDHREC : <span id="edhrecRank" class="font-semibold"></span></p>
         <p class="text-sm">Prix normal : <span id="price" class="font-semibold"></span></p>
         <p class="text-sm">Prix Foil : <span id="priceFoil" class="font-semibold"></span></p>

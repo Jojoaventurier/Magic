@@ -76,6 +76,13 @@ body {
   background-color: linear-gradient(to right, #6f0000, #200122); 
 }
 
+.bg-purple-opacity {
+  background-color: #200122;  /* fallback for old browsers */
+  background-color: -webkit-linear-gradient(to right, #6f0000, #200122); 
+  background-color: linear-gradient(to right, #6f0000, #200122); 
+  background-blend-mode: 0.5;
+}
+
 .bg-gradient-red {
   background-color: #200122;  /* fallback for old browsers */
   background: -webkit-linear-gradient(to left, #4d0303, #200122); /* for Safari and Chrome */
@@ -87,6 +94,26 @@ body {
   background: -webkit-linear-gradient(to left, #5a0a0a, #200122); 
   background: linear-gradient(to left, #5a0a0a, #200122); 
 } */
+
+/* Spin Animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 4s linear infinite; /* Durée de 4 secondes pour un tour complet */
+}
+
+/* Optionnel : style de transition pour low-opacity */
+.low-opacity:hover {
+  opacity: 1; /* Pour augmenter l'opacité au survol */
+  transition: opacity 0.3s ease;
+}
 
 .dragon {
   background-image: 
@@ -200,16 +227,6 @@ height: 100vh;
   opacity: 0.4;
 }
 
- /* nav {
-  background: #200122;  
-  background: -webkit-linear-gradient(to right, #6f0000, #200122); 
-  background: linear-gradient(to right, #6f0000, #200122); 
-}  */
-  /* nav {
-    background:rgba(0, 0, 0)
-  } */
-
-
 /*===========================================     HOMEPAGE     ================================================*/
 
 .search-field {
@@ -319,7 +336,7 @@ height: 100vh;
     height: auto;
   }
 
-  /*===========================================     DECK CONSULT     =============================================*/
+  /*===========================================     DECK BUILDER     =============================================*/
 
 
 .list-none {
