@@ -256,6 +256,7 @@
 </div>
 
 {# <div id="displayDeck" class="board"> #}
+<div class="bg-white">
 <div class="light-white w-full p-8 m-0 flex flex-wrap justify-center">
     {% set active = 'mb-4 font-semibold bg-red-800 text-white px-4 py-2 rounded hover:bg-red-900 mr-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300' %}
     {% set inactive = 'mb-4 font-semibold bg-white text-red-800 px-4 py-2 rounded hover:bg-red-800 hover:text-white mr-4 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300' %}
@@ -629,7 +630,7 @@
         </div>
     </div>
 
-    <section id="graphSection" class="flex flex-wrap w-screen max-w-screen justify-center my-10">
+    <section id="graphSection" class="flex flex-wrap w-screen max-w-screen justify-center py-10">
         <input id="colorCount" type="hidden" value="{{ colorCount|json_encode }}">
         <input id="typeCount" type="hidden" value="{{ typeCount|json_encode }}">
         <input id="subtypeCount" type="hidden" value="{{ subtypeCount|json_encode }}">
@@ -646,12 +647,12 @@
             </div>
         </div>
     </section>
-
+</div>
     <section class="bg-gray-100 w-full flex flex-col items-center justify-center">
         <div class="bg-gray-100 flex flex-col items-center justify-center">
             <!-- Toggle Button -->
             {% if app.user %}
-                <button id="toggleCommentForm" class="bg-red-800 text-white mt-12 px-4 py-2 rounded-lg hover:bg-red-900 transition duration-300">
+                <button id="toggleCommentForm" class="bg-red-800 text-white h-10 mt-12 px-4 rounded-lg hover:bg-red-900 transition duration-300">
                     Ajouter un commentaire 
                 </button>
             {% else %}

@@ -76,6 +76,13 @@ body {
   background-color: linear-gradient(to right, #6f0000, #200122); 
 }
 
+.bg-purple-opacity {
+  background-color: #200122;  /* fallback for old browsers */
+  background-color: -webkit-linear-gradient(to right, #6f0000, #200122); 
+  background-color: linear-gradient(to right, #6f0000, #200122); 
+  background-blend-mode: 0.5;
+}
+
 .bg-gradient-red {
   background-color: #200122;  /* fallback for old browsers */
   background: -webkit-linear-gradient(to left, #4d0303, #200122); /* for Safari and Chrome */
@@ -319,7 +326,7 @@ height: 100vh;
     height: auto;
   }
 
-  /*===========================================     DECK CONSULT     =============================================*/
+  /*===========================================     DECK BUILDER     =============================================*/
 
 
 .list-none {

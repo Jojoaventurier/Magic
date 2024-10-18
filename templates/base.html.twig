@@ -18,28 +18,32 @@
                 <div class="w-4/5 inline-flex justify-between py-5 px-2 text-normal averia-serif-libre-light">
                     
                     <!-- Bento Icon for Mobile -->
-                    <div id="bento-icon" class="block cursor-pointer">
-                        <svg class="w-8 h-8 text-white z-50" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path d="M2 3h6v6H2V3zm10 0h6v6h-6V3zM2 11h6v6H2v-6zm10 0h6v6h-6v-6z" />
-                        </svg>
-                    </div>
+
         
                     <!-- Navigation Menu -->
-                    <div id="nav-menu" class="hidden md:flex md:flex-row md:space-x-5 items-center transition-all duration-500 ease-in-out">
+                    <div id="nav-menu" class=" space-x-4 items-center transition-all duration-500 ease-in-out">
                         <a class="white hover:underline" href="{{ path('app_home') }}">Accueil</a>
                         <a class="white hover:underline" href="{{ path('all_sets') }}">Sets/extensions</a>
+                        <span class="text-white"> | </span>
                         <a class="white hover:underline" href="{{ path('app_search', {'search': 'basic', 'parameter': 'none'}) }}">Recherche de cartes</a>
                         <a class="white hover:underline" href="{{ path('app_decks', {'param': 'all'}) }}">Decks</a>
+                        <span class="text-white"> | </span>
                         <a class="white hover:underline" href="{{ path('app_forum') }}">Forum</a>
-                        
                         {% if app.user %}
                             <a class="white hover:underline" href="{{ path('app_articleForm')}}">Article</a>
+                        {% endif %}
+                    </div>
+                    <div class="space-x-4">
+                        {% if app.user %}
                             <a class="white hover:underline" href="{{ path('app_deck_manager', {'id': app.user.id})}}">Mes Decks</a>
+                            <span class="text-white"> | </span>
                             <a class="white hover:underline" href="{{ path('chatting') }}">Messagerie</a>
                             <a class="white hover:underline" href="{{ path('app_profile_self') }}">Mon profil</a>
+                            <span class="text-white"> | </span>
                             <a class="white hover:underline" href="{{ path('app_logout') }}">Se déconnecter</a>
                         {% else %}
                             <a class="white hover:underline" href="{{ path('app_login') }}">Se connecter</a>
+                            <span class="text-white"> | </span>
                             <a class="white hover:underline" href="{{ path('app_register') }}">S'inscrire</a>
                         {% endif %}
                     </div>
@@ -566,7 +570,7 @@
           {% block body %}{% endblock %}
 
 
-          <footer class="text-white bg-black bg-opacity-50  text-xs p-4 averia-serif-libre-light">
+          <footer class="text-white w-full bg-opacity-50 bg-black text-xs p-4 averia-serif-libre-light fixed bottom-0"> <!---->
             <div class="w-4/5 mx-auto text-center space-y-1">
                 <!-- Liens du footer -->
                 <div class="flex justify-center space-x-4">
@@ -590,20 +594,20 @@
             window.addEventListener('scroll', function() {
                 const navbar = document.getElementById('navbar');
                 if (window.scrollY > 50) {  // Change the threshold as per your needs
-                    navbar.classList.add('bg-opacity-50', 'shadow-lg');
+                    navbar.classList.add('bg-purple-opacity', 'shadow-lg');
                 } else {
-                    navbar.classList.remove('bg-opacity-50', 'shadow-lg');
+                    navbar.classList.remove('bg-purple-opacity', 'shadow-lg');
                 }
             });
-            
-            const bentoIcon = document.getElementById('bento-icon');
-            const bentoMenu = document.getElementById('bento-menu');
+
+            //const bentoIcon = document.getElementById('bento-icon');
+            //const bentoMenu = document.getElementById('bento-menu');
         
-            bentoIcon.addEventListener('click', () => {
+            //bentoIcon.addEventListener('click', () => {
                 // Toggle the visibility of the bento menu
-                console.log('clic')
-                bentoMenu.classList.toggle('hidden');
-            });   
+             //   console.log('clic')
+             //   bentoMenu.classList.toggle('hidden');
+          //  });   
         </script>
     </body>
 </html>

@@ -5,10 +5,10 @@
 {% block body %}
 
 <div class="bolas flex flex-col justify-center items-center w-full">
-    <div class="w-4/5  max-w-[1000px] bg-white bg-opacity-10 px-6 py-8 mt-20 text-white rounded-md">
+    <div class="w-4/5  max-w-[1000px] bg-white bg-opacity-10 px-6 py-6 mt-8 text-white rounded-md">
 
-        <div class="font-semibold text-4xl averia-serif-libre-regular flex justify-center mb-10">
-            <h1 class=" px-8 py-5 rounded-md">Bienvenue sur le forum de Magic-Hub</h1>
+        <div class="font-semibold text-4xl averia-serif-libre-regular flex justify-center mb-6">
+            <h1 class=" px-8 py-2 rounded-md">Bienvenue sur le forum de Magic-Hub</h1>
         </div>
     <div x-data="{ showSubCategories: false }"  @click="showSubCategories = !showSubCategories" class="mb-8">
         <span class="w-full inline-flex justify-center text-sm italic cursor-pointer">Cliquez pour <span class="px-1" x-text="showSubCategories ? 'masquer' : 'afficher'"></span> les sous-catégories</span>
@@ -48,7 +48,7 @@
 
         <div class="w-full max-w-4xl mx-auto">
             <div class="bg-white ">
-                <table class="table-auto w-full text-left text-gray-700 ">
+                <table class="table-auto w-full text-left text-gray-700 text-sm">
                     <thead class="bg-gray-200 text-gray-700">
                         <tr>
                             <th class="px-4 py-2">Auteur</th>
@@ -72,7 +72,7 @@
                                     {% endif %}
                                 </td>
                                 <td class="px-4 py-2">
-                                    <a href="{{ path('app_forum_posts', {'id': topic.id}) }}" class="text-lg font-semibold text-gray-800 hover:underline">
+                                    <a href="{{ path('app_forum_posts', {'id': topic.id}) }}" class=" font-semibold text-gray-800 hover:underline">
                                         {{ topic.topicTitle }}
                                     </a>
                                 </td>

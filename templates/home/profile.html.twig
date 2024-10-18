@@ -7,8 +7,8 @@
 {% if app.user and user is not defined %}
     {% set user = app.user %}
 {% endif %}
-<div class="h-screen grid bg-gradient-purple">
-<div class="flex flex-wrap justify-center ">
+<div class="min-h-screen pt-10 bg-gradient-purple">
+    <div class="flex flex-wrap justify-center ">
 
     {% if user.twitchUsername is not same as 'twitch.tv/' and user.twitchUsername is not null and user.allowStream is same as true %}
     <div class="w-4/5 m-8 inline-flex justify-items mt-20">
@@ -195,7 +195,7 @@
 
             <div x-data="{ isOpen: false }" class="shadow p-6 rounded bg-white hover:bg-blue-100 w-[280px]">
 
-            <h2 class="text-sm  font-semibold text-center cursor-pointer">
+            <h2 class="text-sm py-1 font-semibold text-center cursor-pointer">
                 <a href="{{ path('chatting') }}">
                     Toutes les conversations
                 </a>
@@ -231,8 +231,8 @@
         <div class="flex justify-center mt-4 mx-auto rounded-md">
             <!-- "Mes decks" table -->
             <div class="text-sm h-full overflow-y-auto rounded-md" x-show="showMyDecks" x-transition>
-                <div class="min-h-[400px] max-h-[550px] rounded-md">
-                    <table class="table-auto text-left border-collapse bg-white">
+                <div class="min-h-[400px] max-h-[550px]">
+                    <table class="table-auto text-left border-collapse bg-white rounded-md">
                         <thead>
                             <tr class="bg-gray-200">
                                 <th class="px-4 py-2">Couleurs</th>
@@ -244,8 +244,8 @@
                         </thead>
                         <tbody>
                             {% for deck in user.decks %}
-                            <tr class="hover:bg-gray-100">
-                                <td class="border px-4 py-2">
+                            <tr class="hover:bg-gray-100 rounded-md">
+                                <td class="border px-4 py-2 rounded-b-md">
                                     {% set colorCount = deck.colorCount %}
                                     <span class="inline-flex space-x-1">
                                         {% set colorImageMap = {
@@ -265,18 +265,18 @@
                                         {% endfor %}
                                     </span>
                                 </td>
-                                <td class="border px-4 py-2">
+                                <td class="border rounded-b-md px-4 py-2">
                                     <a class="hover:underline hover:text-red-700" href="{{ path('app_deck_builder', {'id': deck.id, 'state': 'Main'}) }}">
                                         {{ deck.deckName }}
                                     </a>
                                 </td>
-                                <td class="border px-4 py-2 italic">{{ deck.format.formatName }}</td>
-                                <td class="border px-4 py-2">{{ deck.comments|length }}</td>
-                                <td class="border px-4 py-2">{{ deck.likes|length }}</td>
+                                <td class="border rounded-b-md px-4 py-2 italic">{{ deck.format.formatName }}</td>
+                                <td class="border rounded-b-md px-4 py-2">{{ deck.comments|length }}</td>
+                                <td class="border rounded-b-md px-4 py-2">{{ deck.likes|length }}</td>
                             </tr>
                             {% else %}
                             <tr>
-                                <td class="border px-4 py-2" colspan="5">Aucun deck trouvé</td>
+                                <td class="border px-4 py-2 rounded-b-md" colspan="5">Aucun deck trouvé</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -287,9 +287,9 @@
                 
    
             <!-- "Decks favoris" table -->
-            <div class="text-sm overflow-y-auto max-h-[500px]" x-show="showFavDecks" x-transition>
+            <div class="text-sm overflow-y-auto max-h-[500px] rounded-md" x-show="showFavDecks" x-transition>
                 <div class="min-h-[400px] max-h-[550px] rounded-md">
-                    <table class="table-auto bg-white">
+                    <table class="table-auto bg-white rounded-md">
                         <thead>
                             <tr class="bg-gray-200">
                                 <th class="px-4 py-2">Couleurs</th>
@@ -345,7 +345,8 @@
     </div>
         
         
-    </div>
+</div>
+</div>
 </div>
 
 {% endblock %}
