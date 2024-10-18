@@ -37,6 +37,15 @@
                         {% if app.user %}
                             <a class="white hover:underline" href="{{ path('app_deck_manager', {'id': app.user.id})}}">Mes Decks</a>
                             <span class="text-white"> | </span>
+                            {% if app.user %}
+                            {% if app.user.globalChat is same as false and unread_count() > 0 %}
+                                <span class="text-white text-xs italic border-white border p-1">
+                                    {{ unread_count() }} 
+                                    {{ unread_count() > 1 ? 'nouveaux' : 'nouveau' }} 
+                                    message{{ unread_count() > 1 ? 's' : '' }}
+                                </span>
+                            {% endif %}
+                            {% endif %}
                             <a class="white hover:underline" href="{{ path('chatting') }}">Messagerie</a>
                             <a class="white hover:underline" href="{{ path('app_profile_self') }}">Mon profil</a>
                             <span class="text-white"> | </span>
@@ -570,7 +579,7 @@
           {% block body %}{% endblock %}
 
 
-          <footer class="text-white w-full bg-opacity-50 bg-black text-xs p-4 averia-serif-libre-light fixed bottom-0"> <!---->
+          <footer class="text-white w-full bg-opacity-50 bg-black text-xs p-4 averia-serif-libre-light"> <!-- fixed bottom-0-->
             <div class="w-4/5 mx-auto text-center space-y-1">
                 <!-- Liens du footer -->
                 <div class="flex justify-center space-x-4">

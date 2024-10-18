@@ -59,7 +59,6 @@ class DeckBuilderController extends AbstractController
             // Increment card count based on quantity.
             $count += 1 * $quantity;
 
-            
             $cardData = $card->getData();
 
             // Extract types, subtypes, and colors 
@@ -81,38 +80,55 @@ class DeckBuilderController extends AbstractController
                 }
             }
             
-            // Process and count subtypes (similarly to types excluding the types already counted).
-                // Define basic lands to exclude from subtypes
-            $basicLands = ['forest', 'plains', 'island', 'swamp', 'mountain'];
+// Tableau des noms de terrains de base en minuscule
+$basicLands = ['forest', 'plains', 'island', 'swamp', 'mountain'];
 
-            if (isset($cardData['type_line'])) {
-                // Check if there are subtypes listed after "—"
-                if (strpos($cardData['type_line'], '—') !== false) {
-                    list(, $subtypes) = explode('—', $cardData['type_line']); // Split at "—"
-                    $subtypes = explode(' ', trim($subtypes)); // Get individual subtypes
+// Vérifie si la clé 'type_line' est présente dans $cardData
+if (isset($cardData['type_line'])) {
+    
+    // Vérifie si la chaîne contient le caractère "—" (utilisé pour séparer les sous-types dans Magic: The Gathering)
+    if (strpos($cardData['type_line'], '—') !== false) {
+        
+        // Divise la chaîne à "—", et récupère les sous-types après ce caractère
+        // La première partie avant "—" est ignorée (d'où la liste vide avant la virgule)
+        list(, $subtypes) = explode('—', $cardData['type_line']);
+        
+        // Sépare les sous-types en mots individuels et enlève les espaces inutiles
+        $subtypes = explode(' ', trim($subtypes));
 
-                    foreach ($subtypes as $subtype) {
-                        // Only count the subtype if it's not one of the types listed in $validTypes or basic lands
-                        if (!in_array(strtolower($subtype), $validTypes) && !in_array(strtolower($subtype), $basicLands)) {
-                            if (!isset($subtypeCount[$subtype])) {
-                                $subtypeCount[$subtype] = 0;
-                            }
-                            $subtypeCount[$subtype] += $quantity; // Add the card's quantity to the count
-                        }
-                    }
-                }
-            }
+        // Parcourt chaque sous-type trouvé
+        foreach ($subtypes as $subtype) {
             
-
-            // Process and count colors.
-            if (isset($cardData['color_identity'])) {
-                foreach ($cardData['color_identity'] as $color) {
-                    if (!isset($colorCount[$color])) {
-                        $colorCount[$color] = 0;
-                    }
-                    $colorCount[$color] += $quantity;
+            // Vérifie si le sous-type n'est pas un type valide défini dans $validTypes et qu'il n'est pas un terrain de base
+            if (!in_array(strtolower($subtype), $validTypes) && !in_array(strtolower($subtype), $basicLands)) {
+                
+                // Si le sous-type n'est pas déjà dans $subtypeCount, initialise son compteur à 0
+                if (!isset($subtypeCount[$subtype])) {
+                    $subtypeCount[$subtype] = 0;
                 }
+                
+                // Ajoute la quantité de la carte au compteur du sous-type
+                $subtypeCount[$subtype] += $quantity;
             }
+        }
+    }
+}
+            
+        // Traite et compte les couleurs d'identité de la carte.
+        if (isset($cardData['color_identity'])) {
+            
+            // Parcourt chaque couleur dans le tableau 'color_identity' de la carte
+            foreach ($cardData['color_identity'] as $color) {
+                
+                // Si la couleur n'a pas encore été rencontrée, initialise son compteur à 0
+                if (!isset($colorCount[$color])) {
+                    $colorCount[$color] = 0;
+                }
+                
+                // Ajoute la quantité de la carte au compteur de la couleur correspondante
+                $colorCount[$color] += $quantity;
+            }
+        }
 
             // Check if the card data contains CMC information
             if (isset($cardData['cmc'])) {
@@ -170,10 +186,10 @@ class DeckBuilderController extends AbstractController
                 'comments' => $comments,
                 'commentForm' => $form,
                 'comment' => $comment,
-                'typeCount' => $typeCount, // Pass types count
-                'subtypeCount' => $subtypeCount, // Pass subtypes count
-                'colorCount' => $colorCount, // Pass colors count
-                'cmcCount' => $cmcCount
+                'typeCount' => $typeCount, // Passe le décompte des types de cartes
+                'subtypeCount' => $subtypeCount, // Passe le décompte des sous-types de cartes
+                'colorCount' => $colorCount, // Passe le décompte des couleurs des cartes
+                'cmcCount' => $cmcCount, // Passe le décompte du coût converti de mana (CMC) des cartes
             ]);
 
         } else if ($state == 'Sideboard') {
