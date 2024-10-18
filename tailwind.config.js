@@ -1,11 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  content: [
+    "./assets/**/*.js",
+    "./templates/**/*.html.twig",
+  ],
   theme: {
-    extend: {
-      animation: {
-        'spin-slow': 'spin 4s linear infinite', // Spinner lent avec 4s de durée
-      },
-    },
+    extend: {},
   },
   plugins: [],
 }
