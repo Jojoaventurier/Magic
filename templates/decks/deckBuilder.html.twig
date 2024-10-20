@@ -330,7 +330,11 @@
 
             {% if composition is same as null or composition is empty %}
             <div class="w-full flex justify-center items-center">
-                <p class="text-sm px-2 py-2 border rounded-lg bg-white">Vous n'avez pas encore de cartes dans le deck ! Ajoutez des cartes avec la recherche ci-dessus !</p>
+                {% if app.user is same as deck.user %}
+                <p class="text-sm px-2 py-2 border rounded-lg bg-white">Vous n'avez pas encore de cartes dans cette liste ! Ajoutez des cartes à partir de la recherche ci-dessus !</p>
+                {% else %}
+                <p class="text-sm px-2 py-2 border rounded-lg bg-white">Il n'y a pas encore de cartes dans cette liste ! N'hésitez pas à faire des suggestions en commentaire !</p>
+                {% endif %}
             <div>
             {% else %}
             {% endif %}
