@@ -29,15 +29,36 @@
               {{ form_start(form, { 'attr': {'class': 'space-y-4'}}) }}
               <div class=" p-4 rounded-lg">
                 {{ form_row(form.deckName, {
-                  'attr': {'class': 'w-full rounded-lg border border-gray-400 p-3 text-sm focus:outline-none focus:border-red-800 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300'},
+                  'attr': {
+                    'class': 'w-full rounded-lg border border-gray-400 p-3 text-sm focus:outline-none focus:border-red-800 hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] shadow duration-300',
+                    'aria-label': 'Saisir le nom du deck',
+                  },
                   'label_attr': {'class': 'font-semibold'}
                 }) }}
               </div>
-              {{ form_row(form.status, {'label_attr': {'class': 'font-semibold'}, 'attr': {'class': 'hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] rounded-lg duration-300'}}) }}
-              {{ form_row(form.format, {'label_attr': {'class': 'font-semibold'}, 'attr': {'class': 'hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] rounded-lg duration-300'}}) }}
+              {{ form_row(form.status, {
+                'label_attr': {'class': 'font-semibold'}, 
+                'attr': {
+                  'class': 'hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] rounded-lg duration-300',
+                  'aria-label': 'Choisir si le deck est public ou privé' 
+                }
+              }) }}
+              {{ form_row(form.format, {
+                'label_attr': {'class': 'font-semibold'}, 
+                'attr': {
+                  'class': 'hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] rounded-lg duration-300',
+                  'aria-label': 'Format du deck'
+                }
+              }) }}
               <span class="flex justify-center items-center">
-                {{ form_row(form.Valider, { 'attr': {'class': "inline-block w-full rounded-lg bg-white text-red-800 border border-red-800 hover:bg-red-800 px-5 py-3 font-medium hover:text-white sm:w-auto hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300"}}) }}
+                {{ form_row(form.Valider, { 
+                  'attr': {
+                    'class': "inline-block w-full rounded-lg bg-white text-red-800 border border-red-800 hover:bg-red-800 px-5 py-3 font-medium hover:text-white sm:w-auto hover:shadow-[0px_10px_20px_0px_rgba(0,_0,_0,_0.15)] duration-300",
+                    'aria-label': 'Bouton pour valider le formulaire et lancer la création d\'un nouveau deck'
+                  }
+                }) }}
               </span>
+            
               <div>
               {{ form_end(form) }}
                 <p class="text-center border font-semibold border-red-700 p-2">

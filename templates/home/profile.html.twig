@@ -15,12 +15,11 @@
         {% else %}
         <div class="m-8 inline-flex space-x-10 mt-20">
         {% endif %}
-
+        <h1>Profil</h1>
         <div class="flex flex-col bg-white items-center justify-center h-auto w-[350px] space-y-4 border rounded p-6 m-auto">
-            <h1 class="text-xl averia-serif-libre-regular">
+            <h2 class="text-xl averia-serif-libre-regular">
                 {{ user.userName }}
-            </h1>
-                
+            </h2>
             <p class="text-sm space-x-4">
                 <a class="hover:underline hover:text-red-800 text-" href="{{ path('app_user_list', {'user': user.id, 'param': 'followed'}) }}">
                     <span id="followers">{{ user.followedUsers|length }}</span> abonnements
