@@ -38,29 +38,38 @@ class RegistrationFormType extends AbstractType
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'label' => 'J\'ai lu et j\'accepte les <a href="#">conditions</a>',
-                'constraints' => [ // l'utilisateur est obligé d'accepter les conditions pour s'inscrire sinon apparation du message ci-dessous
+                'label_attr' => ['class' => 'sr-only'], // Masque visuellement l'étiquette
+                'constraints' => [ // Oblige l'utilisateur à accepter les conditions
                     new IsTrue([
                         'message' => 'Veuillez accepter les conditions d\'utilisation du site pour vous inscrire.',
                     ]),
                 ],
             ])
-            ->add('plainPassword', RepeatedType::class, [ // utilisation de la classe Repeatedtype pour demander la confirmation du mot de passe
+            ->add('plainPassword', RepeatedType::class, [
                 'mapped' => false,
-                'type' => PasswordType::class, // utilisation de la classe PasswordType pour utiliser les filtres de sécurité implémentés par symfony 
-                'invalid_message' => 'Les mots de passes doivent être identiques', // message si le repeated password n'est pas confirmé
+                'type' => PasswordType::class,
+                'invalid_message' => 'Les mots de passe doivent être identiques',
                 'attr' => ['autocomplete' => 'new-password'],
-                'options' => ['attr' => ['class' => 'password-field']],
+                'options' => [
+                    'attr' => [
+                        'class' => 'password-field w-full bg-transparent placeholder-gray-400 px-4 py-2 border rounded-lg focus:outline focus:outline-red-800',
+                    ],
+                ],
                 'required' => true,
-                'first_options' => ['label' => 'Mot de passe'], // label affiché de la case du formulaire
-                'second_options' => ['label' => 'Confirmez le mot de passe'], // label affiché de la case du formulaire
+                'first_options' => [
+                    'label' => 'Mot de passe',
+                ],
+                'second_options' => [
+                    'label' => 'Confirmez le mot de passe',
+                ],
                 'constraints' => [
-                    new NotBlank([ // contrainte du validateur de symfony, il faut saisir une valeur
+                    new NotBlank([
                         'message' => 'Veuillez saisir un mot de passe',
                     ]),
-                    new Regex([ // contrainte du validateur de symfony, le mot de passe doit contenir au minimum 1é caractères, une minuscule, une majuscule, un chiffre et un caractère spécial
+                    new Regex([
                         'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{12,}$/',
-                        'message' => 'Votre mot de passe doit avoir une longueur minimale de 12 caractères, contenir aux moins une minuscule, une majuscule, un chiffre et un caractère spécial',
-                        ])
+                        'message' => 'Votre mot de passe doit avoir une longueur minimale de 12 caractères, contenir au moins une minuscule, une majuscule, un chiffre et un caractère spécial',
+                    ]),
                 ],
             ])
         ;

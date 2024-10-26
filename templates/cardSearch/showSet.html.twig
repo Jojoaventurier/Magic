@@ -38,7 +38,7 @@ mask-composite: intersect;">
 
 
 
-    <div class="bg-gradient-purple hidden">
+    <div class="bg-gradient-purple">
         
         <div id="filters" class="bg-gradient-purple flex space-x-8 justify-center items-center px-4 pb-6 pt-20 sticky top-0 z-10">
 
@@ -251,62 +251,86 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function fetchCards() {
+        // Effectue une requête Fetch vers l'URL retournée par la fonction updateFetchUrl()
         fetch(updateFetchUrl())
+            // Convertit la réponse en JSON
             .then(response => response.json())
             .then(data => {
+                // Sélectionne l'élément HTML avec l'id "cardList"
                 const myNode = document.getElementById("cardList");
+                
+                // Si l'élément existe, on vide la liste des cartes affichées en supprimant tous ses enfants
                 if (myNode) {
                     while (myNode.firstChild) {
                         myNode.removeChild(myNode.lastChild);
                     }
                 }
     
+                // Vérifie si la réponse contient un tableau de données sous "data"
                 if (data.data && Array.isArray(data.data)) {
+                    // Si le tableau de données contient au moins une carte
                     if (data.data.length > 0) {
+                        // Met à jour le nom du set et la date de sortie dans l'interface
                         setName.innerHTML = data.data[0].set_name;
                         releaseDate.innerHTML = data.data[0].released_at;
-                        const setSearchUrl = "{{ path('app_search', {'search': 'set', 'parameter': 'PLACEHOLDER_SET'}) }}"
-                        setSearch.href = `${setSearchUrl.replace('PLACEHOLDER_SET', encodeURIComponent(data.data[0].set))}`
     
-                        // Set the total number of cards
+                        // Génère l'URL de recherche du set en remplaçant un espace réservé par le nom du set
+                        const setSearchUrl = "{{ path('app_search', {'search': 'set', 'parameter': 'PLACEHOLDER_SET'}) }}";
+                        setSearch.href = `${setSearchUrl.replace('PLACEHOLDER_SET', encodeURIComponent(data.data[0].set))}`;
+    
+                        // Met à jour le nombre total de cartes affichées, sinon montre le nombre de cartes dans le tableau
                         totalCards.innerHTML = data.total_cards || data.data.length;
     
-                        noCardsMessage.classList.add('hidden');  // Hide the no cards found message
+                        // Cache le message "aucune carte trouvée"
+                        noCardsMessage.classList.add('hidden');
     
+                        // Boucle à travers les cartes retournées par l'API
                         data.data.forEach(card => {
                             let displayCard;
+    
+                            // Si la carte a une image, on crée un élément image avec les dimensions appropriées
                             if (card.image_uris && card.image_uris.normal) {
                                 displayCard = new Image(250, 350);
-                                displayCard.src = card.image_uris.normal;
-                                displayCard.id = card.id;
+                                displayCard.src = card.image_uris.normal;  // Image de la carte
+                                displayCard.id = card.id;  // Associe l'ID de la carte
+                                // Ajoute des classes CSS pour styliser et animer la carte
                                 displayCard.classList.add('singleCard', 'p-2', 'transform',  'rounded-xl', 'shadow-xl', 'transition', 'duration-300', 'hover:scale-105');
-                            } else if (card.card_faces[0]['image_uris'] && card.card_faces[0]['image_uris']['normal']) {
+                            }
+                            // Si la carte a des "faces" (par ex, une carte double), on prend la première face
+                            else if (card.card_faces[0]['image_uris'] && card.card_faces[0]['image_uris']['normal']) {
                                 displayCard = new Image(250, 350);
-                                displayCard.src = card.card_faces[0]['image_uris']['normal'];
+                                displayCard.src = card.card_faces[0]['image_uris']['normal'];  // Image de la face de la carte
                                 displayCard.id = card.id;
                                 displayCard.classList.add('singleCard', 'p-2');
                             }
     
+                            // Génère l'URL de détail pour chaque carte en remplaçant l'espace réservé par l'ID de la carte
                             var cardDetailUrl = "{{ path('app_card_detail', {'cardId': 'REPLACE_CARD_ID' })}}";
-                            let link = document.createElement("a");
-                            let url = cardDetailUrl.replace('REPLACE_CARD_ID', card.id);
+                            let link = document.createElement("a");  // Crée un lien pour chaque carte
+                            let url = cardDetailUrl.replace('REPLACE_CARD_ID', card.id);  // Remplace l'ID
                             link.href = url;
     
+                            // Ajoute l'image de la carte dans le lien
                             link.appendChild(displayCard);
+    
+                            // Ajoute le lien à la liste de cartes (cardList)
                             cardList.appendChild(link);
                         });
                     } else {
+                        // Si aucune carte n'est trouvée, affiche un message d'erreur dans l'interface
                         setName.innerHTML = "Set non trouvé";
-                        noCardsMessage.classList.remove('hidden');  // Show the no cards found message
+                        noCardsMessage.classList.remove('hidden');  // Affiche le message "aucune carte trouvée"
                     }
                 } else {
+                    // Si la réponse ne contient pas un tableau "data", log une erreur dans la console et affiche le message d'erreur
                     console.error('Erreur: la réponse de l\'API ne contient pas un tableau de cartes dans "data"');
-                    noCardsMessage.classList.remove('hidden');  // Show the no cards found message on error
+                    noCardsMessage.classList.remove('hidden');  // Affiche le message "aucune carte trouvée"
                 }
             })
             .catch(error => {
+                // Si une erreur survient lors de la requête, log l'erreur dans la console et affiche le message d'erreur
                 console.error('Erreur:', error);
-                noCardsMessage.classList.remove('hidden');  // Show the no cards found message on error
+                noCardsMessage.classList.remove('hidden');  // Affiche le message "aucune carte trouvée" en cas d'erreur
             });
     }
 
