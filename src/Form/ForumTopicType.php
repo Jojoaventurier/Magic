@@ -23,24 +23,29 @@ class ForumTopicType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('topicTitle', TextType::class, [ // utilisation de TextareaType pour filtrer les données saisies
+            ->add('topicTitle', TextType::class, [
                 'attr' => [
-                    'style' => 'width: 700px; font-size: 0.8rem' // personnalisation de l'affichage de la case de texte à remplir par l'utilisateur
+                    'class' => 'flex flex-col p-3 m-2 rounded-lg border border-red-700 focus:outline-none focus:ring-2 focus:ring-red-700 focus:border-transparent', // Tailwind CSS classes for styling
                 ],
-                'label' => 'Titre du sujet :'])
-                
-            ->add('forumPost', ForumPostType::class, 
-            [
-                'mapped' => false
+                'label' => 'Titre du sujet :',
             ])
-
-            // ->add('forumPosts', CollectionType::class, [
-            //     'entry_type' => ForumPostType::class,
-            //     'allow_add' => true,
-            //     'allow_delete' => true,
-            //     'by_reference' => false,
-            // ])
-            ->add('Valider', SubmitType::class);
+            
+            ->add('forumPost', ForumPostType::class, [
+                'mapped' => false,
+                'label' => 'Forum Post', // The label text for screen readers
+                'label_attr' => [
+                    'class' => 'sr-only', // Use a class to hide the label visually
+                ],
+                'attr' => [
+                    'class' => 'w-[600px] py-2', // Tailwind CSS classes for styling
+                ],
+            ])
+    
+            ->add('Valider', SubmitType::class, [
+                'attr' => [
+                    'class' => 'bg-red-700 text-white px-4 py-2 rounded-lg hover:bg-red-900 transition duration-200', // Tailwind CSS classes for button styling
+                ],
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

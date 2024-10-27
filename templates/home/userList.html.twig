@@ -1,15 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{% endblock %}
+{% block title %}Mon profil Magic-Hub{% endblock %}
 
 {% block body %}
 
-<div class="flex justify-center w-full mt-6 space-x-10 bg-gradient-purple">
+<div class="flex flex-col h-screen items-center justify-center w-full mt-6 space-x-10 bg-gradient-purple">
 
-    <div class="m-4 flex flex-col bg-white">
-        {% if param is same as 'following' %}
-            
-        
+    {% if param is same as 'following' %}
+    
+    <div class="m-4 flex flex-col bg-white px-3 py-2 rounded">
         <h2 class="text-sm text-center px-2 py-1 rounded bg-red-800 text-white mb-2">Abonnés</h2>
         <div>
             <ul class="list-none">
@@ -26,7 +25,7 @@
 
     {% elseif param is same as 'followed' %}
 
-    <div class="m-4 bg-white">
+    <div class="m-4 px-3 py-2 bg-white rounded">
         <h2 class="text-sm text-center px-2 py-1 rounded bg-red-800 text-white mb-2">Abonnements</h2>
         <div>
             <ul class="list-none">

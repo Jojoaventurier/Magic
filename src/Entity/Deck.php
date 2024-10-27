@@ -36,7 +36,7 @@ class Deck
     private ?bool $status = null;
 
     // Description du deck, chaîne de caractères facultative (peut être nulle), longueur maximale de 150 caractères.
-    #[ORM\Column(length: 150, nullable: true)]
+    #[ORM\Column(length: 1000, nullable: true)]
     private ?string $deckDescription = null;
 
     // Statut de légalité du deck, booléen facultatif (peut être nul).

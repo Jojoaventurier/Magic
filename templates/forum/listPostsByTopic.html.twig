@@ -8,66 +8,76 @@
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
-<div class="example-wrapper">
-
-    <h1>{{ topic.topicTitle }}</h1>
+<div class="example-wrapper text-black flex flex-col items-center bg-white bg-opacity-10 p-6 rounded-lg shadow-lg h-screen">
+    
+    <h1 class="text-3xl font-bold text-white mb-4 pt-20">{{ topic.topicTitle }}</h1>
+    
     {% if app.user is same as topic.user and topic.user is not same as null %}
-        <a href="{{ path('edit_topic', {id: topic.id}) }}">Modifier</a>
-        <a>Supprimer</a>
+        <div class="mb-4">
+            <a href="{{ path('edit_topic', {id: topic.id}) }}" class="inline-block text-red-700 hover:underline">Modifier</a>
+            <a href="#" class="inline-block text-red-700 hover:underline ml-4">Supprimer</a>
+        </div>
     {% endif %}
+    
     {% if topic.editDate is same as null %}
-        <p>posté par {% if topic.user is same as null %}
-            <span class="italic">[profil supprimé]</span>
+        <p class="text-white">
+            posté par 
+            {% if topic.user is same as null %}
+                <span class="italic">[profil supprimé]</span>
             {% else %}
-            <a href="{{ path('app_profile', {'user': topic.user.userName}) }}" class="hover:underline">
-                {{ topic.user.userName }}
-            </a>
-             le {{ topic.creationDate|date('d.m.y H:i') }} 
-        </p>
-            
+                <a href="{{ path('app_profile', {'user': topic.user.userName}) }}" class="hover:underline">
+                    {{ topic.user.userName }}
+                </a>
+                le {{ topic.creationDate|date('d.m.y H:i') }}
             {% endif %}
-        {% else %}
-        {% if topic.user is same as null %}
-            <span class="italic">[profil supprimé]</span>
+        </p>
+    {% else %}
+        <p class="text-gray-600">
+            {% if topic.user is same as null %}
+                <span class="italic">[profil supprimé]</span>
             {% else %}
-        <p>posté par {{ topic.user.userName }} le {{ topic.creationDate|date('d.m.y H:i') }} et modifié le {{ topic.editDate|date('d.m.y H:i') }} </p>
-        {% endif %}
+                posté par {{ topic.user.userName }} le {{ topic.creationDate|date('d.m.y H:i') }} et modifié le {{ topic.editDate|date('d.m.y H:i') }}
+            {% endif %}
+        </p>
     {% endif %}
-
 
     {% for post in posts %}
-        <p>
-            Par {% if post.user is same as null %}
-            <span class="italic">[profil supprimé]</span>
+        <div class="bg-white w-full rounded-lg p-4 shadow-md mb-4 hover:shadow-lg transition-shadow duration-200">
+            <p>
+                Par {% if post.user is same as null %}
+                <span class="italic">[profil supprimé]</span>
                 {% else %}
-                <a href="{{ path('app_profile', {'user': topic.user.userName}) }}" class="hover:underline">
+                <a href="{{ path('app_profile', {'user': post.user.userName}) }}" class="hover:underline">
                     {{ post.user.userName }} 
                 </a><br>
-            {% endif %}
-            {% if post.editDate is same as null %}
-                posté le {{ post.creationDate|date('d.m.y H:i') }} ,
+                {% endif %}
+                {% if post.editDate is same as null %}
+                    posté le {{ post.creationDate|date('d.m.y H:i') }},
                 {% else %}
-                modifié le {{ post.editDate|date('d.m.y H:i') }}
+                    modifié le {{ post.editDate|date('d.m.y H:i') }}
+                {% endif %}
+            </p>
+            <p class="text-gray-700">
+                {{ post.textContent }}
+            </p>
+            {% if app.user is same as post.user and post.user is not same as null %}
+                <div class="mt-2">
+                    <a href="{{ path('edit_post', {'topic': topic.id, 'post': post.id}) }}" class="inline-block text-red-700 hover:underline">Modifier</a>
+                    <a href="{{ path('delete_post', {id : post.id}) }}" class="inline-block text-red-700 hover:underline ml-4">Supprimer</a>
+                </div>
             {% endif %}
-        </p>
-        <p>
-            {{ post.textContent }}
-        </p>
-
-        {% if app.user is same as post.user and post.user is not same as null %}
-            <a href="{{ path('edit_post', {'topic': topic.id, 'post': post.id}) }}">Modifier</a>
-            <a href="{{ path('delete_post', {id : post.id}) }}">Supprimer</a>
-        {% endif %}
+        </div>
     {% endfor %}
-        {% if app.user %}
-        <a href="{{ path('new_post', {topic: topic.id}) }}">Répondre</a>
-        {% else %}
-        <p class="italic">Vous devez être connecté pour répondre à un sujet</p>
-        {% endif %}
+    
+    {% if app.user %}
+        <a href="{{ path('new_post', {topic: topic.id}) }}" class="inline-block bg-red-700 text-white px-4 py-2 rounded-lg hover:bg-red-900 transition duration-200">Répondre</a>
+    {% else %}
+        <p class="italic text-red-500">Vous devez être connecté pour répondre à un sujet</p>
+    {% endif %}
 
     <div class="navigation flex justify-center mb-8">
         {{ knp_pagination_render(posts) }}        
     </div>
 </div>
-
 {% endblock %}
+

@@ -18,13 +18,15 @@ class ForumPostType extends AbstractType
     {
         $builder
 
-        ->add('textContent', TextareaType::class, [ // utilisation de TextareaType pour filtrer les données saisies
+        ->add('textContent', TextareaType::class, [
             'attr' => [
-                'style' => 'height: 50px; width: 700px; font-size: 0.8rem' // personnalisation de l'affichage de la case de texte à remplir par l'utilisateur
+                'class' => 'w-full flex flex-col p-3 m-2 rounded-lg border border-red-700 focus:outline-none focus:ring-2 focus:ring-red-700 focus:border-transparent' // Customization of the textarea appearance
             ],
-            'label' => 'Votre message :'])
-        // ->add('Valider', SubmitType::class);
-        ;
+            'label' => 'Votre message :',
+            'label_attr' => [
+                'class' => 'text-white mb-2' // Adding white text color and margin-bottom for spacing
+            ]
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
