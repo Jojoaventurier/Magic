@@ -134,9 +134,12 @@ height: 100vh;
 .tower {
   background-image: 
   url("/tests/tower.webp");
-background-size: cover;
-width: 100vw;
-height: 100vh;
+  background-size: cover; 
+  background-position: top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  width: 100vw;
+  max-height: 100%;
 }
 
 .war {

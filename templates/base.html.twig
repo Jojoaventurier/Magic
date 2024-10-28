@@ -16,69 +16,85 @@
       <body>
 
         <div class="flex w-screen justify-center">
-            <nav id="navbar" class="transition-all flex justify-center duration-500 ease-in-out fixed w-full rounded text-lg top-0 bg-black bg-opacity-0 z-40">
-                <div class="w-4/5 inline-flex justify-between py-5 px-2 text-normal averia-serif-libre-light">
-                    
-                    <!-- Bento Icon for Mobile -->
+            <!-- Navbar Container -->
+<nav id="navbar" class="transition-all flex justify-center duration-500 ease-in-out fixed w-full rounded text-lg top-0 bg-black bg-opacity-0 z-40">
+    <div class="w-4/5 inline-flex justify-between py-5 px-2 text-normal averia-serif-libre-light">
+        
+        <!-- Logo -->
+        <a href="{{ path('app_home') }}" class="text-4xl lg:hidden font-semibold text-white">Magic-Hub</a>
 
-        
-                    <!-- Navigation Menu -->
-                    <div id="nav-menu" class=" space-x-4 items-center transition-all duration-500 ease-in-out">
-                        <a class="white hover:underline" href="{{ path('app_home') }}">Accueil</a>
-                        <span class="text-white"> | </span>
-                        <a class="white hover:underline" href="{{ path('all_sets') }}">Sets/extensions</a>
-                        <a class="white hover:underline" href="{{ path('app_search', {'search': 'basic', 'parameter': 'none'}) }}">Recherche de cartes</a>
-                        <a class="white hover:underline" href="{{ path('app_decks', {'param': 'all'}) }}">Decks</a>
-                        <span class="text-white"> | </span>
-                        <a class="white hover:underline" href="{{ path('app_forum') }}">Forum</a>
-                        {% if app.user %}
-                            <a class="white hover:underline" href="{{ path('app_articleForm')}}">Article</a>
-                        {% endif %}
-                    </div>
-                    <div class="space-x-4">
-                        {% if app.user %}
-                            <a class="white hover:underline" href="{{ path('app_deck_manager', {'id': app.user.id})}}">Mes Decks</a>
-                            <span class="text-white"> | </span>
-                            {% if app.user.globalChat is same as false and unread_count() > 0 %}
-                                <span class="text-white text-xs italic border-white border p-1">
-                                    {{ unread_count() }} 
-                                    {{ unread_count() > 1 ? 'nouveaux' : 'nouveau' }} 
-                                    message{{ unread_count() > 1 ? 's' : '' }}
-                                </span>
-                            {% endif %}
-                            <a class="white hover:underline" href="{{ path('chatting') }}">Messagerie</a>
-                            <a class="white hover:underline" href="{{ path('app_profile_self') }}">Mon profil</a>
-                            <span class="text-white"> | </span>
-                            <a class="white hover:underline" href="{{ path('app_logout') }}">Se déconnecter</a>
-                        {% else %}
-                            <a class="white hover:underline" href="{{ path('app_login') }}">Se connecter</a>
-                            <span class="text-white"> | </span>
-                            <a class="white hover:underline" href="{{ path('app_register') }}">S'inscrire</a>
-                        {% endif %}
-                    </div>
-        
-                    <!-- Bento Grid Menu -->
-                    <div id="bento-menu" class="hidden absolute top-16 right-0 bg-black bg-opacity-90 text-white grid grid-cols-2 gap-4 p-4 w-64 rounded-lg">
-                        <a href="{{ path('app_home') }}" class="hover:bg-gray-700 p-2 rounded">Accueil</a>
-                        <a href="{{ path('all_sets') }}" class="hover:bg-gray-700 p-2 rounded">Sets/extensions</a>
-                        <a href="{{ path('app_search', {'search': 'basic', 'parameter': 'none'}) }}" class="hover:bg-gray-700 p-2 rounded">Recherche de cartes</a>
-                        <a href="{{ path('app_decks', {'param': 'all'}) }}" class="hover:bg-gray-700 p-2 rounded">Decks</a>
-                        <a href="{{ path('app_forum') }}" class="hover:bg-gray-700 p-2 rounded">Forum</a>
-                        
-                        {% if app.user %}
-                            <a href="{{ path('app_articleForm') }}" class="hover:bg-gray-700 p-2 rounded">Article</a>
-                            <a href="{{ path('app_deck_manager', {'id': app.user.id})}}" class="hover:bg-gray-700 p-2 rounded">Mes Decks</a>
-                            <a href="{{ path('chatting') }}" class="hover:bg-gray-700 p-2 rounded">Messagerie</a>
-                            <a href="{{ path('app_profile_self') }}" class="hover:bg-gray-700 p-2 rounded">Mon profil</a>
-                            <a href="{{ path('app_logout') }}" class="hover:bg-gray-700 p-2 rounded">Se déconnecter</a>
-                        {% else %}
-                            <a href="{{ path('app_login') }}" class="hover:bg-gray-700 p-2 rounded">Se connecter</a>
-                            <a href="{{ path('app_register') }}" class="hover:bg-gray-700 p-2 rounded">S'inscrire</a>
-                        {% endif %}
-                    </div>
-        
-                </div>
-            </nav>
+        <!-- Bento Icon for Mobile -->
+        <button id="bento-icon" class="lg:hidden text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" class=" w-20 h-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+        </button>
+
+        <!-- Horizontal Navigation Menu for Large Screens -->
+        <div id="nav-menu" class="hidden lg:flex space-x-4 items-center transition-all duration-500 ease-in-out">
+            <a class="white hover:underline" href="{{ path('app_home') }}">Accueil</a>
+            <span class="text-white"> | </span>
+            <a class="white hover:underline" href="{{ path('all_sets') }}">Sets/extensions</a>
+            <a class="white hover:underline" href="{{ path('app_search', {'search': 'basic', 'parameter': 'none'}) }}">Recherche de cartes</a>
+            <a class="white hover:underline" href="{{ path('app_decks', {'param': 'all'}) }}">Decks</a>
+            <span class="text-white"> | </span>
+            <a class="white hover:underline" href="{{ path('app_forum') }}">Forum</a>
+            {% if app.user %}
+                <a class="white hover:underline" href="{{ path('app_articleForm') }}">Article</a>
+            {% endif %}
+        </div>
+
+        <div class="hidden lg:flex space-x-4">
+            {% if app.user %}
+                <a class="white hover:underline" href="{{ path('app_deck_manager', {'id': app.user.id})}}">Mes Decks</a>
+                <span class="text-white"> | </span>
+                {% if unread_count() > 0 %}
+                    <span class="text-white text-xs italic border-white border p-1">
+                        {{ unread_count() }} 
+                        {{ unread_count() > 1 ? 'nouveaux' : 'nouveau' }} 
+                        message{{ unread_count() > 1 ? 's' : '' }}
+                    </span>
+                {% endif %}
+                <a class="white hover:underline" href="{{ path('chatting') }}">Messagerie</a>
+                <a class="white hover:underline" href="{{ path('app_profile_self') }}">Mon profil</a>
+                <span class="text-white"> | </span>
+                <a class="white hover:underline" href="{{ path('app_logout') }}">Se déconnecter</a>
+            {% else %}
+                <a class="white hover:underline" href="{{ path('app_login') }}">Se connecter</a>
+                <span class="text-white"> | </span>
+                <a class="white hover:underline" href="{{ path('app_register') }}">S'inscrire</a>
+            {% endif %}
+        </div>
+
+        <!-- Bento Grid Menu for Small Screens -->
+        <div id="bento-menu" class="hidden lg:hidden sm:w-full md:w-full sm:h-full md:h-full absolute top-16 right-0 bg-black bg-opacity-90 text-white grid grid-cols-1 gap-2 p-2 text-4xl text-center w-64 rounded-lg shadow-lg z-50">
+
+            <a href="{{ path('all_sets') }}" class="bg-gray-700 rounded border h-full flex items-center justify-center py-8">Sets/extensions</a>
+
+            <a href="{{ path('app_decks', {'param': 'all'}) }}" class="bg-gray-700 rounded border h-full flex items-center justify-center py-8">Decks</a>
+            <a href="{{ path('app_forum') }}" class="bg-gray-700 rounded border h-full flex items-center justify-center py-8">Forum</a>
+            
+            {% if app.user %}
+                
+                <a href="{{ path('app_deck_manager', {'id': app.user.id})}}" class="bg-gray-700 py-8 rounded border h-full flex items-center justify-center">Mes Decks</a>
+                <a href="{{ path('chatting') }}" class="bg-gray-700 rounded border h-full py-8 flex items-center justify-center">Messagerie</a>
+                <a href="{{ path('app_profile_self') }}" class="bg-gray-700 rounded border py-8 h-full flex items-center justify-center">Mon profil</a>
+                <a href="{{ path('app_logout') }}" class="bg-gray-700 rounded border h-full py-8 flex items-center justify-center">Se déconnecter</a>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="bg-gray-700 rounded border h-full py-8 flex items-center justify-center">Se connecter</a>
+                <a href="{{ path('app_register') }}" class="bg-gray-700 rounded border h-full py-8 flex items-center justify-center">S'inscrire</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<!-- JavaScript to Toggle Bento Menu -->
+<script>
+    document.getElementById('bento-icon').addEventListener('click', function() {
+        const bentoMenu = document.getElementById('bento-menu');
+        bentoMenu.classList.toggle('hidden');
+    });
+</script>
         </div>
 
         
@@ -93,7 +109,7 @@
         <div class="fixed right-4 bottom-12 z-50 space-y-4 mt-4">
             {% else %}
             
-            <div class="fixed right-4 bottom-12 z-50 space-y-4 mt-4">
+            <div class="fixed sm:hidden md:hidden right-4 bottom-12 z-50 space-y-4 mt-4">
         
                 <!-- Recent Conversations Section -->
                 <div x-data="{ isOpen: false }"
@@ -173,7 +189,7 @@
         {% else %}
         <!-- Recent Conversations Section -->
         <div x-data="{ isOpen: false }"
-            class="p-4 rounded-lg hover:shadow-xl {{ unread_count() > 0 ? 'bg-red-700 text-white relative hover:bg-blue-100 hover:text-red-700' : 'bg-white border hover:bg-blue-100 text-gray-800' }}">
+            class="p-4 sm:hidden md:hidden rounded-lg hover:shadow-xl {{ unread_count() > 0 ? 'bg-red-700 text-white relative hover:bg-blue-100 hover:text-red-700' : 'bg-white border hover:bg-blue-100 text-gray-800' }}">
             <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer flex items-center justify-between">
                 Conversations récentes
                 <span x-text="isOpen ? '▲' : '▼'" class="ml-2 text-xs"></span> <!-- Toggle arrow -->
@@ -186,7 +202,7 @@
             {% endif %}
 
             
-            <div x-show="isOpen" x-transition x-data="chatFormBis()">
+            <div x-show="isOpen" x-transition x-data="chatFormBis()" class=" sm:hidden md:hidden">
                 <ul class="bg-white text-gray-800 rounded-lg mt-1 max-h-60 overflow-y-auto">
                     {% for message in user_messages.messages %}
                         <li class="border-b border-gray-300 hover:bg-gray-100 px-2">
@@ -215,8 +231,8 @@
                 </ul>
 
                 <!-- Messages Box -->
-                <div x-show="showMessages" x-transition @click.outside="showMessages = false" class="fixed inset-0 flex items-center justify-center">
-                    <div class="relative bg-white shadow-lg rounded-lg p-6 w-[500px] h-[50vh] max-h-[70vh] overflow-y-auto">
+                <div x-show="showMessages" x-transition @click.outside="showMessages = false" class="fixed sm:hidden md:hidden inset-0 flex items-center justify-center">
+                    <div class="relative bg-white sm:hidden md:hidden shadow-lg rounded-lg p-6 w-[500px] h-[50vh] max-h-[70vh] overflow-y-auto">
                         <button @click="showMessages = false" class="sticky top-0 right-0 text-red-800 hover:text-white bg-white hover:bg-red-800 rounded-md px-4 py-2 transition duration-300">
                             X
                         </button>
@@ -241,7 +257,7 @@
         </div>
         {% endif %}
         {% if app.user.followingUsers is empty %}
-        <div x-data="{ isOpen: false }" class="hover:bg-blue-100 p-4 rounded-lg hover:shadow-xl bg-white border">
+        <div x-data="{ isOpen: false }" class="hover:bg-blue-100 p-4 rounded-lg hover:shadow-xl sm:hidden md:hidden bg-white border">
 
                     <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer flex items-center justify-between">
                         <a href="{{path('chatting')}}">
@@ -251,7 +267,7 @@
 
         {% else %}
             <!-- Start a Conversation Section -->
-            <div x-data="{ isOpen: false }" class="border hover:bg-blue-100 p-4 rounded-lg hover:shadow-xl bg-white">
+            <div x-data="{ isOpen: false }" class="border hover:bg-blue-100 sm:hidden md:hidden p-4 rounded-lg hover:shadow-xl bg-white">
 
                     <h2 @click="isOpen = !isOpen" class="text-sm font-semibold text-center cursor-pointer flex items-center justify-between">
                         Ecrire à un contact
