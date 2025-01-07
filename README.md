@@ -76,9 +76,8 @@ Magic-Hub est une plateforme web dédiée aux joueurs de Magic : The Gathering. 
 <section>
 <h2>Technologies utilisées</h2>
 <ul>
-    <li><strong>Backend</strong> : Symfony (PHP), base de données MySQL.</li>
+    <li><strong>Backend</strong> : Symfony (PHP), base de données MySQL, Doctrine.</li>
     <li><strong>Frontend</strong> : Tailwind CSS, Vanilla JavaScript, Alpine.js, Charts.js</li>
     <li><strong>API externes</strong> : Scryfall, Google OAuth2.</li>
-    <li><strong>Environnement</strong> : Docker pour la gestion des conteneurs.</li>
 </ul>
 </section>
