@@ -11,6 +11,7 @@ Magic-Hub est une plateforme web dédiée aux joueurs de Magic : The Gathering. 
         <li>Créer, modifier et supprimer des decks.</li>
         <li>Importer des decks via un fichier texte (à l'aide de l'API Scryfall).</li>
         <li>Visualisation des détails du deck : nom, format, créateur, description, etc.</li>
+        <li>Affichage de statistiques affichées à l'aide de chart.js</li>
         <li>Organisation des cartes par liste principale, Sideboard et Maybeboard.</li>
         <li>Export des decks au format <code>.txt</code> ou <code>.csv</code>.</li>
     </ul>
@@ -22,7 +23,6 @@ Magic-Hub est une plateforme web dédiée aux joueurs de Magic : The Gathering. 
         <li>Recherche et exploration des decks publics.</li>
         <li>Filtres avancés : par nom, format, couleur(s), commandant, etc.</li>
         <li>Affichage des informations clés : nombre de cartes, format, couleurs principales, etc.</li>
-        <li>Affichage de statistiques affichées à l'aide de chart.JS</li>
     </ul>
 </article>
 
