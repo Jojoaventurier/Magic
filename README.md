@@ -18,6 +18,9 @@ Magic-Hub est une plateforme web dédiée aux joueurs de Magic : The Gathering. 
 ![Frame 2](https://github.com/user-attachments/assets/fe55a4aa-5d43-44b4-b813-ea680d101c95)
 ![Capture d’écran 2025-01-07 181151](https://github.com/user-attachments/assets/ca443f44-e2e1-4200-ae9d-505247dc156d)
 
+![Capture d'écran 2024-10-18 103019](https://github.com/user-attachments/assets/31a2ef7a-c130-4ac3-a25f-e1e68820eb0d)
+![Capture d'écran 2024-10-18 103101](https://github.com/user-attachments/assets/906b861f-6954-435a-b496-599762344717)
+
 ---
 
 ### Recherche de Decks
@@ -36,6 +39,7 @@ Magic-Hub est une plateforme web dédiée aux joueurs de Magic : The Gathering. 
 
 ![Frame 7](https://github.com/user-attachments/assets/2b1878e7-fa1b-47c6-a7c3-59173fd1a16c)
 ![Frame 8](https://github.com/user-attachments/assets/9f854e8f-baf3-4f2b-b07e-cbec3a3364c4)
+![Frame 13](https://github.com/user-attachments/assets/a581afa6-55d6-4f41-b32d-0d873be22a4f)
 
 ---
 
