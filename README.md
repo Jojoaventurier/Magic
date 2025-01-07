@@ -41,6 +41,7 @@ Magic-Hub est une plateforme web dédiée aux joueurs de Magic : The Gathering. 
 ![Frame 7](https://github.com/user-attachments/assets/2b1878e7-fa1b-47c6-a7c3-59173fd1a16c)
 ![Frame 8](https://github.com/user-attachments/assets/9f854e8f-baf3-4f2b-b07e-cbec3a3364c4)
 ![Frame 13](https://github.com/user-attachments/assets/a581afa6-55d6-4f41-b32d-0d873be22a4f)
+![Capture d'écran 2024-10-09 204426](https://github.com/user-attachments/assets/de807276-f56b-416e-b1c5-ce3bd751eda1)
 
 ---
 
