@@ -2,7 +2,7 @@
 
 Magic-Hub est une plateforme web dédiée aux joueurs de Magic : The Gathering. Ce projet a été conçu dans le cadre de mon diplôme en développement web et a pour objectif de fournir une solution intuitive, performante et communautaire pour les passionnés du jeu.
 ![Frame 3](https://github.com/user-attachments/assets/93565a35-1a61-4661-a97a-863ceff3411e)
-![Frame 4](https://github.com/user-attachments/assets/76a9ddc7-d52c-490f-892b-cbeed07f3b61)
+
 
 ## Fonctionnalités principales
 
@@ -18,6 +18,7 @@ Magic-Hub est une plateforme web dédiée aux joueurs de Magic : The Gathering. 
 ![Frame 2](https://github.com/user-attachments/assets/fe55a4aa-5d43-44b4-b813-ea680d101c95)
 ![Capture d’écran 2025-01-07 181151](https://github.com/user-attachments/assets/ca443f44-e2e1-4200-ae9d-505247dc156d)
 
+![Frame 1](https://github.com/user-attachments/assets/02c8368b-b0f2-45a8-8287-8bd6fa4a2adc)
 ![Capture d'écran 2024-10-18 103019](https://github.com/user-attachments/assets/31a2ef7a-c130-4ac3-a25f-e1e68820eb0d)
 ![Capture d'écran 2024-10-18 103101](https://github.com/user-attachments/assets/906b861f-6954-435a-b496-599762344717)
 
@@ -49,7 +50,16 @@ Magic-Hub est une plateforme web dédiée aux joueurs de Magic : The Gathering. 
 - Forum avec création de sujets et messages, recherche et signalements.
 - Messagerie privée avec notifications et système de gestion des conversations.
 
-![Frame 12](https://github.com/user-attachments/assets/89d5e706-3cd4-494b-99b6-58549c30ab3e)
+![Frame 12](https://github.com/user-attachments/assets/e700c4c3-d07e-488d-83bb-9ec66f1daca6)
+![Frame 10](https://github.com/user-attachments/assets/bc5ce6e9-1ab3-41f9-b9bc-bb29ea1b4d4c)
+![Capture d'écran 2024-09-16 003751](https://github.com/user-attachments/assets/c5810e93-23a9-44f2-93d6-d4db513686da)
+![Capture d’écran 2025-01-07 181905](https://github.com/user-attachments/assets/e6fa77e8-c09a-4c84-bf55-2362c86af3aa)
+![Capture d'écran 2024-10-18 111714](https://github.com/user-attachments/assets/9077ed62-92b9-4602-8628-618824b9e5f2)
+![Capture d'écran 2024-10-18 112105](https://github.com/user-attachments/assets/a69ab811-84d5-4cbe-a94c-a9e4c517f7cb)
+![Capture d'écran 2024-10-18 112228](https://github.com/user-attachments/assets/5a76a1fb-97cf-49cc-9d44-5717db2b8cb2)
+![Frame 9](https://github.com/user-attachments/assets/5aac4d5d-0110-48f1-8092-51fc63d47ae6)
+![Frame 14](https://github.com/user-attachments/assets/abe94151-00a4-4173-bf7c-e5493ade05d8)
+
 
 ---
 
@@ -63,6 +73,8 @@ Magic-Hub est une plateforme web dédiée aux joueurs de Magic : The Gathering. 
 ### Intégrations et API
 - **API Scryfall** : recherche et gestion des cartes Magic.
 - **Google API** : gestion de l'authentification OAuth2.
+
+![Frame 4](https://github.com/user-attachments/assets/76a9ddc7-d52c-490f-892b-cbeed07f3b61)
 
 ---
 
