@@ -1,10 +1,10 @@
 # Magic-Hub
 
 Magic-Hub est une plateforme web dédiée aux joueurs de Magic : The Gathering. Ce projet a été conçu dans le cadre de mon diplôme en développement web et a pour objectif de fournir une solution intuitive, performante et communautaire pour les passionnés du jeu.
+![Frame 3](https://github.com/user-attachments/assets/93565a35-1a61-4661-a97a-863ceff3411e)
+![Frame 4](https://github.com/user-attachments/assets/76a9ddc7-d52c-490f-892b-cbeed07f3b61)
 
 ## Fonctionnalités principales
-![Frame 4](https://github.com/user-attachments/assets/76a9ddc7-d52c-490f-892b-cbeed07f3b61)
-![Frame 3](https://github.com/user-attachments/assets/93565a35-1a61-4661-a97a-863ceff3411e)
 
 ### Gestion de Decks
 - Créer, modifier et supprimer des decks.
