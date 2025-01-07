@@ -21,7 +21,7 @@ Magic-Hub est une plateforme web dédiée aux joueurs de Magic : The Gathering. 
     <h3>Recherche de Decks</h3>
     <ul>
         <li>Recherche et exploration des decks publics.</li>
-        <li>Filtres avancés : par nom, format, couleur(s), commandant, etc.</li>
+        <li>Filtres avancés : par nom, format, couleur(s)</li>
         <li>Affichage des informations clés : nombre de cartes, format, couleurs principales, etc.</li>
     </ul>
 </article>
