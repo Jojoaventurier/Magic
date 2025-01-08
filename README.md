@@ -46,7 +46,7 @@ Magic-Hub est une plateforme web dédiée aux joueurs de Magic : The Gathering. 
 ---
 
 ### Communauté et Interaction
-- Profils utilisateurs avec pseudonyme, avatar, description, abonnés/abonnements.
+- Profils utilisateurs avec pseudonyme, description, abonnés/abonnements.
 - Possibilité de partager un live Twitch directement sur le profil.
 - Forum avec création de sujets et messages, recherche et signalements.
 - Messagerie privée avec notifications et système de gestion des conversations.
